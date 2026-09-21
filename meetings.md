@@ -17,7 +17,7 @@
 
 ### Future tasks
 - Michelle : skeleton of website, frontend login
-- Nicholas : mongo db
+- Nicholas : mongo db, documentation readme
 - Chen : does frontend and backend setup, seeding db, user stories 
 - Abdulla :  profile api and test
 - Tyler : authentication api/ + tests route table  pipeline
