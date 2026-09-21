@@ -3,9 +3,9 @@
 ## Sprint-1
 ## Meeting #1
 
-| Date       | Time | Type     | Attendees                                | Note Taker |
-|------------|------|----------|------------------------------------------|------------|
-| 2026-09-14 | 5 pm | In Person| Michelle, Nicholas, Chen, Abdulla, Tyler | Nicholas   |
+| Date       | Time | Type     | Attendees                                       | Note Taker |
+|------------|------|----------|-------------------------------------------------|------------|
+| 2026-09-21 | 4 pm | In Person| Michelle, Nicholas, Chen, Abdulla, Tyler, Magley| Nicholas   |
 
 ### What was done
 - Michelle :
@@ -13,36 +13,15 @@
 - Chen : 
 - Abdulla :
 - Tyler :
+- Magley :
 
 ### Future tasks
-- Michelle :
-- Nicholas : 
-- Chen : 
-- Abdulla :
-- Tyler :
-
-### Issues
-No issues so far
-
-## Meeting #2
-
-| Date       | Time | Type     | Attendees                                | Note Taker |
-|------------|------|----------|------------------------------------------|------------|
-| 2026-09-21 | 4 pm | In Person| Michelle, Nicholas, Chen, Abdulla, Tyler | Nicholas   |
-
-### What was done
-- Michelle :
-- Nicholas : 
-- Chen : 
-- Abdulla :
-- Tyler :
-
-### Future tasks
-- Michelle :
-- Nicholas : 
-- Chen : 
-- Abdulla :
-- Tyler :
+- Michelle : skeleton of website, frontend login
+- Nicholas : mongo db
+- Chen : does frontend and backend setup, seeding db, user stories 
+- Abdulla :  profile api and test
+- Tyler : authentication api/ + tests route table  pipeline
+- Magley : google login / learn react
 
 ### Issues
 No issues so far
