@@ -13,3 +13,76 @@ Template:
     Reflection: Briefly describe what was learned from the interaction and whether the AI assistance was
     useful.
     Responsible Person: Team member who conducted the interaction and completed the task
+
+Log 1:
+    Task ID/Title: Propmt AI for AI-generated user stories 
+    AI-Suggested Content: generated 10 user stories
+    Validation: manual review
+    Decision: Modified before use
+    Reflection: This was required, I would have created user stories myself otherwise
+    Responsible Person: Tyler
+    Full Prompt:
+        Given the project desc: CareerConnect is a web-based platform designed to help job seekers manage their job search activities.
+        The system allows users to create profiles, upload and manage resumes, search for job opportunities,
+        track submitted applications, and follow the progress of their application process. The platform aims
+        to centralize job-search activities and help users stay organized throughout their career development
+        journey.
+        Primary Users: Job Seekers and Recruiters.
+        can you generate 10 user stories of the format
+        As a job seeker, I want to create an account so that I can access platform features.
+            - Task 1.1: Design database schema for user account data.
+            - Task 1.2: Implement authentication API (signup endpoint).
+            - Task 1.3: Build user registration UI form.
+    Full Response:
+        Here are 10 user stories based on the project description:
+
+        User Story: Account Creation:
+        As a job seeker, I want to create an account so that I can access platform features.
+            Task 1.1: Design database schema for user account data.
+            Task 1.2: Implement authentication API (signup endpoint).
+            Task 1.3: Build user registration UI form.
+        User Story: Profile Management:
+        As a job seeker, I want to create and update my profile so that recruiters can view my professional information.
+            Task 2.1: Design database schema for user profiles.
+            Task 2.2: Implement API for profile creation and updates.
+            Task 2.3: Build profile management UI.
+        User Story: Resume Upload:
+        As a job seeker, I want to upload and manage my resumes so that I can use them for job applications.
+            Task 3.1: Design file storage system for resumes.
+            Task 3.2: Implement API for uploading and managing resumes.
+            Task 3.3: Build resume upload and management UI.
+        User Story: Job Search:
+        As a job seeker, I want to search for job opportunities so that I can find relevant positions.
+            Task 4.1: Design database schema for job postings.
+            Task 4.2: Implement job search API with filters.
+            Task 4.3: Build job search UI with filtering options.
+        User Story: Application Tracking
+        As a job seeker, I want to track my submitted applications so that I can monitor their progress.
+            Task 5.1: Design database schema for application tracking.
+            Task 5.2: Implement API for managing application statuses.
+            Task 5.3: Build application tracking UI.
+        User Story: Notifications
+        As a job seeker, I want to receive notifications about application updates so that I stay informed.
+            Task 6.1: Design notification system architecture.
+            Task 6.2: Implement API for sending notifications.
+            Task 6.3: Build notification UI.
+        User Story: Recruiter Account
+        As a recruiter, I want to create an account so that I can post job opportunities.
+            Task 7.1: Design database schema for recruiter accounts.
+            Task 7.2: Implement authentication API (signup endpoint for recruiters).
+            Task 7.3: Build recruiter registration UI form.
+        User Story: Job Posting
+        As a recruiter, I want to post job opportunities so that job seekers can apply.
+            Task 8.1: Design database schema for job postings.
+            Task 8.2: Implement API for creating and managing job postings.
+            Task 8.3: Build job posting UI.
+        User Story: Application Review
+        As a recruiter, I want to review submitted applications so that I can evaluate candidates.
+            Task 9.1: Design database schema for submitted applications.
+            Task 9.2: Implement API for retrieving and managing applications.
+            Task 9.3: Build application review UI.
+        User Story: Analytics Dashboard
+        As a job seeker, I want to view analytics about my job search activities so that I can improve my strategy.
+            Task 10.1: Design database schema for analytics data.
+            Task 10.2: Implement API for retrieving analytics data.
+            Task 10.3: Build analytics dashboard UI.
