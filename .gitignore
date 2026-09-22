@@ -83,6 +83,7 @@ out
 dist
 .output
 
+
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js
@@ -141,3 +142,20 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+apps/client/dist/
+
+# Build
+dist/
+build/
+
+# Prisma generated client
+apps/server/src/generated/
+
+# Logs
+*.log
+npm-debug.log*
+
+# AI coding assistant / Prisma-generated agent files
+.agents/
+.claude/
+.windsurf/
