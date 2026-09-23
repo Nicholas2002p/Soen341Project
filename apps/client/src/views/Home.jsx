@@ -1,6 +1,8 @@
 import JobPosting from "./JobPosting";
 import Account from "../components/Account";
 
+import './Home.scss';
+
 /**
  * 
  * &#x25BC; reference from https://stackoverflow.com/questions/2701192/what-characters-can-be-used-for-up-down-triangle-arrow-without-stem-for-displa 
@@ -36,13 +38,13 @@ function GetStarted() {
   return (
     <section className="get-started">
       <section className="get-started-text">
-        <h1> Welcome to Career Connect! </h1>
-        <h2> let's get you started </h2>
+        <h2 className="welcome"> Welcome to Career Connect! </h2>
+        <h2 className="get-started-welcome"> let's get you started </h2>
 
-        <button> Get Started </button>
+        <button className="get-started-button"> Get Started </button>
       </section>
 
-      <button> &#x25BC; </button>
+      <button className="arrow-down"> &#x25BC; </button>
     </section>
   );
 }
