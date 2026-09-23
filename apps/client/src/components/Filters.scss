@@ -1,17 +1,19 @@
 .filters {
   background-color: cadetblue;
-  margin: 10px;
   flex: 1;
   overflow-y: scroll;
   scroll-behavior: smooth;
-  
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-left: 10px;
+  padding-right: 20px;
 }
 
 .filters h2 {
   font-size: 30px;
+  padding-left: 10px;
+  margin-bottom: 0;
 }
 
 .filter {

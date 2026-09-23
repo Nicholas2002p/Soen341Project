@@ -12,11 +12,12 @@ export default function JobSearch() {
 
 function JobBoard({ jobs }) {
   const displayJobs = jobs.map((job) => 
-    <section key={job.id} className="job">
-      <h2> {job.title} </h2>
-      <p> {job.recruiter} </p>
+    <a href="" key={job.id} className="job">
+      <div className="pin"> </div>
+      <p className="job-title"> {job.title} </p>
+      <p className="job-recruiter"> {job.recruiter} </p>
       <Requirements requirements={job.requirements} />
-    </section>
+    </a>
   );
 
   return (
@@ -32,7 +33,7 @@ function Requirements({ requirements }) {
   );
     
   return (
-    <ul>
+    <ul className="requirements">
       { displayReq }
     </ul>
   );
@@ -64,5 +65,11 @@ const sampleRequirements = [
     title: 'Job Title',
     recruiter: 'Recruiter',
     requirements: ['requirement 1', 'requirement 2', 'requirement 3']
-  }
+  },
+  {
+    id: 5,
+    title: 'Job Title',
+    recruiter: 'Recruiter',
+    requirements: ['requirement 1', 'requirement 2', 'requirement 3']
+  },
 ];

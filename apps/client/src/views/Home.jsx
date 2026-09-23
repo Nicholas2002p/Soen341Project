@@ -28,8 +28,8 @@ export default function Home() {
 function NavItems() {
   return (
     <ul className="nav-list-items">
-      <li> Home </li>
-      <li> Jobs </li>
+      <li> <a href=""> Home </a> </li>
+      <li> <a href=""> Jobs </a> </li>
     </ul>
   );
 }
