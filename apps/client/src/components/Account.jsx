@@ -1,6 +1,6 @@
 export default function Account() {
   return (
-    <section class="registration">
+    <section className="registration">
       <img src="" alt="" />
       <p> Sign in </p>
     </section>

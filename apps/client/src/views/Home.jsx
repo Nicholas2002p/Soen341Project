@@ -1,5 +1,5 @@
 import JobPosting from "./JobPosting";
-import Account from "../utils/Account";
+import Account from "../components/Account";
 
 /**
  * 
@@ -10,12 +10,12 @@ export default function Home() {
   return (
     <>
       <nav>
-        <p class="logo"> Career Connect </p>
+        <p className="logo"> Career Connect </p>
         <NavItems />
         <Account />  
       </nav>
 
-      <main class="home">
+      <main className="home">
         <GetStarted />
         <JobPosting />
       </main>
@@ -25,7 +25,7 @@ export default function Home() {
 
 function NavItems() {
   return (
-    <ul class="nav-list-items">
+    <ul className="nav-list-items">
       <li> Home </li>
       <li> Jobs </li>
     </ul>
@@ -34,8 +34,8 @@ function NavItems() {
 
 function GetStarted() {
   return (
-    <section class="get-started">
-      <section class="get-started-text">
+    <section className="get-started">
+      <section className="get-started-text">
         <h1> Welcome to Career Connect! </h1>
         <h2> let's get you started </h2>
 

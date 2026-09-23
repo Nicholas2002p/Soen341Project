@@ -10,7 +10,7 @@ export default function JobSearch() {
 
 function JobBoard(jobs) {
   const displayJobs = jobs.map((jobs) => 
-    <section class="job">
+    <section className="job">
       <Requirements requirements={jobs.requirements} />
     </section>
   );

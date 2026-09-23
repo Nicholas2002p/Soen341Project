@@ -1,5 +1,5 @@
-import Filters from '../utils/Filters';
-import JobSearch from '../utils/JobSearch';
+import Filters from '../components/Filters';
+import JobSearch from '../components/JobSearch';
 
 export default function JobPosting() {
   return (
