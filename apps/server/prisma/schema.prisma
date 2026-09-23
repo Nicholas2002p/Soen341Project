@@ -37,7 +37,7 @@ enum ApplicationStatus {
 model User {
   userId    Int       @id @default(autoincrement()) @map("userId")
   email     String    @unique @db.VarChar(150)
-  password  String    @db.VarChar(50)
+  password  String    @db.VarChar(60)
   role      UserRole
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @map("updated_at")
@@ -48,8 +48,20 @@ model User {
   applications  Application[]
   savedJobs     SavedJob[]
   notifications Notification[]
+  salt          Salt?
 
   @@map("Users")
+}
+
+///To store salt for passwords
+model Salt {
+  SaltId Int    @id @default(autoincrement()) @map("SaltId")
+  userId Int    @unique @map("userId")
+  Salt   String @db.VarChar(60)
+
+  user User @relation(fields: [userId], references: [userId])
+
+  @@map("Salt")
 }
 
 /// information used in the user's profile
