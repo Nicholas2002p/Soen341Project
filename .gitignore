@@ -159,3 +159,4 @@ npm-debug.log*
 .agents/
 .claude/
 .windsurf/
+.vscode/
