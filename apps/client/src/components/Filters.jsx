@@ -3,20 +3,29 @@ export default function Filters() {
     <section className="filters">
       <h2> Filters </h2>
 
-      <Filter num={1} choices={['choice 1', 'choice 2', 'choice 3']} />
-      <Filter num={2} choices={['choice 1', 'choice 2', 'choice 3']} />
+      <Filter num={1} choices={options} />
+      <Filter num={2} choices={options} />
     </section>
   );
 }
 
-function Filter(num, choices) {
+function Filter({ num, choices }) {
   return (
     <fieldset>
       <legend> Filter {num} </legend>
 
-      <input type="checkbox" id={choices[0]} name={choices[0]} /> 
-      <input type="checkbox" id={choices[1]} name={choices[1]} /> 
-      <input type="checkbox" id={choices[2]} name={choices[2]} /> 
+      {choices.map( (key, choice) => 
+        <>
+          <label key={key} htmlFor="">
+            <input type="checkbox" value={choice} id={choice} name={choice} /> 
+            {choice}
+          </label>
+        </>
+      )}
     </fieldset>
   );
 }
+
+// ============================= SAMPLE DATA ==================================
+
+const options = ['choice 1', 'choice 2', 'choice 3']

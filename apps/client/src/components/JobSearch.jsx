@@ -8,10 +8,10 @@ export default function JobSearch() {
   );
 }
 
-function JobBoard(jobs) {
-  const displayJobs = jobs.map((jobs) => 
-    <section className="job">
-      <Requirements requirements={jobs.requirements} />
+function JobBoard({ jobs }) {
+  const displayJobs = jobs.map((job) => 
+    <section key={job.id} className="job">
+      <Requirements requirements={job.requirements} />
     </section>
   );
 
@@ -22,7 +22,7 @@ function JobBoard(jobs) {
   );
 }
 
-function Requirements(requirements) {
+function Requirements({ requirements }) {
   const displayReq =  requirements.map( (req) =>
     <li> {req} </li>
   );
@@ -38,21 +38,25 @@ function Requirements(requirements) {
 
 const sampleRequirements = [
   {
+    id: 1,
     title: 'Job Title',
     recruiter: 'Recruiter',
     requirements: ['requirement 1', 'requirement 2', 'requirement 3']
   }, 
   {
+    id: 2,
     title: 'Job Title',
     recruiter: 'Recruiter',
     requirements: ['requirement 1', 'requirement 2', 'requirement 3']
   }, 
   {
+    id: 3,
     title: 'Job Title',
     recruiter: 'Recruiter',
     requirements: ['requirement 1', 'requirement 2', 'requirement 3']
   },
   {
+    id: 4,
     title: 'Job Title',
     recruiter: 'Recruiter',
     requirements: ['requirement 1', 'requirement 2', 'requirement 3']
