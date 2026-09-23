@@ -5,9 +5,9 @@ import Home from './views/Home';
 
 function Main() {
   return (
-    <>
+    <div id="app">
       <Home />
-    </>
+    </div>
   );
 };
 

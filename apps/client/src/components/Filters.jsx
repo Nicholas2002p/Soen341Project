@@ -1,3 +1,5 @@
+import "./Filters.scss";
+
 export default function Filters() {
   return (
     <section className="filters">
@@ -11,12 +13,12 @@ export default function Filters() {
 
 function Filter({ num, choices }) {
   return (
-    <fieldset>
+    <fieldset className="filter">
       <legend> Filter {num} </legend>
 
-      {choices.map( (key, choice) => 
+      {choices.map( (choice) => 
         <>
-          <label key={key} htmlFor="">
+          <label>
             <input type="checkbox" value={choice} id={choice} name={choice} /> 
             {choice}
           </label>

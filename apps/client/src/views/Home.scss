@@ -48,22 +48,12 @@ nav {
 .get-started-text {
   display: flex;
   flex-direction: column;
-  gap: 20px;
   align-items: center;
   padding-top: 20px;
 }
 
-.get-started-text .welcome {
-  font-size: 50px;
-}
-
-.get-started-welcome {
-  font-size: 35px;
-}
-
 .get-started-button {
-  width: 250px;
-  font-size: 20px;
+
 }
 
 .arrow-down {
@@ -71,8 +61,7 @@ nav {
   bottom: 10px;
   right: 20px;
   background: none;
-	color: inherit;
-	border: none;
-	cursor: pointer;
+  color: inherit;
+  border: none;
+  cursor: pointer;
 }
-

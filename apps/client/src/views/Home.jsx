@@ -10,7 +10,7 @@ import './Home.scss';
  */
 export default function Home() {
   return (
-    <>
+    <section className="homepage">
       <nav>
         <p className="logo"> Career Connect </p>
         <NavItems />
@@ -21,7 +21,7 @@ export default function Home() {
         <GetStarted />
         <JobPosting />
       </main>
-    </>
+    </section>
   );
 }
 

@@ -1,3 +1,5 @@
+import "./JobSearch.scss";
+
 export default function JobSearch() {
   return (
     <section className="job-search">
@@ -11,6 +13,8 @@ export default function JobSearch() {
 function JobBoard({ jobs }) {
   const displayJobs = jobs.map((job) => 
     <section key={job.id} className="job">
+      <h2> {job.title} </h2>
+      <p> {job.recruiter} </p>
       <Requirements requirements={job.requirements} />
     </section>
   );
