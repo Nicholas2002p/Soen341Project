@@ -36,8 +36,8 @@ function GetStarted() {
   return (
     <section class="get-started">
       <section class="get-started-text">
-        <p> Welcome to Career Connect! </p>
-        <p> let's get you started </p>
+        <h1> Welcome to Career Connect! </h1>
+        <h2> let's get you started </h2>
 
         <button> Get Started </button>
       </section>
