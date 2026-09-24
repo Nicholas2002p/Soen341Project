@@ -74,7 +74,9 @@ model Profile {
   phone      String? @db.VarChar(13)
   bio        String? @db.VarChar(250)
   location   String? @db.VarChar(100)
-  skills     String? @db.VarChar(500)
+  skills     String[]
+  profileURL String?  @db.VarChar(500)
+
 
   user User @relation(fields: [userId], references: [userId])
 
@@ -117,6 +119,7 @@ model Job {
   employmentType EmploymentType @map("employment_type")
   deadline       DateTime?
   createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime?       @default(now()) @map("updated_at")
 
   company      Company       @relation(fields: [companyId], references: [companyId])
   recruiter    User          @relation(fields: [recruiterId], references: [userId])
@@ -134,7 +137,7 @@ model Application {
   resumeId      Int               @map("resumeId")
   status        ApplicationStatus
   appliedAt     DateTime          @default(now()) @map("applied_at")
-  updatedAt     DateTime          @default(now()) @map("updated_at")
+  updatedAt     DateTime?         @default(now()) @map("updated_at")
 
   user          User                       @relation(fields: [userId], references: [userId])
   job           Job                        @relation(fields: [jobId], references: [jobId])
