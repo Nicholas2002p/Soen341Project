@@ -3,6 +3,7 @@ import { IUserRepository } from '../interfaces/repositories/IUserRepository.js';
 import { ISessionRepository } from '../interfaces/repositories/ISessionRepository.js';
 import { ISessionTokenGenerator } from '../interfaces/infrastructure/ISessionTokenGenerator.js';
 import { IPasswordHasher } from '../interfaces/infrastructure/IPasswordHasher.js';
+import { UserAlreadyExistsError } from '../../domain/errors/UserAlreadyExistsError.js';
 
 export class AuthService implements IAuthService {
     constructor(
@@ -18,7 +19,7 @@ export class AuthService implements IAuthService {
 
         const existingUser = await this.userRepository.getByEmail(email);
         if (existingUser) {
-            throw new Error('User already exists'); //todo: create a custom error class for this
+            throw new UserAlreadyExistsError(); 
         }
 
 
