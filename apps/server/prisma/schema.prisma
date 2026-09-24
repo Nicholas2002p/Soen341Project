@@ -11,3 +11,175 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+//enum types
+enum UserRole {
+  recruiter
+  jobseeker
+  admin
+}
+
+enum EmploymentType {
+  on_site
+  hybrid
+  remote
+}
+
+enum ApplicationStatus {
+  onhold
+  rejected
+  accepted
+}
+
+//tables
+
+///The information needed to login and register a user
+model User {
+  userId    Int       @id @default(autoincrement()) @map("userId")
+  email     String    @unique @db.VarChar(150)
+  password  String    @db.VarChar(60)
+  role      UserRole
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+
+  profile       Profile?
+  resumes       Resume[]
+  jobs          Job[]
+  applications  Application[]
+  savedJobs     SavedJob[]
+  notifications Notification[]
+  salt          Salt?
+
+  @@map("Users")
+}
+
+///To store salt for passwords
+model Salt {
+  SaltId Int    @id @default(autoincrement()) @map("SaltId")
+  userId Int    @unique @map("userId")
+  Salt   String @db.VarChar(60)
+
+  user User @relation(fields: [userId], references: [userId])
+
+  @@map("Salt")
+}
+
+/// information used in the user's profile
+model Profile {
+  profileId  Int     @id @default(autoincrement()) @map("profileId")
+  userId     Int     @unique @map("userId")
+  firstName  String  @db.VarChar(50)
+  middleName String? @db.VarChar(50)
+  lastName   String  @map("LastName") @db.VarChar(50)
+  phone      String? @db.VarChar(13)
+  bio        String? @db.VarChar(250)
+  location   String? @db.VarChar(100)
+  skills     String? @db.VarChar(500)
+
+  user User @relation(fields: [userId], references: [userId])
+
+  @@map("Profile")
+}
+
+/// saves the users resume 
+model Resume {
+  resumeId  Int      @id @default(autoincrement()) @map("resumeId")
+  userId    Int      @map("userId")
+  fileName  String   @db.VarChar(255)
+  fileURL   String?  @db.VarChar(500)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user         User          @relation(fields: [userId], references: [userId])
+  applications Application[]
+
+  @@map("Resume")
+}
+
+/// Company information
+model Company {
+  companyId   Int     @id @default(autoincrement()) @map("companyId")
+  name        String  @db.VarChar(50)
+  description String? @db.VarChar(250)
+
+  jobs Job[]
+
+  @@map("Company")
+}
+
+/// Information for job board
+model Job {
+  jobId          Int            @id @default(autoincrement()) @map("jobId")
+  companyId      Int            @map("companyId")
+  recruiterId    Int            @map("recruitorId")
+  location       String?        @db.VarChar(100)
+  description    String?        @db.VarChar(250)
+  salary         Int
+  employmentType EmploymentType @map("employment_type")
+  deadline       DateTime?
+  createdAt      DateTime       @default(now()) @map("created_at")
+
+  company      Company       @relation(fields: [companyId], references: [companyId])
+  recruiter    User          @relation(fields: [recruiterId], references: [userId])
+  applications Application[]
+  savedJobs    SavedJob[]
+
+  @@map("Job")
+}
+
+///The users application to a job
+model Application {
+  applicationId Int               @id @default(autoincrement()) @map("applicationId")
+  userId        Int               @map("userId")
+  jobId         Int               @map("jobId")
+  resumeId      Int               @map("resumeId")
+  status        ApplicationStatus
+  appliedAt     DateTime          @default(now()) @map("applied_at")
+  updatedAt     DateTime          @default(now()) @map("updated_at")
+
+  user          User                       @relation(fields: [userId], references: [userId])
+  job           Job                        @relation(fields: [jobId], references: [jobId])
+  resume        Resume                     @relation(fields: [resumeId], references: [resumeId])
+  statusHistory ApplicationStatusHistory[]
+
+  @@unique([userId, jobId])
+  @@map("Application")
+}
+
+/// list of jobs the  user bookmarked for later
+model SavedJob {
+  savedJobId Int @id @default(autoincrement()) @map("savedJobId")
+  userId     Int @map("userId")
+  jobId      Int @map("jobId")
+
+  user User @relation(fields: [userId], references: [userId])
+  job  Job  @relation(fields: [jobId], references: [jobId])
+
+  @@unique([userId, jobId])
+  @@map("SavedJob")
+}
+
+/// A single notification sent to a user
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("userId")
+  type      String   @db.VarChar(50)
+  message   String   @db.VarChar(500)
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [userId])
+
+  @@map("Notification")
+}
+
+///to see the total history of an application
+model ApplicationStatusHistory {
+  id            Int               @id @default(autoincrement())
+  applicationId Int               @map("applicationId")
+  status        ApplicationStatus
+  createdAt     DateTime          @default(now()) @map("created_at")
+
+  application Application @relation(fields: [applicationId], references: [applicationId])
+
+  @@map("ApplicationStatusHistory")
+}
