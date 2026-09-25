@@ -1,5 +1,6 @@
 import express, { type Express, type Request, type Response } from 'express';
 import { authRoutes } from './presentation/routes/AuthRoutes.js';
+import { resumeRoutes } from './presentation/routes/ResumeRoutes.js';
 
 export const app: Express = express();
 
@@ -11,6 +12,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/resumes', resumeRoutes);
 
 app.get('/api/auth/me', (req: Request, res: Response) => {
   res.status(200).json({ message: 'Authentication endpoint' });
