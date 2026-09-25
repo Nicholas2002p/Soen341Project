@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import './main.css';
-
 import Home from './views/Home';
+import Profile from './views/Profile';
+
+import './App.css';
 
 function Main() {
   return (
@@ -10,5 +11,10 @@ function Main() {
     </div>
   );
 };
+
+// for react routes
+// <Profile />
+
+
 
 export default Main;

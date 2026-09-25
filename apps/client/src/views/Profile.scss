@@ -1,0 +1,39 @@
+// ============================= VARIABLES ===============================
+$nav-color: #bee3fb;
+
+// ============================= MIXINS ===============================
+
+@mixin flex-dir($direction) {
+  display: flex;
+  flex-direction: $direction;
+}
+
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+// =========================== RESUME UPLOAD ===========================
+
+.profilepage {
+  @include width-height(100%, 100%);
+  @include flex-dir(column);
+}
+
+nav {
+  min-height: 60px;
+  background-color: $nav-color;
+}
+
+.profile {
+  @include flex-dir(row);
+  flex: 1;
+  min-height: 0;
+}
+
+.profile-modifications {
+  @include flex-dir(column);
+  flex: 1;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}

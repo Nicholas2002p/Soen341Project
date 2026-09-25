@@ -25,5 +25,10 @@
     "react-router": "^8.4.0",
     "sass": "^1.105.0",
     "zod": "^4.6.5"
+  },
+  "allowScripts": {
+    "prisma@7.10.0": true,
+    "esbuild@0.28.2": true,
+    "bcrypt@6.0.0": true
   }
 }
