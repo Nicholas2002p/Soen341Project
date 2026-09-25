@@ -1,26 +1,47 @@
-.resume-upload {
-  background-color: lightcoral;
-  flex: 1;
-  padding: 10px;
+// =========================== VARIABLES ==============================
+$black-border: 1px solid black;
+
+// ============================= MIXINS ===============================
+
+@mixin flex-align-justify($align, $justify) {
   display: flex;
-  flex-direction: column;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin flex-dir($direction) {
+  display: flex;
+  flex-direction: $direction;
+}
+
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+// =========================== RESUME UPLOAD ===========================
+
+.resume-upload {
+  @include flex-dir(column);
+  flex: 1;
   font-size: 25px;
+  padding: 10px;
   gap: 20px;
 }
 
 .resume-upload h2 {
-  background-color: lightblue;
   margin: 0;
-  border: 1px solid black;
+  border: $black-border;
   text-align: center;
 }
 
 .resume-upload img {
-  width: 75%;
+  @include width-height(75%, none);
   align-self: center;
 }
 
 .resume-upload-button {
+  @include width-height(150px, 30px);
   margin-top: auto;
   align-self: center;
   width: 150px;
