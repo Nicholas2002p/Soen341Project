@@ -4,6 +4,8 @@ import type { Server } from 'node:http';
 import test from 'node:test';
 import { app } from '../../src/app.js';
 
+console.log('\n=== tests/api/AuthApi.test.ts ===');
+
 let server: Server;
 let baseUrl: string;
 

@@ -12,6 +12,8 @@ import {
     user,
 } from '../fakes/AuthFakes.js';
 
+console.log('\n=== tests/unit/AuthService.test.ts ===');
+
 function createService(initialUsers: User[] = []) {
     const userRepository = new FakeUserRepository(initialUsers); // Create a fake user repository with optional initial users
     const sessionRepository = new FakeSessionRepository(); // Create a fake session repository
