@@ -12,9 +12,4 @@ function Main() {
   );
 };
 
-// for react routes
-// <Profile />
-
-
-
 export default Main;

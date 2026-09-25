@@ -9,7 +9,6 @@ a {
 }
 
 nav {
-  background-color: pink;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -62,14 +61,12 @@ nav {
 }
 
 .home {
-  background-color: aquamarine;
   display: flex;
   flex-direction: column;
   flex: 4;
 }
 
 .get-started {
-  background-color: bisque;
   padding: 10px;
   display: flex;
   flex-direction: column;
