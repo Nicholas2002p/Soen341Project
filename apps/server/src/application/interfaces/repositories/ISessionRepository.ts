@@ -4,6 +4,7 @@ export interface session {
     expiresAt: Date;
 }
 
+// Define the interface for the session repository, which provides methods for creating, retrieving, and deleting sessions in the system.
 export interface ISessionRepository {
     create(userId: string, tokenHash: string, expiresAt: Date): Promise<session>;
     getByTokenHash(tokenHash: string): Promise<session | null>;
