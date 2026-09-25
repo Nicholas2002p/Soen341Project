@@ -5,6 +5,8 @@ export type ResumeFileType = 'pdf' | 'doc' | 'docx';
 // Maximum size of an uploaded resume (5 MB)
 export const MAX_RESUME_SIZE_BYTES = 5 * 1024 * 1024;
 
+// MIME type sent in the Content-Type header when a resume is downloaded
+// Source: https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types/Common_types
 const MIME_TYPES: Record<ResumeFileType, string> = {
     pdf: 'application/pdf',
     doc: 'application/msword',
@@ -12,6 +14,8 @@ const MIME_TYPES: Record<ResumeFileType, string> = {
 };
 
 // The first bytes of each file type. Checking them stops files that are only renamed (e.g. a .txt saved as .pdf).
+// Sources: https://en.wikipedia.org/wiki/List_of_file_signatures
+//          https://www.garykessler.net/library/file_sigs.html
 const SIGNATURES: Record<ResumeFileType, number[]> = {
     pdf: [0x25, 0x50, 0x44, 0x46], // %PDF
     doc: [0xd0, 0xcf, 0x11, 0xe0], // Legacy Word document
