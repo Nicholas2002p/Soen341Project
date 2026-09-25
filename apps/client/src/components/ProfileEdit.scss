@@ -1,0 +1,62 @@
+// =========================== VARIABLES ==============================
+$black-border: 1px solid black;
+$nav-color: #bee3fb;
+$button-color: #b7fdf8;
+
+// ============================= MIXINS ===============================
+
+@mixin flex-align-justify($align, $justify) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin flex-dir($direction) {
+  display: flex;
+  flex-direction: $direction;
+}
+
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+// =========================== PROFILE EDIT ===========================
+
+.profile-edit {
+  @include flex-dir(column);
+  flex: 1;
+  font-size: 25px;
+  padding: 10px;
+  gap: 20px;
+}
+
+.profile-edit h2 {
+  margin: 0;
+  background-color: $nav-color;
+  border: $black-border;
+  text-align: center;
+}
+
+label {
+  @include flex-dir(row);
+  margin-left: 10px;
+  gap: 10px;
+  align-items: center;
+}
+
+input {
+  @include width-height(60%, none);
+  font-size: 20px;
+}
+
+.profile-edit-button {
+  @include width-height(150px, 30px);
+  @include flex-align-justify(center, center);
+  background-color: $button-color;
+
+  cursor: pointer;
+  margin-top: auto;
+  align-self: center;
+  font-size: 20px;
+}
