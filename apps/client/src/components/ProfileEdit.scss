@@ -1,3 +1,39 @@
 .profile-edit {
   background-color: lightgreen;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 25px;
+  padding: 10px;
+  gap: 20px;
+}
+
+.profile-edit h2 {
+  background-color: lightblue;
+  margin: 0;
+  border: 1px solid black;
+  text-align: center;
+}
+
+label {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+input {
+  width: 60%;
+}
+
+.profile-edit-button {
+  margin-top: auto;
+  align-self: center;
+  width: 150px;
+  height: 30px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }

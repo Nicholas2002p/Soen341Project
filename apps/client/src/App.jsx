@@ -3,9 +3,9 @@ import Profile from './views/Profile';
 
 function Main() {
   return (
-   <>
+    <div id="app">
       <Profile />
-   </>
+    </div>
   );
 }
 

@@ -6,32 +6,34 @@ export default function ProfileEdit({ fname, lname, desc, setFName, setLName, se
 
   return (
     <section className="profile-edit">
+      <h2> EDIT YOUR PROFILE </h2>
+
       <label htmlFor="">
-        <input type="text" id="fname" name="fname" placeholder={fname} onChange={(e) => { setFName(e.target.value) }} />
         First Name: 
+        <input type="text" id="fname" name="fname" placeholder={fname} onChange={(e) => { setFName(e.target.value) }} />
       </label>
 
       <label htmlFor="">
-        <input type="text" id="lname" name="lname" placeholder={lname} onChange={(e) => { setLName(e.target.value) }} />
         Last Name: 
+        <input type="text" id="lname" name="lname" placeholder={lname} onChange={(e) => { setLName(e.target.value) }} />
       </label>
 
       <label htmlFor="">
-        <input type="password" onChange={(e) => { setPassword(e.target.value) }} />
         Password:
+        <input type="password" onChange={(e) => { setPassword(e.target.value) }} />
       </label>
 
       <label htmlFor="">
-        <input type="text" id="desc" name="desc" placeholder={desc} onChange={(e) => { setDesc(e.target.value) }} />
         Description: 
+        <input type="text" id="desc" name="desc" placeholder={desc} onChange={(e) => { setDesc(e.target.value) }} />
       </label>
 
       <label htmlFor="">
-        <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />
         Profile Picture:
+        <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />
       </label>
 
-      <button button="type" onClick={() => { Save(fname, lname, desc, password) }}>
+      <button className='profile-edit-button' button="type" onClick={() => { Save(fname, lname, desc, password) }}>
         Save
       </button>
     </section>

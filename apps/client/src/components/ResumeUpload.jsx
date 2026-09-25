@@ -10,7 +10,7 @@ export default function ResumeUpload({}) {
 
       
 
-      <button type="submit" onClick={() => { UploadResume(resume) }}>
+      <button className='resume-upload-button' type="submit" onClick={() => { UploadResume(resume) }}>
         Upload Resume
       </button>
     </section>
