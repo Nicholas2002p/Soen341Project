@@ -1,5 +1,20 @@
 import './ProfileCard.scss';
 
+/**
+ * Profile Card
+ * this displays:
+ *  - profile picture
+ *  - last name, first name
+ *  - role
+ *  - description
+ * 
+ * @param {Object} props
+ * @param {string} props.fname - The user's first name.
+ * @param {string} props.lname - The user's last name.
+ * @param {string} props.role - The user's current role (job seeker, recruiter)
+ * @param {string} props.desc - A short description of the user.
+ * @returns the profile card component
+ */
 export default function ProfileCard({ fname, lname, role, desc }) {
   return (
     <section className="profile-card">

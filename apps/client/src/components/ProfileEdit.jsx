@@ -1,6 +1,18 @@
 import { useState } from 'react';
 import './ProfileEdit.scss';
 
+/**
+ * Profile Edit
+ * this component lets you edit the profile information in the database
+ * 
+ * @param {string} props.fname - The user's first name.
+ * @param {string} props.lname - The user's last name.
+ * @param {string} props.desc - The user's description.
+ * @param {Function} props.setFName - Updates the first name state.
+ * @param {Function} props.setLName - Updates the last name state.
+ * @param {Function} props.setDesc - Updates the description state.
+ * @returns the profile edit component
+ */
 export default function ProfileEdit({ fname, lname, desc, setFName, setLName, setDesc }) {
   const [password, setPassword] = useState('');
 
@@ -40,6 +52,15 @@ export default function ProfileEdit({ fname, lname, desc, setFName, setLName, se
   );
 }
 
+/**
+ * This function saves the edited information into the database
+ * NOTE: ensure there's a modification with a check
+ * 
+ * @param {*} fname 
+ * @param {*} lname 
+ * @param {*} desc 
+ * @param {*} password 
+ */
 function Save(fname, lname, desc, password) {
   // call the api to update the database
   console.log('first name: ' + fname);

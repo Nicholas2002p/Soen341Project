@@ -5,6 +5,12 @@ import ProfileEdit from '../components/ProfileEdit';
 import ResumeUpload from '../components/ResumeUpload';
 import './Profile.scss';
 
+/**
+ * Profile
+ * this displays the profile id card + profile edit + resume upload
+ * 
+ * @returns Profile component
+ */
 export default function Profile({}) {
   const [fname, setFName] = useState('FNAME');
   const [lname, setLName] = useState('LNAME');
