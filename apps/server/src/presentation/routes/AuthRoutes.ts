@@ -1,17 +1,26 @@
-import { Router } from 'express';
+import { Router, type Request, type Response, type NextFunction } from 'express';
 import { authController } from '../controllers/AuthController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 
 export const authRoutes = Router();
+
+function requireHttps(req: Request, res: Response, next: NextFunction): void {
+	if (!req.secure) {
+		res.status(400).json({ message: 'HTTPS is required for authentication requests.' });
+		return;
+	}
+
+	next();
+}
 //-----------------------------------------------------------------------------------------------------------
 // ------------------------------------------ Auth routes ---------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
 
 // Register route
-authRoutes.post('/register', authController.register.bind(authController));
+authRoutes.post('/register', requireHttps, authController.register.bind(authController));
 
 // Login route
-authRoutes.post('/login', authController.login.bind(authController));
+authRoutes.post('/login', requireHttps, authController.login.bind(authController));
 
 // Logout route
 authRoutes.post('/logout', authController.logout.bind(authController));

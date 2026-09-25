@@ -6,7 +6,7 @@ import type { User } from '../../src/domain/entities/User.js';
 import { UserRole } from '../../src/domain/entities/User.js';
 
 export const user: User = {
-    id: 'user-1',
+    id: 1,
     email: 'person@example.com',
     passwordHash: 'stored-password-hash',
     role: UserRole.JobSeeker,
@@ -25,7 +25,7 @@ export class FakeUserRepository implements IUserRepository {
         }
     }
 
-    async getById(id: string): Promise<User | null> {
+    async getById(id: number): Promise<User | null> {
         return [...this.users.values()].find((storedUser) => storedUser.id === id) ?? null;
     }
 
@@ -40,13 +40,13 @@ export class FakeUserRepository implements IUserRepository {
         return createdUser;
     }
 
-    async updateRole(id: string, newRole: UserRole): Promise<User | null> {
+    async updatePassword(id: number, newPasswordHash: string): Promise<User | null> {
         const storedUser = await this.getById(id);
         if (!storedUser) {
             return null;
         }
 
-        const updatedUser = { ...storedUser, role: newRole };
+        const updatedUser = { ...storedUser, passwordHash: newPasswordHash };
         this.users.set(updatedUser.email, updatedUser);
         return updatedUser;
     }
@@ -55,11 +55,11 @@ export class FakeUserRepository implements IUserRepository {
 // In-memory session repository used to verify token and expiration behavior.
 export class FakeSessionRepository implements ISessionRepository {
     sessions = new Map<string, session>();
-    deletedSessionIds: string[] = [];
+    deletedSessionIds: number[] = [];
     deletedTokenHashes: string[] = [];
 
-    async create(userId: string, tokenHash: string, expiresAt: Date): Promise<session> {
-        const createdSession = { id: `session-${this.sessions.size + 1}`, userId, expiresAt };
+    async create(userId: number, tokenHash: string, expiresAt: Date): Promise<session> {
+        const createdSession = { id: this.sessions.size + 1, userId, expiresAt };
         this.sessions.set(tokenHash, createdSession);
         return createdSession;
     }
@@ -68,7 +68,7 @@ export class FakeSessionRepository implements ISessionRepository {
         return this.sessions.get(tokenHash) ?? null;
     }
 
-    async delete(sessionId: string): Promise<void> {
+    async delete(sessionId: number): Promise<void> {
         this.deletedSessionIds.push(sessionId);
     }
 

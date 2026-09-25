@@ -56,7 +56,7 @@ model User {
 
 /// Stores hashed authentication tokens for active sessions.
 model Session {
-  id        String   @id @default(cuid())
+  id        Int      @id @default(autoincrement())
   userId    Int      @map("userId")
   tokenHash String   @unique @map("token_hash") @db.VarChar(64)
   expiresAt DateTime @map("expires_at")

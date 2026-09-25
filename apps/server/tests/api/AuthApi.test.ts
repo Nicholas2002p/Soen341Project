@@ -11,6 +11,8 @@ async function request(path: string, options?: RequestInit): Promise<Response> {
   return fetch(`${baseUrl}${path}`, options);
 }
 
+const httpsHeaders = { 'X-Forwarded-Proto': 'https' };
+
 test.before(async () => {
   // Start the Express app on an ephemeral port for isolated HTTP tests.
   server = app.listen(0);
@@ -31,13 +33,13 @@ test('register rejects a request without credentials', async () => {
   // Verify the controller rejects incomplete registration payloads.
   const response = await request('/api/auth/register', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...httpsHeaders, 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: 'missing-password@example.com' }),
   });
 
   assert.equal(response.status, 400);
   assert.deepEqual(await response.json(), {
-    message: 'Email and password are required.',
+    message: 'Registration requires both an email address and a password.',
   });
 });
 
@@ -45,13 +47,13 @@ test('register rejects an invalid email format', async () => {
   // Verify malformed email input is rejected before authentication logic runs.
   const response = await request('/api/auth/register', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...httpsHeaders, 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: 'not-an-email', password: 'secret-password' }),
   });
 
   assert.equal(response.status, 400);
   assert.deepEqual(await response.json(), {
-    message: 'Invalid email format',
+    message: 'The registration email address is not valid.',
   });
 });
 
@@ -59,11 +61,24 @@ test('login rejects a request without credentials', async () => {
   // Verify login requires both email and password.
   const response = await request('/api/auth/login', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...httpsHeaders, 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: 'missing-password@example.com' }),
   });
 
   assert.equal(response.status, 400);
+});
+
+test('login rejects non-HTTPS requests', async () => {
+  const response = await request('/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'person@example.com', password: 'secret-password' }),
+  });
+
+  assert.equal(response.status, 400);
+  assert.deepEqual(await response.json(), {
+    message: 'HTTPS is required for authentication requests.',
+  });
 });
 
 test('me rejects requests without a bearer token', async () => {

@@ -15,12 +15,12 @@ export class AuthController {
 
             // Check if email and password are provided
             if (!email || !password) {
-              res.status(400).json({ message: 'Email and password are required.' });
+              res.status(400).json({ message: 'Registration requires both an email address and a password.' });
               return;
             }
 
             if (typeof email !== 'string' || !isValidEmail(email.trim())) {
-              res.status(400).json({ message: 'Invalid email format' });
+              res.status(400).json({ message: 'The registration email address is not valid.' });
               return;
             }
 
@@ -35,15 +35,15 @@ export class AuthController {
         } catch (error: unknown) {
             // Handle specific error cases
             if (error instanceof Error && error.name === 'InvalidEmailError') {
-              res.status(400).json({ message: 'Invalid email format' });
+              res.status(400).json({ message: 'The registration email address is not valid.' });
               return;
             }
             if (error instanceof Error && error.name === 'InvalidAuthCredentialsError') {
-              res.status(401).json({ message: 'Invalid email or password' });
+              res.status(401).json({ message: 'The email address or password is incorrect.' });
               return;
             }
             if (error instanceof Error && error.name === 'UserAlreadyExists') {
-              res.status(409).json({ message: 'User already exists' });
+              res.status(409).json({ message: 'An account with this email address already exists.' });
               return;
             }
 
@@ -59,12 +59,12 @@ export class AuthController {
             // Check if email and password are provided
             if (!email || !password) {
                 // Return a 400 Bad Request response if email or password is missing
-                res.status(400).json({ message: 'Email and password are required.' });
+                res.status(400).json({ message: 'Login requires both an email address and a password.' });
                 return;
             }
 
             if (typeof email !== 'string' || !isValidEmail(email.trim())) {
-              res.status(400).json({ message: 'Invalid email format' });
+              res.status(400).json({ message: 'The login email address is not valid.' });
               return;
             }
 
@@ -79,11 +79,11 @@ export class AuthController {
         } catch (error: unknown) {
             // Handle specific error cases
             if (error instanceof Error && error.name === 'UserAlreadyExists') {
-              res.status(409).json({ message: 'User already exists' });
+              res.status(409).json({ message: 'An account with this email address already exists.' });
               return;
             }
             if (error instanceof Error && error.name === 'InvalidAuthCredentialsError') {
-              res.status(401).json({ message: 'Invalid email or password' });
+              res.status(401).json({ message: 'The email address or password is incorrect.' });
               return;
             }
 

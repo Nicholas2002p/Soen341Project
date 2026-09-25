@@ -3,6 +3,7 @@ import { authRoutes } from './presentation/routes/AuthRoutes.js';
 
 export const app: Express = express();
 
+app.set('trust proxy', true);
 app.use(express.json());
 
 app.get('/', (req: Request, res: Response) => {

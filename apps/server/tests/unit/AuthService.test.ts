@@ -92,5 +92,5 @@ test('authenticate removes expired sessions and returns no user', async () => {
     const result = await service.authenticate('expired-token');
 
     assert.equal(result, null);
-    assert.deepEqual(sessionRepository.deletedSessionIds, ['session-1']);
+    assert.deepEqual(sessionRepository.deletedSessionIds, [1]);
 });

@@ -46,7 +46,7 @@ test('authentication lifecycle works through the HTTP API and database', async (
         // Register a real user and verify a session token is returned.
         const registerResponse = await request('/api/auth/register', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'X-Forwarded-Proto': 'https' },
             body: JSON.stringify({ email, password }),
         });
       
@@ -59,7 +59,7 @@ test('authentication lifecycle works through the HTTP API and database', async (
         // Log in with the same credentials and use the new session token.
         const loginResponse = await request('/api/auth/login', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'X-Forwarded-Proto': 'https' },
             body: JSON.stringify({ email, password }),
         });
 

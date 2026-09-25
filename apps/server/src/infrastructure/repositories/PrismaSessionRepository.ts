@@ -3,11 +3,11 @@ import { ISessionRepository, session } from '../../application/interfaces/reposi
 
 export class PrismaSessionRepository implements ISessionRepository {
     // Create a new session in the database with the provided user ID, token hash, and expiration date
-    async create(userId: string, tokenHash: string, expiresAt: Date): Promise<session> {
+    async create(userId: number, tokenHash: string, expiresAt: Date): Promise<session> {
         // Create a new session in the database with the provided user ID, token hash, and expiration date
         const createdSession = await prisma.session.create({
             data: {
-                userId: Number(userId),
+                userId,
                 tokenHash,
                 expiresAt,
             },
@@ -16,7 +16,7 @@ export class PrismaSessionRepository implements ISessionRepository {
         // Return the created session as a domain session entity
         return {
             id: createdSession.id,
-            userId: String(createdSession.userId),
+            userId: createdSession.userId,
             expiresAt: createdSession.expiresAt,
         };
     }
@@ -36,13 +36,13 @@ export class PrismaSessionRepository implements ISessionRepository {
         // Return the retrieved session as a domain session entity
         return {
           id: storedSession.id,
-          userId: String(storedSession.userId),
+          userId: storedSession.userId,
           expiresAt: storedSession.expiresAt,
         };
     }
 
     // Delete a session from the database by its ID
-    async delete(sessionId: string): Promise<void> {
+    async delete(sessionId: number): Promise<void> {
         await prisma.session.delete({
             where: { id: sessionId },
         });

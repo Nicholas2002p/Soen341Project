@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { UserService } from '../../src/application/services/UserService.js';
-import { UserRole } from '../../src/domain/entities/User.js';
 import { FakeUserRepository, user } from '../fakes/AuthFakes.js';
 
 test('getById returns a public user without the password hash', async () => {
@@ -28,15 +27,15 @@ test('getByEmail returns null when no user matches', async () => {
     assert.equal(result, null);
 });
 
-test('updateRole returns the updated public user', async () => {
+test('updatePassword returns the updated public user without the password hash', async () => {
     // Create a UserService instance with a FakeUserRepository containing a test user
     const service = new UserService(new FakeUserRepository([user]));
     
-    // Call the updateRole method with the test user's ID and a new role
-    const result = await service.updateRole(user.id, UserRole.Recruiter);
+    // Call updatePassword with the test user's ID and a new password hash
+    const result = await service.updatePassword(user.id, 'new-password-hash');
     
-    // Assert that the returned user has the updated role
-    assert.equal(result?.role, UserRole.Recruiter);
+    // Assert that the password was updated while remaining private
+    assert.equal(result?.id, user.id);
     // Assert that the passwordHash property is not present in the returned public user
     assert.equal('passwordHash' in (result ?? {}), false);
 });

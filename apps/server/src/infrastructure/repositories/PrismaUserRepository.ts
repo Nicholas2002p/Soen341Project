@@ -9,7 +9,7 @@ export class PrismaUserRepository implements IUserRepository {
     // Convert a Prisma User record to a domain User entity
     private toDomainUser(record: PrismaUser): User {
         return {
-            id: String(record.userId),
+            id: record.userId,
             email: record.email,
             passwordHash: record.password,
             role: record.role as UserRole,
@@ -19,9 +19,9 @@ export class PrismaUserRepository implements IUserRepository {
     }
 
     // Find a user by their ID, returns null if not found
-    async getById(id: string): Promise<User | null> {
+    async getById(id: number): Promise<User | null> {
         const user = await this.prisma.user.findUnique({
-            where: { userId: Number(id) },
+            where: { userId: id },
         });
 
         return user ? this.toDomainUser(user) : null;
@@ -49,11 +49,11 @@ export class PrismaUserRepository implements IUserRepository {
         return this.toDomainUser(createdUser);
     }
 
-    // Update a user's role, returns the updated user or null if not found
-    async updateRole(id: string, newRole: UserRole): Promise<User | null> {
+    // Update a user's password hash, returns the updated user or null if not found
+    async updatePassword(id: number, newPasswordHash: string): Promise<User | null> {
         const updatedUser = await this.prisma.user.update({
-            where: { userId: Number(id) },
-            data: { role: newRole },
+            where: { userId: id },
+            data: { password: newPasswordHash },
         });
 
         return this.toDomainUser(updatedUser);
