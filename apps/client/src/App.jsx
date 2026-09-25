@@ -1,5 +1,4 @@
 import { useState } from "react";
-import GoogleSignIn from "./GoogleSignIn.jsx";
 import "./App.css";
 
 function App() {
@@ -16,7 +15,6 @@ function App() {
         Hello, would you like to register to our website?{" "}
         {username ? username : "Anonymous"}
       </h1>
-      {!username && <GoogleSignIn setUsername={setUsername} />}
       {username && <button onClick={handleLogout}>logout</button>}
     </>
   );
