@@ -51,6 +51,7 @@ model User {
   salt          Salt?
 
   @@map("Users")
+  skillOnProfiles SkillOnProfile[]
 }
 
 ///To store salt for passwords
@@ -64,6 +65,15 @@ model Salt {
   @@map("Salt")
 }
 
+model Skill{
+  skillId Int @id @default(autoincrement())@map("skillId")
+  skill   String @db.VarChar(50)
+
+  skillOnProfiles SkillOnProfile[]
+
+  skillOnJobs SkillOnJob[]
+}
+
 /// information used in the user's profile
 model Profile {
   profileId  Int     @id @default(autoincrement()) @map("profileId")
@@ -74,7 +84,6 @@ model Profile {
   phone      String? @db.VarChar(13)
   bio        String? @db.VarChar(250)
   location   String? @db.VarChar(100)
-  skills     String[]
   profileURL String?  @db.VarChar(500)
 
 
@@ -82,6 +91,7 @@ model Profile {
 
   @@map("Profile")
 }
+
 
 /// saves the users resume 
 model Resume {
@@ -127,6 +137,7 @@ model Job {
   savedJobs    SavedJob[]
 
   @@map("Job")
+  skillOnJobs SkillOnJob[]
 }
 
 ///The users application to a job
@@ -185,4 +196,25 @@ model ApplicationStatusHistory {
   application Application @relation(fields: [applicationId], references: [applicationId])
 
   @@map("ApplicationStatusHistory")
+}
+
+model SkillOnProfile{
+  id            Int      @id @default(autoincrement())
+  skillId       Int      @map("skillId")
+  userId        Int      @map("userId")
+
+  skill Skill @relation(fields: [skillId], references: [skillId])
+  user User @relation(fields: [userId], references: [userId])
+
+
+}
+
+model SkillOnJob{
+  id            Int       @id @default(autoincrement())
+  skillId       Int      @map("skillId")
+  jobId         Int      @map("jobId")
+
+  skill Skill @relation(fields: [skillId], references: [skillId])
+  job Job @relation(fields: [jobId], references: [jobId])
+  
 }

@@ -11,12 +11,29 @@ CREATE TYPE "ApplicationStatus" AS ENUM ('onhold', 'rejected', 'accepted');
 CREATE TABLE "Users" (
     "userId" SERIAL NOT NULL,
     "email" VARCHAR(150) NOT NULL,
-    "password" VARCHAR(50) NOT NULL,
+    "password" VARCHAR(60) NOT NULL,
     "role" "UserRole" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
     CONSTRAINT "Users_pkey" PRIMARY KEY ("userId")
+);
+
+-- CreateTable
+CREATE TABLE "Salt" (
+    "SaltId" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "Salt" VARCHAR(60) NOT NULL,
+
+    CONSTRAINT "Salt_pkey" PRIMARY KEY ("SaltId")
+);
+
+-- CreateTable
+CREATE TABLE "Skill" (
+    "skillId" SERIAL NOT NULL,
+    "skill" VARCHAR(50) NOT NULL,
+
+    CONSTRAINT "Skill_pkey" PRIMARY KEY ("skillId")
 );
 
 -- CreateTable
@@ -29,7 +46,7 @@ CREATE TABLE "Profile" (
     "phone" VARCHAR(13),
     "bio" VARCHAR(250),
     "location" VARCHAR(100),
-    "skills" VARCHAR(500),
+    "profileURL" VARCHAR(500),
 
     CONSTRAINT "Profile_pkey" PRIMARY KEY ("profileId")
 );
@@ -65,6 +82,7 @@ CREATE TABLE "Job" (
     "employment_type" "EmploymentType" NOT NULL,
     "deadline" TIMESTAMP(3),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Job_pkey" PRIMARY KEY ("jobId")
 );
@@ -77,7 +95,7 @@ CREATE TABLE "Application" (
     "resumeId" INTEGER NOT NULL,
     "status" "ApplicationStatus" NOT NULL,
     "applied_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Application_pkey" PRIMARY KEY ("applicationId")
 );
@@ -113,8 +131,29 @@ CREATE TABLE "ApplicationStatusHistory" (
     CONSTRAINT "ApplicationStatusHistory_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "SkillOnProfile" (
+    "id" SERIAL NOT NULL,
+    "skillId" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
+
+    CONSTRAINT "SkillOnProfile_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "SkillOnJob" (
+    "id" SERIAL NOT NULL,
+    "skillId" INTEGER NOT NULL,
+    "jobId" INTEGER NOT NULL,
+
+    CONSTRAINT "SkillOnJob_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Salt_userId_key" ON "Salt"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Profile_userId_key" ON "Profile"("userId");
@@ -124,6 +163,9 @@ CREATE UNIQUE INDEX "Application_userId_jobId_key" ON "Application"("userId", "j
 
 -- CreateIndex
 CREATE UNIQUE INDEX "SavedJob_userId_jobId_key" ON "SavedJob"("userId", "jobId");
+
+-- AddForeignKey
+ALTER TABLE "Salt" ADD CONSTRAINT "Salt_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -157,3 +199,15 @@ ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "ApplicationStatusHistory" ADD CONSTRAINT "ApplicationStatusHistory_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "Application"("applicationId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SkillOnProfile" ADD CONSTRAINT "SkillOnProfile_skillId_fkey" FOREIGN KEY ("skillId") REFERENCES "Skill"("skillId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SkillOnProfile" ADD CONSTRAINT "SkillOnProfile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SkillOnJob" ADD CONSTRAINT "SkillOnJob_skillId_fkey" FOREIGN KEY ("skillId") REFERENCES "Skill"("skillId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SkillOnJob" ADD CONSTRAINT "SkillOnJob_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job"("jobId") ON DELETE RESTRICT ON UPDATE CASCADE;
