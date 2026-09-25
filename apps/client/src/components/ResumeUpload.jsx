@@ -8,7 +8,7 @@ export default function ResumeUpload({}) {
     <section className="resume-upload">
       <h2> RESUME UPLOAD </h2>
 
-      
+      <img src="random_cv.png" alt="" />
 
       <button className='resume-upload-button' type="submit" onClick={() => { UploadResume(resume) }}>
         Upload Resume
