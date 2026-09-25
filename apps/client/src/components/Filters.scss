@@ -11,7 +11,7 @@
 }
 
 .filters h2 {
-  font-size: 30px;
+  font-size: 35px;
   padding-left: 10px;
   margin-bottom: 0;
 }
@@ -19,8 +19,7 @@
 .filter {
   display: flex;
   flex-direction: column;
-  align-items: start;
-  padding-left: 20px;
+  font-size: 25px;
 }
 
 .filter legend {
@@ -28,7 +27,9 @@
 }
 
 .filter label {
-  display: flex;
-  gap: 20px;
-  font-size: 25px;
+  margin-top: 10px;
+}
+
+.filter label input {
+  flex: 0.1;  
 }

@@ -17,12 +17,10 @@ function Filter({ num, choices }) {
       <legend> Filter {num} </legend>
 
       {choices.map( (choice) => 
-        <>
-          <label>
-            <input type="checkbox" value={choice} id={choice} name={choice} /> 
-            {choice}
-          </label>
-        </>
+        <label>
+          <input type="checkbox" value={choice} id={choice} name={choice} /> 
+          {choice}
+        </label>
       )}
     </fieldset>
   );

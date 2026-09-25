@@ -1,7 +1,7 @@
 export default function Account() {
   return (
     <section className="account">
-      <img src="user_pfp.png" alt="" />
+      <img src="random-pfp.PNG" alt="" />
       <a href=""> Sign in </a>
     </section>
   );
