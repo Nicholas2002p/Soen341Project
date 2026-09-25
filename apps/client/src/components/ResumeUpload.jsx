@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './ResumeUpload.scss';
 
 export default function ResumeUpload({}) {
   const [resume, setResume] = useState('');

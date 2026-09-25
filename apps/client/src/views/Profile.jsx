@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import ProfileCard from './components/ProfileCard';
-import ProfileEdit from './components/ProfileEdit';
-import ResumeUpload from './components/ResumeUpload';
+import ProfileCard from '../components/ProfileCard';
+import ProfileEdit from '../components/ProfileEdit';
+import ResumeUpload from '../components/ResumeUpload';
 import './Profile.scss';
 
 export default function Profile({}) {
