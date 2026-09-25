@@ -1,5 +1,7 @@
 // =========================== VARIABLES ==============================
 $black-border: 1px solid black;
+$nav-color: #bee3fb;
+$button-color: #b7fdf8;
 
 // ============================= MIXINS ===============================
 
@@ -39,6 +41,7 @@ $black-border: 1px solid black;
 .card-hole {
   border: $black-border;
   border-radius: 20px;
+  background-color: white;
   
   position: absolute;
   top: 10px;
@@ -51,6 +54,8 @@ $black-border: 1px solid black;
 .profile-card-information {
   @include flex-dir(column);
   @include width-height(none, 100%);
+  border-radius: 20px;
+  background: radial-gradient($nav-color, #FFFFFF);
 }
 
 .profile-card-information img {

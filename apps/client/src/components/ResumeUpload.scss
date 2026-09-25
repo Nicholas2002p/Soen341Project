@@ -1,5 +1,7 @@
 // =========================== VARIABLES ==============================
 $black-border: 1px solid black;
+$nav-color: #bee3fb;
+$button-color: #b7fdf8;
 
 // ============================= MIXINS ===============================
 
@@ -33,6 +35,7 @@ $black-border: 1px solid black;
   margin: 0;
   border: $black-border;
   text-align: center;
+  background-color: $nav-color;
 }
 
 .resume-upload img {
@@ -42,13 +45,11 @@ $black-border: 1px solid black;
 
 .resume-upload-button {
   @include width-height(150px, 30px);
+  @include flex-align-justify(center, center);
+  background-color: $button-color;
+
   margin-top: auto;
   align-self: center;
-  width: 150px;
-  height: 30px;
   font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
 }

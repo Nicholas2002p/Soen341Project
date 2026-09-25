@@ -1,5 +1,7 @@
 // =========================== VARIABLES ==============================
 $black-border: 1px solid black;
+$nav-color: #bee3fb;
+$button-color: #b7fdf8;
 
 // ============================= MIXINS ===============================
 
@@ -31,12 +33,14 @@ $black-border: 1px solid black;
 
 .profile-edit h2 {
   margin: 0;
+  background-color: $nav-color;
   border: $black-border;
   text-align: center;
 }
 
 label {
   @include flex-dir(row);
+  margin-left: 10px;
   gap: 10px;
   align-items: center;
 }
@@ -49,6 +53,8 @@ input {
 .profile-edit-button {
   @include width-height(150px, 30px);
   @include flex-align-justify(center, center);
+  background-color: $button-color;
+
   cursor: pointer;
   margin-top: auto;
   align-self: center;
