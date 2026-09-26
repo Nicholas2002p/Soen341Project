@@ -1,18 +1,15 @@
 .password-display {
   position: relative;
-  display: flex;
-  align-items:  center;
   width: 90%;
 }
 
 .eye {
   position: absolute;
-  right:2px;
-  
+  right: -7px;
 }
 
 .password-display input {
-  width: 90%;
+  width: 100%;
 }
 
 .registration {
@@ -37,21 +34,13 @@
   background-color: #bee3fb;
   display: flex;
   flex-direction: column;
-  padding: 5px;   
+  padding: 5px;
   height: 50%;
   width: 45%;
-}
-
-.register-btn {
-
 }
 
 .reg-inside {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-input {
-  width: 90%;
 }
