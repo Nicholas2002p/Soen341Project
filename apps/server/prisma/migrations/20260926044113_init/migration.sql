@@ -20,6 +20,17 @@ CREATE TABLE "Users" (
 );
 
 -- CreateTable
+CREATE TABLE "Session" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "token_hash" VARCHAR(64) NOT NULL,
+    "expires_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Session_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Salt" (
     "SaltId" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
@@ -153,6 +164,12 @@ CREATE TABLE "SkillOnJob" (
 CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Session_token_hash_key" ON "Session"("token_hash");
+
+-- CreateIndex
+CREATE INDEX "Session_userId_idx" ON "Session"("userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Salt_userId_key" ON "Salt"("userId");
 
 -- CreateIndex
@@ -163,6 +180,9 @@ CREATE UNIQUE INDEX "Application_userId_jobId_key" ON "Application"("userId", "j
 
 -- CreateIndex
 CREATE UNIQUE INDEX "SavedJob_userId_jobId_key" ON "SavedJob"("userId", "jobId");
+
+-- AddForeignKey
+ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("userId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Salt" ADD CONSTRAINT "Salt_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
