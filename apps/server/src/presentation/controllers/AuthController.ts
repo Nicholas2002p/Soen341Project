@@ -27,6 +27,11 @@ export class AuthController {
             // Call the authService to register the user
             const result = await authService.register({ email, password });
 
+            if (!result.user || !result.sessionToken) {
+              res.status(500).json({ message: 'Registration failed: Missing user or session token.' });
+              return;
+            }
+
             // Return a 201 Created response with the user and session token
             res.status(201).json({
               user: result.user,
