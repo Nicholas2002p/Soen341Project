@@ -157,6 +157,7 @@ export async function GetProfileApi(token){
             setErrorMessage("Error Message:", data.message);
             return false;
         } 
+        console.log(data);
         return data;
     } catch (error) {
         console.error(error);

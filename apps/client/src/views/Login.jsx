@@ -52,7 +52,7 @@ export default function Login({ setView }) {
  * @param {*} setToken 
  * @param {*} setView 
  */
-function RegisterUser(password, setErrorMessage,email,setToken,setView) { 
+async function RegisterUser(password, setErrorMessage,email,setToken,setView) { 
     if (email.trim() === "") {
         setErrorMessage("Email is required");
     } 
@@ -67,7 +67,7 @@ function RegisterUser(password, setErrorMessage,email,setToken,setView) {
     
     else {
         setErrorMessage("");
-        const allGood = LogInApi( email, password, setErrorMessage, setToken);
+        const allGood = await LogInApi( email, password, setErrorMessage, setToken);
         if(allGood) setView("profile");
     }
 }

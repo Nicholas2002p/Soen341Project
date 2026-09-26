@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../utils/Auth';
+import { GetProfileApi }from '../utils/Api';
 
 import ProfileCard from '../components/ProfileCard';
 import ProfileEdit from '../components/ProfileEdit';
@@ -14,10 +16,28 @@ import './Profile.scss';
  * @returns Profile component
  */
 export default function Profile({ setView }) {
+  const { token, setToken } = useAuth();
+ 
   const [fname, setFName] = useState('FNAME');
   const [lname, setLName] = useState('LNAME');
   const [role, setRole] = useState('ROLE');
   const [desc, setDesc] = useState('DESC');
+
+  useEffect(() => {
+    if (token) {
+        const getProfile = async () => {
+            const data = await GetProfileApi(token);
+
+            console.log(data);
+
+            setFName(data.firstName);
+            setLName(data.lastName);
+            setDesc(data.bio);
+        };
+
+        getProfile();
+    }
+}, []);
 
   return (
     <main className="profilepage">

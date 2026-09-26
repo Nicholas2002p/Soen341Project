@@ -77,7 +77,7 @@ export default function Registration({ setView }) {
  * @param {*} token 
  * @param {*} setView 
  */          
-function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email,setToken,token,setView, checked) { 
+async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email,setToken,token,setView, checked) { 
     if (email.trim() === "") setErrorMessage("Email is required");
 
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setErrorMessage("Please enter a valid email address");
@@ -95,7 +95,10 @@ function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, emai
     else {
         const role = checked? "recruiter":"jobseeker";
         setErrorMessage("");
-        const allGood = RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token, role);
-        if(allGood) setView("profile");
+        const allGood = await RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token, role);
+        //NOt switching after good call
+        if(allGood) {
+            setView("profile");
+        };
     }
 }
