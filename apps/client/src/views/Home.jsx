@@ -1,5 +1,6 @@
 import JobPosting from "./JobPosting";
 import Account from "../components/Account";
+import Nav from '../components/Nav';
 
 import './Home.scss';
 
@@ -10,36 +11,16 @@ import './Home.scss';
  * &#x25BC; reference from https://stackoverflow.com/questions/2701192/what-characters-can-be-used-for-up-down-triangle-arrow-without-stem-for-displa 
  * @returns the home page
  */
-export default function Home() {
+export default function Home({ setView }) {
   return (
     <section className="homepage">
-      <nav>
-        <p className="logo"> Career Connect </p>
-        <NavItems />
-        <Account />  
-      </nav>
+      <Nav setView={setView} />      
 
       <main className="home">
         <GetStarted />
         <JobPosting />
       </main>
     </section>
-  );
-}
-
-/**
- * Nav Items
- * list of the links we can navigate to
- * 
- * @returns the nav item component
- */
-function NavItems() {
-  return (
-    <ul className="nav-list-items">
-      <li> <a href=""> Home </a> </li>
-      <li> <a href=""> Jobs </a> </li>
-      <li> <a onClick={() => {  }} href=""> Profile </a> </li>
-    </ul>
   );
 }
 

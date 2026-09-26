@@ -5,9 +5,12 @@ import Profile from './views/Profile';
 import './App.css';
 
 function Main() {
+ const [view, setView] = useState("home");
+
   return (
     <div id="app">
-      <Home />
+      {view === "home" && <Home setView={setView} /> }
+      {view === "profile" && <Profile setView={setView} />}
     </div>
   );
 };
