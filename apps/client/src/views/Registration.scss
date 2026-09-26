@@ -3,9 +3,14 @@
   width: 90%;
 }
 
+.registration-input {
+  width: 90%;
+  margin-left: 10px;
+}
+
 .eye {
   position: absolute;
-  right: -7px;
+  right: -20px;
 }
 
 .password-display input {
@@ -43,4 +48,12 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+.register-btn {
+  align-self: center;
+  width: 100px;
+  height: 30px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }

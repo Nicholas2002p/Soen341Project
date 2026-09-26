@@ -20,21 +20,21 @@ export default function Registration({ setView }) {
 
                 <div className='password'>
                     <label for="email">Email:</label>
-                    <input type="text " name="email" maxlength="50" onChange={(e) => { setEmail(e.target.value) }} />
+                    <input className='registration-input' type="text " name="email" maxlength="50" onChange={(e) => { setEmail(e.target.value) }} />
                 </div>
 
-                <Password labelName={"password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
+                <Password labelName={"Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
                 
-                <Password labelName={"confirm_password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
+                <Password labelName={"Confirm Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
 
                 <div className='password'>
                     <label for="fname">First Name:</label>
-                    <input type="text " name="fname" maxlength="50" onChange={(e) => { setfname(e.target.value) }} />
+                    <input className='registration-input' type="text " name="fname" maxlength="50" onChange={(e) => { setfname(e.target.value) }} />
                 </div>
 
                 <div className='password'>
                     <label for="lname"> Last name:</label>
-                    <input type="text " name="lname" maxlength="50" onChange={(e) => { setlname(e.target.value) }} />
+                    <input className='registration-input' type="text " name="lname" maxlength="50" onChange={(e) => { setlname(e.target.value) }} />
                 </div>
 
                 <section>
@@ -53,15 +53,15 @@ export default function Registration({ setView }) {
 }
 
 function Password({labelName, passwordType, passwordType2, setPasswordType, setPasswordType2, setPassword, setConfirmPass }) {
-    const password_type = labelName === "password" ? passwordType : passwordType2;
-    const set_password_type = labelName === "password" ? setPasswordType : setPasswordType2; 
-    const set_password = labelName === "password" ? setPassword : setConfirmPass;
+    const password_type = labelName === "Password" ? passwordType : passwordType2;
+    const set_password_type = labelName === "Password" ? setPasswordType : setPasswordType2; 
+    const set_password = labelName === "Password" ? setPassword : setConfirmPass;
 
     return (
         <div className='password'>
             <label for="password"> {labelName} </label>
             <div className="password-display">
-                <input type={password_type ? "password": "text" } name="password" maxlength="50" onChange={(e) => { set_password(e.target.value) }} />
+                <input className='registration-input' type={password_type ? "password": "text" } name="password" maxlength="50" onChange={(e) => { set_password(e.target.value) }} />
                 <button className="eye" onClick={() => { set_password_type(!password_type)}}>p</button>
             </div>
         </div>
