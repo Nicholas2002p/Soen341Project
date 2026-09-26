@@ -14,6 +14,8 @@ export default function Registration({ setView }) {
     const [errorMessage, setErrorMessage] = useState('');
     const [passwordType, setPasswordType] = useState(true);
     const [passwordType2, setPasswordType2] = useState(true);
+    const [checked, setChecked] = useState(false);
+
     const { token, setToken } = useAuth();
 
 
@@ -42,6 +44,11 @@ export default function Registration({ setView }) {
                     <input className='registration-input' type="text " name="lname" maxlength="50" onChange={(e) => { setlname(e.target.value) }} />
                 </div>
 
+                <div className='password'>
+                    <label for="role"> recruiter:</label>
+                    <input className='registration-input' type="checkbox" name="role" checked={checked} onChange={() => setChecked(prev => !prev)}/>
+                </div>
+
                 <section>
                     Already have an account?
                     <a className='cursor' onClick={() => { setView("sign-in") }}> Sign In </a>
@@ -50,7 +57,7 @@ export default function Registration({ setView }) {
                     {errorMessage}
                 </span>
             
-                <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken,token,setView) } }> Register </button>
+                <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken,token,setView, checked) } }> Register </button>
             </section>
         </main>
     </section>
@@ -70,7 +77,7 @@ export default function Registration({ setView }) {
  * @param {*} token 
  * @param {*} setView 
  */          
-function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email,setToken,token,setView) { 
+function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email,setToken,token,setView, checked) { 
     if (email.trim() === "") setErrorMessage("Email is required");
 
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setErrorMessage("Please enter a valid email address");
@@ -86,8 +93,9 @@ function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, emai
     else if (lname.trim() === "") setErrorMessage("Last name is required");
     
     else {
+        const role = checked? "recruiter":"jobseeker";
         setErrorMessage("");
-        const allGood = RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token);
+        const allGood = RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token, role);
         if(allGood) setView("profile");
     }
 }
