@@ -4,6 +4,8 @@ import Account from "../components/Account";
 import './Home.scss';
 
 /**
+ * Home
+ * Displays the navigation and the job posting preview
  * 
  * &#x25BC; reference from https://stackoverflow.com/questions/2701192/what-characters-can-be-used-for-up-down-triangle-arrow-without-stem-for-displa 
  * @returns the home page
@@ -25,15 +27,27 @@ export default function Home() {
   );
 }
 
+/**
+ * Nav Items
+ * list of the links we can navigate to
+ * 
+ * @returns the nav item component
+ */
 function NavItems() {
   return (
     <ul className="nav-list-items">
       <li> <a href=""> Home </a> </li>
       <li> <a href=""> Jobs </a> </li>
+      <li> <a onClick={() => {  }} href=""> Profile </a> </li>
     </ul>
   );
 }
 
+/**
+ * this component is omitted for this sprint at the moment
+ * 
+ * @returns 
+ */
 function GetStarted() {
   return (
     <section className="get-started">

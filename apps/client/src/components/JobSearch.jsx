@@ -1,5 +1,10 @@
 import "./JobSearch.scss";
 
+/**
+ * Job Search
+ * 
+ * @returns the job search component
+ */
 export default function JobSearch() {
   return (
     <section className="job-search">
@@ -10,6 +15,14 @@ export default function JobSearch() {
   );
 }
 
+/**
+ * Job Board
+ * contains an array of many job postings where it shows: 
+ * the title, the recruiter, the description and its requirements
+ * 
+ * @param {Object} jobs - what the job entails
+ * @returns the job board component
+ */
 function JobBoard({ jobs }) {
   const displayJobs = jobs.map((job) => 
     <a href="" key={job.id} className="job">
@@ -28,6 +41,13 @@ function JobBoard({ jobs }) {
   );
 }
 
+/**
+ * Requirements
+ * lists every requirement to display
+ * 
+ * @param {Array} requirements - list of requirements that the job is looking for
+ * @returns the requirements component
+ */
 function Requirements({ requirements }) {
   const displayReq =  requirements.map( (req) =>
     <li> {req} </li>
