@@ -4,6 +4,7 @@ import './App.css';
 import Home from './views/Home';
 import Profile from './views/Profile';
 import Registration from './views/Registration';
+import Login from './views/Login';
 
 export const AuthContext = createContext();
 function Main() {
@@ -16,6 +17,7 @@ function Main() {
         {view === "home" && <Home setView={setView} /> }
         {view === "profile" && <Profile setView={setView} />}
         {view === "registration" && <Registration setView={setView} />} 
+        {view === "sign-in" && <Login setView={setView} />} 
       </div>
     </AuthContext.Provider>
   );

@@ -4,9 +4,7 @@ import Password from '../components/Password';
 import { useAuth } from "../App";
 import {RegisterApi} from '../components/Api';
 
-export default function Registration({ setView }) {
-    const [fname, setfname] = useState('');
-    const [lname, setlname] = useState('');
+export default function Login({ setView }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
@@ -19,7 +17,7 @@ export default function Registration({ setView }) {
   return (
     <section className="registration">  
         <main className="loginbox">
-            <h2>Register</h2>
+            <h2>Login</h2>
             <section className='reg-inside'>
 
                 <div className='password'>
@@ -30,25 +28,16 @@ export default function Registration({ setView }) {
                 <Password labelName={"Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
                 
                 <Password labelName={"Confirm Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
-                <div className='password'>
-                    <label for="fname">First Name:</label>
-                    <input className='registration-input' type="text " name="fname" maxlength="50" onChange={(e) => { setfname(e.target.value) }} />
-                </div>
-
-                <div className='password'>
-                    <label for="lname"> Last name:</label>
-                    <input className='registration-input' type="text " name="lname" maxlength="50" onChange={(e) => { setlname(e.target.value) }} />
-                </div>
-
+                               
                 <section>
-                    Already have an account?
-                    <a className='cursor' onClick={() => { setView("sign-in") }}> Sign In </a>
+                    Don't have an account?
+                    <a className='cursor' onClick={() => { setView("registration") }}> Register </a>
                 </section>
                 <span class="error-text">
                     {errorMessage}
                 </span>
             
-                <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken,token,setView) } }> Register </button>
+                <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, email, setToken,token) } }> Log in </button>
             </section>
         </main>
     </section>
@@ -56,7 +45,7 @@ export default function Registration({ setView }) {
 }
 
           
-function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email,setToken,token,setView) { 
+function RegisterUser(password, confirmPass, setErrorMessage,email,setToken,token) { 
     if (email.trim() === "") {
         setErrorMessage("Email is required");
     } 
@@ -77,17 +66,8 @@ function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, emai
         setErrorMessage("Passwords do not match");
     }
     
-    else if (fname.trim() === "") {
-        setErrorMessage("First name is required");
-    } 
-
-    else if (lname.trim() === "") {
-        setErrorMessage("Last name is required");
-    } 
-
     else {
         setErrorMessage("");
-        RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token);
-        setView("profile")
+        LogInApi( email, password, setErrorMessage, setToken,token);
     }
 }
