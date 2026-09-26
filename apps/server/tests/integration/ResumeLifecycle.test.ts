@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { readFile, rm, writeFile } from 'node:fs/promises';
+import path from 'node:path';
 import { once } from 'node:events';
 import type { Server } from 'node:http';
 import test from 'node:test';
@@ -111,6 +113,11 @@ test('resume lifecycle works through the HTTP API, database and file storage', a
         assert.equal(downloadResponse.headers.get('content-type'), 'application/pdf');
         assert.equal(await downloadResponse.text(), pdf);
 
+        // An id that is not a positive integer is rejected with a clear message.
+        const invalidIdResponse = await request('/api/resumes/abc/file', { headers: ownerAuth });
+        assert.equal(invalidIdResponse.status, 400);
+        assert.deepEqual(await invalidIdResponse.json(), { message: 'The resume id must be a positive integer.' });
+
         // Another user cannot see, download or delete the resume.
         const otherAuth = { Authorization: `Bearer ${otherToken}` };
         const otherListResponse = await request('/api/resumes', { headers: otherAuth });
@@ -122,6 +129,19 @@ test('resume lifecycle works through the HTTP API, database and file storage', a
 
         const otherDeleteResponse = await request(`/api/resumes/${resume.id}`, { method: 'DELETE', headers: otherAuth });
         assert.equal(otherDeleteResponse.status, 404);
+
+        // If the file disappears from storage, the download reports it instead of failing with a server error.
+        const record = await prisma.resume.findUniqueOrThrow({ where: { resumeId: resume.id } });
+        const storedFilePath = path.join(process.env.RESUME_UPLOAD_DIR ?? 'uploads/resumes', record.fileURL ?? '');
+        const storedFile = await readFile(storedFilePath);
+        await rm(storedFilePath);
+
+        const fileGoneResponse = await request(`/api/resumes/${resume.id}/file`, { headers: ownerAuth });
+        assert.equal(fileGoneResponse.status, 404);
+        assert.deepEqual(await fileGoneResponse.json(), { message: 'The resume file could not be found.' });
+
+        // Put the file back so the delete below works like normal.
+        await writeFile(storedFilePath, storedFile);
 
         // The owner deletes the resume and it is gone.
         const deleteResponse = await request(`/api/resumes/${resume.id}`, { method: 'DELETE', headers: ownerAuth });

@@ -22,6 +22,17 @@ const SIGNATURES: Record<ResumeFileType, number[]> = {
     docx: [0x50, 0x4b, 0x03, 0x04], // ZIP archive used by .docx
 };
 
+// Text that must also appear inside the file. The signatures above are shared with other formats
+// (.docx uses the ZIP signature, .doc uses the same signature as old Excel/PowerPoint files),
+// so this makes sure the file is actually a Word document.
+const REQUIRED_CONTENT: Record<ResumeFileType, Buffer[]> = {
+    pdf: [],
+    // Every .docx contains these entries. ZIP stores entry names as plain text, so they can be searched directly.
+    docx: [Buffer.from('[Content_Types].xml'), Buffer.from('word/document.xml')],
+    // Word .doc files contain a "WordDocument" stream. Stream names are stored as UTF-16LE.
+    doc: [Buffer.from('WordDocument', 'utf16le')],
+};
+
 function isResumeFileType(value: string): value is ResumeFileType {
     return value in SIGNATURES;
 }
@@ -35,15 +46,16 @@ export function detectResumeFileType(fileName: string, content: Buffer): ResumeF
     }
 
     const signature = SIGNATURES[extension];
-    const matches = signature.every((byte, index) => content[index] === byte);
+    const hasSignature = signature.every((byte, index) => content[index] === byte);
+    const hasRequiredContent = REQUIRED_CONTENT[extension].every((text) => content.includes(text));
 
-    return matches ? extension : null;
+    return hasSignature && hasRequiredContent ? extension : null;
 }
 
-// Returns the file type of a stored resume based on its storage key.
-export function getResumeFileType(storageKey: string): ResumeFileType {
+// Returns the file type of a stored resume based on its storage key, or null if the extension is not an allowed type.
+export function getResumeFileType(storageKey: string): ResumeFileType | null {
     const extension = path.extname(storageKey).slice(1).toLowerCase();
-    return isResumeFileType(extension) ? extension : 'pdf';
+    return isResumeFileType(extension) ? extension : null;
 }
 
 export function getResumeMimeType(fileType: ResumeFileType): string {

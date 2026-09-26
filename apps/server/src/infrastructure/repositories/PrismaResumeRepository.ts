@@ -2,6 +2,7 @@ import type { PrismaClient } from '../../generated/prisma/client.js';
 import type { Resume as PrismaResume } from '../../generated/prisma/client.js';
 import type { CreateResumeData, IResumeRepository } from '../../application/interfaces/repositories/IResumeRepository.js';
 import type { Resume } from '../../domain/entities/Resume.js';
+import { getResumeFileType } from '../../domain/validation/ResumeFile.js';
 
 export class PrismaResumeRepository implements IResumeRepository {
     constructor(private readonly prisma: PrismaClient) {}
@@ -9,11 +10,20 @@ export class PrismaResumeRepository implements IResumeRepository {
     // Convert a Prisma Resume record to a domain Resume entity.
     // The fileURL column holds the storage key of the file.
     private toDomainResume(record: PrismaResume): Resume {
+        const storageKey = record.fileURL ?? '';
+        const fileType = getResumeFileType(storageKey);
+
+        // Every stored resume is saved with a pdf, doc or docx extension, so anything else means the record is corrupted
+        if (!fileType) {
+            throw new Error(`Resume ${record.resumeId} has an invalid storage key: "${storageKey}"`);
+        }
+
         return {
             id: record.resumeId,
             userId: record.userId,
             fileName: record.fileName,
-            storageKey: record.fileURL ?? '',
+            storageKey,
+            fileType,
             createdAt: record.createdAt,
         };
     }

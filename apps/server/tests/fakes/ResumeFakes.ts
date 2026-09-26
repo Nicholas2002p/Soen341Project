@@ -1,17 +1,27 @@
 import type { IFileStorage } from '../../src/application/interfaces/infrastructure/IFileStorage.js';
 import type { CreateResumeData, IResumeRepository } from '../../src/application/interfaces/repositories/IResumeRepository.js';
 import type { Resume } from '../../src/domain/entities/Resume.js';
+import { getResumeFileType } from '../../src/domain/validation/ResumeFile.js';
 
-// Minimal file contents that start with the signature of each file type
+const zipSignature = Buffer.from([0x50, 0x4b, 0x03, 0x04]);
+const oleSignature = Buffer.from([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]);
+
+// Minimal file contents that look like each file type
 export const pdfContent = Buffer.from('%PDF-1.4 test resume');
-export const docxContent = Buffer.from([0x50, 0x4b, 0x03, 0x04, 0x14, 0x00]);
+export const docxContent = Buffer.concat([zipSignature, Buffer.from('[Content_Types].xml ... word/document.xml')]);
+export const docContent = Buffer.concat([oleSignature, Buffer.from('WordDocument', 'utf16le')]);
 export const textContent = Buffer.from('just some plain text');
+
+// Files that have a valid signature but are not Word documents
+export const zipContent = Buffer.concat([zipSignature, Buffer.from('notes.txt photo.png')]); // plain .zip
+export const excelContent = Buffer.concat([oleSignature, Buffer.from('Workbook', 'utf16le')]); // old .xls
 
 export const resume: Resume = {
     id: 1,
     userId: 1,
     fileName: 'resume.pdf',
     storageKey: 'stored-resume.pdf',
+    fileType: 'pdf',
     createdAt: new Date('2026-01-01'),
 };
 
@@ -20,6 +30,7 @@ export class FakeResumeRepository implements IResumeRepository {
     resumes = new Map<number, Resume>();
     resumesUsedInApplications = new Set<number>();
     failOnCreate = false;
+    failOnGetById = false;
     private nextId = 1;
 
     constructor(initialResumes: Resume[] = []) {
@@ -34,12 +45,20 @@ export class FakeResumeRepository implements IResumeRepository {
             throw new Error('Database unavailable');
         }
 
-        const createdResume = { id: this.nextId++, createdAt: new Date(), ...data };
+        const fileType = getResumeFileType(data.storageKey);
+        if (!fileType) {
+            throw new Error('Invalid storage key');
+        }
+
+        const createdResume = { id: this.nextId++, createdAt: new Date(), fileType, ...data };
         this.resumes.set(createdResume.id, createdResume);
         return createdResume;
     }
 
     async getById(id: number): Promise<Resume | null> {
+        if (this.failOnGetById) {
+            throw new Error('Database unavailable');
+        }
         return this.resumes.get(id) ?? null;
     }
 
@@ -59,6 +78,7 @@ export class FakeResumeRepository implements IResumeRepository {
 // In-memory file storage used to verify which files are saved and deleted.
 export class FakeFileStorage implements IFileStorage {
     files = new Map<string, Buffer>();
+    failOnSave = false;
     private nextKey = 1;
 
     constructor(initialFiles: Record<string, Buffer> = {}) {
@@ -68,6 +88,10 @@ export class FakeFileStorage implements IFileStorage {
     }
 
     async save(content: Buffer, extension: string): Promise<string> {
+        if (this.failOnSave) {
+            throw new Error('Disk full');
+        }
+
         const storageKey = `file-${this.nextKey++}.${extension}`;
         this.files.set(storageKey, content);
         return storageKey;
@@ -76,7 +100,8 @@ export class FakeFileStorage implements IFileStorage {
     async read(storageKey: string): Promise<Buffer> {
         const content = this.files.get(storageKey);
         if (!content) {
-            throw new Error('File not found');
+            // Same error code Node uses when a file does not exist
+            throw Object.assign(new Error('File not found'), { code: 'ENOENT' });
         }
         return content;
     }

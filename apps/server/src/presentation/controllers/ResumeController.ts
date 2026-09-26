@@ -1,33 +1,45 @@
 import type { Request, Response } from 'express';
 import { resumeService } from '../../infrastructure/container.js';
 import type { PublicUser } from '../../domain/entities/PublicUser.js';
+import { InvalidResumeIdError } from '../../domain/errors/InvalidResumeIdError.js';
 
-function errorMessage(error: unknown, fallback: string): string {
-  return error instanceof Error ? error.message : fallback;
-}
+// Status code for each resume error. Their messages are written for users, so they can be sent as they are.
+const RESUME_ERROR_STATUS: Record<string, number> = {
+  InvalidResumeIdError: 400,
+  InvalidResumeFileError: 400,
+  ResumeNotFoundError: 404,
+  ResumeFileMissingError: 404,
+  ResumeInUseError: 409,
+  ResumeUploadError: 500,
+};
 
-// Read the resume id from the URL, returns null if it is not a positive integer
-function parseResumeId(req: Request): number | null {
+// Read the resume id from the URL. Route parameters are always strings in Express
+// (e.g. "/api/resumes/12" gives "12"), so the value has to be converted to a number first.
+function parseResumeId(req: Request): number {
   const id = Number(req.params.id);
-  return Number.isInteger(id) && id > 0 ? id : null;
+
+  if (!Number.isInteger(id) || id <= 0) {
+    throw new InvalidResumeIdError();
+  }
+
+  return id;
 }
 
-// Send the response that matches a resume error, returns false if the error is unexpected
-function handleResumeError(error: unknown, res: Response): boolean {
-  if (error instanceof Error && error.name === 'InvalidResumeFileError') {
-    res.status(400).json({ message: error.message });
-    return true;
-  }
-  if (error instanceof Error && error.name === 'ResumeNotFoundError') {
-    res.status(404).json({ message: error.message });
-    return true;
-  }
-  if (error instanceof Error && error.name === 'ResumeInUseError') {
-    res.status(409).json({ message: error.message });
-    return true;
+// Send the response that matches the error. Unexpected errors (e.g. database problems) are logged
+// on the server and the client only gets a general message, so no internal details are exposed.
+function handleResumeError(error: unknown, res: Response, fallbackMessage: string): void {
+  const status = error instanceof Error ? RESUME_ERROR_STATUS[error.name] : undefined;
+
+  if (status && error instanceof Error) {
+    if (status >= 500) {
+      console.error(error);
+    }
+    res.status(status).json({ message: error.message });
+    return;
   }
 
-  return false;
+  console.error(error);
+  res.status(500).json({ message: fallbackMessage });
 }
 
 export class ResumeController {
@@ -51,11 +63,7 @@ export class ResumeController {
             // Return a 201 Created response with the resume
             res.status(201).json({ resume });
         } catch (error: unknown) {
-            if (handleResumeError(error, res)) {
-              return;
-            }
-
-            res.status(500).json({ message: errorMessage(error, 'Resume upload failed') });
+            handleResumeError(error, res, 'The resume could not be uploaded. Please try again.');
         }
     }
 
@@ -67,7 +75,7 @@ export class ResumeController {
             const resumes = await resumeService.list(user.id);
             res.status(200).json({ resumes });
         } catch (error: unknown) {
-            res.status(500).json({ message: errorMessage(error, 'Could not load resumes') });
+            handleResumeError(error, res, 'Your resumes could not be loaded. Please try again.');
         }
     }
 
@@ -75,12 +83,6 @@ export class ResumeController {
         try {
             const user = res.locals.user as PublicUser;
             const resumeId = parseResumeId(req);
-
-            if (!resumeId) {
-              res.status(400).json({ message: 'The resume id is not valid.' });
-              return;
-            }
-
             const file = await resumeService.getFile(user.id, resumeId);
 
             // Send the file with its original name so the browser downloads it correctly
@@ -88,11 +90,7 @@ export class ResumeController {
             res.type(file.mimeType);
             res.status(200).send(file.content);
         } catch (error: unknown) {
-            if (handleResumeError(error, res)) {
-              return;
-            }
-
-            res.status(500).json({ message: errorMessage(error, 'Resume download failed') });
+            handleResumeError(error, res, 'The resume could not be downloaded. Please try again.');
         }
     }
 
@@ -100,22 +98,12 @@ export class ResumeController {
         try {
             const user = res.locals.user as PublicUser;
             const resumeId = parseResumeId(req);
-
-            if (!resumeId) {
-              res.status(400).json({ message: 'The resume id is not valid.' });
-              return;
-            }
-
             await resumeService.delete(user.id, resumeId);
 
             // Return a 204 No Content response after the resume is deleted
             res.status(204).send();
         } catch (error: unknown) {
-            if (handleResumeError(error, res)) {
-              return;
-            }
-
-            res.status(500).json({ message: errorMessage(error, 'Resume deletion failed') });
+            handleResumeError(error, res, 'The resume could not be deleted. Please try again.');
         }
     }
 }

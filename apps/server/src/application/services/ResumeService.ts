@@ -3,10 +3,12 @@ import type { IResumeService, ResumeFile, ResumeUpload } from '../interfaces/ser
 import type { IResumeRepository } from '../interfaces/repositories/IResumeRepository.js';
 import type { IFileStorage } from '../interfaces/infrastructure/IFileStorage.js';
 import type { PublicResume, Resume } from '../../domain/entities/Resume.js';
-import { detectResumeFileType, getResumeFileType, getResumeMimeType } from '../../domain/validation/ResumeFile.js';
+import { detectResumeFileType, getResumeMimeType } from '../../domain/validation/ResumeFile.js';
 import { InvalidResumeFileError } from '../../domain/errors/InvalidResumeFileError.js';
 import { ResumeNotFoundError } from '../../domain/errors/ResumeNotFoundError.js';
 import { ResumeInUseError } from '../../domain/errors/ResumeInUseError.js';
+import { ResumeUploadError } from '../../domain/errors/ResumeUploadError.js';
+import { ResumeFileMissingError } from '../../domain/errors/ResumeFileMissingError.js';
 
 // Matches the VarChar(255) limit of Resume.fileName in the database
 const MAX_FILE_NAME_LENGTH = 255;
@@ -17,18 +19,21 @@ export class ResumeService implements IResumeService {
         private readonly fileStorage: IFileStorage,
     ) {}
 
-    // Convert a Resume entity to a PublicResume by omitting the storage key
+    // Build the version of a resume that is sent back in API responses.
+    // "Public" means safe to return to the client (like PublicUser): the owner id and the storage key
+    // (the name of the file on the server) are left out.
     private toPublicResume(resume: Resume): PublicResume {
         return {
             id: resume.id,
             fileName: resume.fileName,
-            fileType: getResumeFileType(resume.storageKey),
+            fileType: resume.fileType,
             createdAt: resume.createdAt,
         };
     }
 
-    // Find a resume that belongs to the user. Resumes of other users are reported as not found
-    // so that the API does not reveal which resume ids exist.
+    // Retrieve the specific resume owned by a user.
+    // Throws ResumeNotFoundError ("Resume not found.") if the resume does not exist or belongs to someone else.
+    // Both cases give the same error so the API does not reveal which resume ids exist.
     private async getOwnedResume(userId: number, resumeId: number): Promise<Resume> {
         const resume = await this.resumeRepository.getById(resumeId);
 
@@ -48,15 +53,21 @@ export class ResumeService implements IResumeService {
             throw new InvalidResumeFileError();
         }
 
-        const storageKey = await this.fileStorage.save(file.content, fileType);
+        let storageKey: string;
+
+        try {
+            storageKey = await this.fileStorage.save(file.content, fileType);
+        } catch (error) {
+            throw new ResumeUploadError(undefined, { cause: error });
+        }
 
         try {
             const resume = await this.resumeRepository.create({ userId, fileName, storageKey });
             return this.toPublicResume(resume);
         } catch (error) {
             // Remove the stored file so it is not left behind without a database record
-            await this.fileStorage.delete(storageKey);
-            throw error;
+            await this.deleteStoredFile(storageKey);
+            throw new ResumeUploadError(undefined, { cause: error });
         }
     }
 
@@ -69,13 +80,22 @@ export class ResumeService implements IResumeService {
     //get a resume file owned by the user
     async getFile(userId: number, resumeId: number): Promise<ResumeFile> {
         const resume = await this.getOwnedResume(userId, resumeId);
-        const content = await this.fileStorage.read(resume.storageKey);
-        const publicResume = this.toPublicResume(resume);
+        let content: Buffer;
+
+        try {
+            content = await this.fileStorage.read(resume.storageKey);
+        } catch (error) {
+            // The database record exists but the file is gone from storage
+            if (isFileNotFound(error)) {
+                throw new ResumeFileMissingError(undefined, { cause: error });
+            }
+            throw error;
+        }
 
         return {
-            resume: publicResume,
+            resume: this.toPublicResume(resume),
             content,
-            mimeType: getResumeMimeType(publicResume.fileType),
+            mimeType: getResumeMimeType(resume.fileType),
         };
     }
 
@@ -89,6 +109,21 @@ export class ResumeService implements IResumeService {
         }
 
         await this.resumeRepository.delete(resumeId);
-        await this.fileStorage.delete(resume.storageKey);
+        await this.deleteStoredFile(resume.storageKey);
     }
+
+    // Delete a stored file without failing the request. The file is only cleaned up after the
+    // database record is gone, so a failure here is logged instead of returned to the user.
+    private async deleteStoredFile(storageKey: string): Promise<void> {
+        try {
+            await this.fileStorage.delete(storageKey);
+        } catch (error) {
+            console.error(`Could not delete resume file "${storageKey}"`, error);
+        }
+    }
+}
+
+// Check if an error means the file does not exist (Node uses the ENOENT code for this)
+function isFileNotFound(error: unknown): boolean {
+    return error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT';
 }
