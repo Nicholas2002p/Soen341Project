@@ -8,8 +8,8 @@
  * @param {*} setToken 
  * @param {*} token 
  */
-export async function RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token){
-    try{
+export async function RegisterApi(fname, lname, email, password, setErrorMessage, setToken){
+    try {
         const response = await fetch("http://localhost:3000/api/auth/register", {
         method: "POST",
         headers: {
@@ -17,17 +17,16 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
         },
         body: JSON.stringify({ email, password }),
         });
+        
         console.log("Status:", response.status);
 
         const data = await response.json();
         if (!response.ok) {
-             setErrorMessage("Error Message:", data.message);
+            setErrorMessage("Error Message:", data.message);
         } else {
             setToken(data.sessionToken);
-            CreateProfileApi(fname, lname, setErrorMessage, data.sessionToken)
-
+            CreateProfileApi(fname, lname, setErrorMessage, data.sessionToken);
         }
-
     } catch (error) {
         console.error(error);
     }
@@ -42,7 +41,7 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
  * @param {*} token 
  */
 export async function CreateProfileApi(fname, lname, setErrorMessage, token){
-    try{
+    try {
         const response = await fetch("http://localhost:3000/api/auth/profile", {
             method: "PUT",
             headers: {
@@ -52,11 +51,10 @@ export async function CreateProfileApi(fname, lname, setErrorMessage, token){
             body: JSON.stringify({
                 firstName: fname,
                 lastName: lname,
-                
-            }),
+            })
         });
         if (!response.ok) {
-             setErrorMessage("Error Message:", data.message);
+            setErrorMessage("Error Message:", data.message);
         } 
         console.log("Status:", response.status);
 

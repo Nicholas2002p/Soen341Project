@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import "./Registration.scss";
 import Password from '../components/Password';
+
 import { useAuth } from "../App";
-import {RegisterApi} from '../components/Api';
+import { RegisterApi } from '../utils/Api';
+
+import "./Registration.scss";
 
 export default function Registration({ setView }) {
     const [fname, setfname] = useState('');
@@ -30,6 +32,7 @@ export default function Registration({ setView }) {
                 <Password labelName={"Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
                 
                 <Password labelName={"Confirm Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
+                
                 <div className='password'>
                     <label for="fname">First Name:</label>
                     <input className='registration-input' type="text " name="fname" maxlength="50" onChange={(e) => { setfname(e.target.value) }} />
@@ -57,34 +60,20 @@ export default function Registration({ setView }) {
 
           
 function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email,setToken,token) { 
-    if (email.trim() === "") {
-        setErrorMessage("Email is required");
-    } 
+    if (email.trim() === "") setErrorMessage("Email is required");
 
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        setErrorMessage("Please enter a valid email address");
-    } 
-
-    else if (password === "") {
-        setErrorMessage("Password is required");
-    } 
-
-    else if (confirmPass === "") {
-        setErrorMessage("Please confirm your password");
-    } 
-
-    else if (password !== confirmPass) {
-        setErrorMessage("Passwords do not match");
-    }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setErrorMessage("Please enter a valid email address");
+     
+    else if (password === "") setErrorMessage("Password is required");
     
-    else if (fname.trim() === "") {
-        setErrorMessage("First name is required");
-    } 
+    else if (confirmPass === "") setErrorMessage("Please confirm your password");
 
-    else if (lname.trim() === "") {
-        setErrorMessage("Last name is required");
-    } 
-
+    else if (password !== confirmPass) setErrorMessage("Passwords do not match");
+    
+    else if (fname.trim() === "") setErrorMessage("First name is required");
+    
+    else if (lname.trim() === "") setErrorMessage("Last name is required");
+    
     else {
         setErrorMessage("");
         RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token);
