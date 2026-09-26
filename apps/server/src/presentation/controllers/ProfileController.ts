@@ -74,8 +74,8 @@ export class ProfileController {
         res.status(200).json({ profile });
     }
 
-    // Update the profile for the authenticated user
-    async update(req: Request, res: Response): Promise<void> {
+    // Upsert the profile for the authenticated user
+    async upsert(req: Request, res: Response): Promise<void> {
         // validate the request body and convert it to ProfileData
         const data = profileData(req.body);
 
@@ -87,8 +87,9 @@ export class ProfileController {
             return;
         }
 
-        // update the profile for the authenticated user
-        const profile = await profileService.update(getAuthenticatedUserId(res), data);
+
+        // upsert the profile for the authenticated user
+        const profile = await profileService.upsert(getAuthenticatedUserId(res), data);
 
         // if the profile was not found, return a 404 Not Found response
         if (!profile) {

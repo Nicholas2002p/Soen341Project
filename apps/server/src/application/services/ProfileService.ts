@@ -33,7 +33,7 @@ export class ProfileService implements IProfileService {
     }
 
     // update a profile by its userId, creates one if none exists
-    async update(userId: number, data: ProfileData): Promise<Profile | null> {
+    async upsert(userId: number, data: ProfileData): Promise<Profile | null> {
         const user = await this.userRepository.getById(userId);
 
         if (!user) {

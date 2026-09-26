@@ -18,5 +18,5 @@ profileRoutes.use(authMiddleware);
 // Get the profile for the authenticated user
 profileRoutes.get('/', profileController.get.bind(profileController));
 
-// Update the profile for the authenticated user
-profileRoutes.put('/', profileController.update.bind(profileController));
+// Upsert the profile for the authenticated user
+profileRoutes.put('/', profileController.upsert.bind(profileController));
