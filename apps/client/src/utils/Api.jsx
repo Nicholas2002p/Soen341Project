@@ -23,10 +23,11 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
         const data = await response.json();
         if (!response.ok) {
             setErrorMessage("Error Message:", data.message);
-        } else {
-            setToken(data.sessionToken);
-            CreateProfileApi(fname, lname, setErrorMessage, data.sessionToken);
-        }
+            return false;
+        } 
+        setToken(data.sessionToken);
+        CreateProfileApi(fname, lname, setErrorMessage, data.sessionToken);
+        
     } catch (error) {
         console.error(error);
     }
@@ -55,9 +56,9 @@ export async function CreateProfileApi(fname, lname, setErrorMessage, token){
         });
         if (!response.ok) {
             setErrorMessage("Error Message:", data.message);
+            return false
         } 
-        console.log("Status:", response.status);
-
+        return true;
     } catch (error) {
         console.error(error);
     }
@@ -100,4 +101,29 @@ export async function UpdateProfileApi(fname, lname, mname, phone, bio, location
         console.error(error);
     }
 
+}
+
+export async function LogInApi(email, password, setErrorMessage, setToken) {
+    try {
+        const response = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+        });
+        
+        console.log("Status:", response.status);
+
+        const data = await response.json();
+        if (!response.ok) {
+            setErrorMessage("Error password or email incorrect");
+            return false;
+        } 
+        setToken(data.sessionToken);
+        return true
+        
+    } catch (error) {
+        console.error(error);
+    }
 }

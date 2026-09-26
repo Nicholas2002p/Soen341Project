@@ -2,7 +2,7 @@ import { useState } from 'react';
 import "./Registration.scss";
 import Password from '../components/Password';
 import { useAuth } from "../App";
-import {RegisterApi} from '../components/Api';
+import {LogInApi} from '../utils/Api';
 
 export default function Login({ setView }) {
     const [email, setEmail] = useState('');
@@ -27,7 +27,6 @@ export default function Login({ setView }) {
 
                 <Password labelName={"Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
                 
-                <Password labelName={"Confirm Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
                                
                 <section>
                     Don't have an account?
@@ -37,7 +36,7 @@ export default function Login({ setView }) {
                     {errorMessage}
                 </span>
             
-                <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, email, setToken,token) } }> Log in </button>
+                <button className="register-btn" onClick={() => {  RegisterUser(password,  setErrorMessage, email, setToken,setView) } }> Log in </button>
             </section>
         </main>
     </section>
@@ -45,7 +44,7 @@ export default function Login({ setView }) {
 }
 
           
-function RegisterUser(password, confirmPass, setErrorMessage,email,setToken,token) { 
+function RegisterUser(password, setErrorMessage,email,setToken,setView) { 
     if (email.trim() === "") {
         setErrorMessage("Email is required");
     } 
@@ -57,17 +56,10 @@ function RegisterUser(password, confirmPass, setErrorMessage,email,setToken,toke
     else if (password === "") {
         setErrorMessage("Password is required");
     } 
-
-    else if (confirmPass === "") {
-        setErrorMessage("Please confirm your password");
-    } 
-
-    else if (password !== confirmPass) {
-        setErrorMessage("Passwords do not match");
-    }
     
     else {
         setErrorMessage("");
-        LogInApi( email, password, setErrorMessage, setToken,token);
+        const allGood = LogInApi( email, password, setErrorMessage, setToken);
+        if(allGood) setView("profile");
     }
 }

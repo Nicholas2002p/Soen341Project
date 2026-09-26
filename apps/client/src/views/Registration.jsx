@@ -59,7 +59,7 @@ export default function Registration({ setView }) {
 }
 
           
-function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email,setToken,token) { 
+function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email,setToken,token,setView) { 
     if (email.trim() === "") setErrorMessage("Email is required");
 
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setErrorMessage("Please enter a valid email address");
@@ -76,7 +76,7 @@ function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, emai
     
     else {
         setErrorMessage("");
-        RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token);
-        setView("profile")
+        const allGood = RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token);
+        if(allGood) setView("profile");
     }
 }
