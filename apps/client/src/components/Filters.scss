@@ -1,0 +1,55 @@
+// =========================== VARIABLES ==============================
+$black-border: 1px solid black;
+
+// ============================= MIXINS ===============================
+
+@mixin flex-dir($direction) {
+  display: flex;
+  flex-direction: $direction;
+}
+
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+// ============================= FILTERS ===============================
+
+.filters {
+  @include flex-dir(column);
+  flex: 1;
+  gap: 20px;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+
+  padding-left: 10px;
+  padding-right: 20px;
+
+  border-top: $black-border;
+  border-right: $black-border;
+
+  h2 {
+    font-size: 35px;
+    padding-left: 10px;
+    margin-bottom: 0;
+  }
+}
+
+.filter {
+  @include flex-dir(column);
+  font-size: 25px;
+  box-shadow: 0px 5px 5px black;
+
+  legend {
+    font-size: 30px;
+    font-weight: 800;
+  }
+
+  label {
+    margin-top: 10px;
+
+    input {
+      flex: 0.1;
+    }
+  }
+}

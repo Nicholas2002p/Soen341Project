@@ -3,6 +3,8 @@ import { useState } from 'react';
 import ProfileCard from '../components/ProfileCard';
 import ProfileEdit from '../components/ProfileEdit';
 import ResumeUpload from '../components/ResumeUpload';
+import Nav from '../components/Nav';
+
 import './Profile.scss';
 
 /**
@@ -11,7 +13,7 @@ import './Profile.scss';
  * 
  * @returns Profile component
  */
-export default function Profile({}) {
+export default function Profile({ setView }) {
   const [fname, setFName] = useState('FNAME');
   const [lname, setLName] = useState('LNAME');
   const [role, setRole] = useState('ROLE');
@@ -19,7 +21,7 @@ export default function Profile({}) {
 
   return (
     <main className="profilepage">
-      <Nav />
+      <Nav setView={setView} />
 
       <section className='profile'>
         <ProfileCard fname={fname} lname={lname} role={role} desc={desc} />
@@ -37,13 +39,5 @@ export default function Profile({}) {
         </section>
       </section>
     </main>
-  );
-}
-
-function Nav({}) {
-  return (
-    <nav>
-
-    </nav>
   );
 }
