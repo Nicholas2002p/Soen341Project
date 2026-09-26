@@ -7,6 +7,7 @@ import Registration from './views/Registration';
 import Login from './views/Login';
 
 export const AuthContext = createContext();
+
 function Main() {
  const [view, setView] = useState("home");
  const [token, setToken] = useState(null);
@@ -24,7 +25,7 @@ function Main() {
 };
 
 export function useAuth() {
-    return useContext(AuthContext);
+  return useContext(AuthContext);
 }
 
 export default Main;
