@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import "./Registration.scss";
+import Password from '../components/Password';
+import { useAuth } from "../App";
+import {RegisterApi} from '../components/Api';
 
 export default function Registration({ setView }) {
     const [fname, setfname] = useState('');
@@ -10,6 +13,7 @@ export default function Registration({ setView }) {
     const [errorMessage, setErrorMessage] = useState('');
     const [passwordType, setPasswordType] = useState(true);
     const [passwordType2, setPasswordType2] = useState(true);
+    const { token, setToken } = useAuth();
 
 
   return (
@@ -26,7 +30,6 @@ export default function Registration({ setView }) {
                 <Password labelName={"Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
                 
                 <Password labelName={"Confirm Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
-
                 <div className='password'>
                     <label for="fname">First Name:</label>
                     <input className='registration-input' type="text " name="fname" maxlength="50" onChange={(e) => { setfname(e.target.value) }} />
@@ -45,70 +48,45 @@ export default function Registration({ setView }) {
                     {errorMessage}
                 </span>
             
-                <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email) } }> Register </button>
+                <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken,token) } }> Register </button>
             </section>
         </main>
     </section>
   );
 }
 
-function Password({labelName, passwordType, passwordType2, setPasswordType, setPasswordType2, setPassword, setConfirmPass }) {
-    const password_type = labelName === "Password" ? passwordType : passwordType2;
-    const set_password_type = labelName === "Password" ? setPasswordType : setPasswordType2; 
-    const set_password = labelName === "Password" ? setPassword : setConfirmPass;
-
-    return (
-        <div className='password'>
-            <label for="password"> {labelName} </label>
-            <div className="password-display">
-                <input className='registration-input' type={password_type ? "password": "text" } name="password" maxlength="50" onChange={(e) => { set_password(e.target.value) }} />
-                <button className="eye" onClick={() => { set_password_type(!password_type)}}>p</button>
-            </div>
-        </div>
-    );
-}
           
-function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email) { 
-    if (password != confirmPass) {
+function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email,setToken,token) { 
+    if (email.trim() === "") {
+        setErrorMessage("Email is required");
+    } 
+
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setErrorMessage("Please enter a valid email address");
+    } 
+
+    else if (password === "") {
+        setErrorMessage("Password is required");
+    } 
+
+    else if (confirmPass === "") {
+        setErrorMessage("Please confirm your password");
+    } 
+
+    else if (password !== confirmPass) {
         setErrorMessage("Passwords do not match");
-    } else {
+    }
+    
+    else if (fname.trim() === "") {
+        setErrorMessage("First name is required");
+    } 
+
+    else if (lname.trim() === "") {
+        setErrorMessage("Last name is required");
+    } 
+
+    else {
         setErrorMessage("");
-        RegisterApi(fname, lname, email, password);
+        RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token);
     }
-}
-
-async function RegisterApi(fname, lname, email, password){
-    try{
-        const response = await fetch("http://localhost:3000/api/auth/register", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-        });
-         console.log("Status:", response.status);
-         const data = await response.json();
-         
-         if (!response.ok) {
-        console.error("Error Message:", data.message || data.msg);
-        } else {
-        console.log("Success:", data.message);
-        }
-        // const data = await response.json();
-        // const userId = data.user.id;
-        // const sessionToken = data.sessionToken;
-
-
-        // const response2 = await fetch("/api/", {
-        // method: "POST",
-        // headers: {
-        //     "Content-Type": "application/json",
-        // },
-        // body: JSON.stringify({ email, password }),
-        // });
-
-    } catch (error) {
-        console.error(error);
-    }
-
 }

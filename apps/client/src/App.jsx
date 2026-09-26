@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { createContext } from 'react';
+import { useState, useContext, createContext } from 'react';
 import './App.css';
 
 import Home from './views/Home';
