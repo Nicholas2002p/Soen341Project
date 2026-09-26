@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Password from '../components/Password';
-
-import { useAuth } from "../App";
+import { useAuth } from '../utils/Auth'
 import { RegisterApi } from '../utils/Api';
 
 import "./Registration.scss";
@@ -58,7 +57,19 @@ export default function Registration({ setView }) {
   );
 }
 
-          
+/**
+ * validates the input fields and then calls the api methods
+ * if valid changed screen to profile
+ * @param {*} password 
+ * @param {*} confirmPass 
+ * @param {*} setErrorMessage 
+ * @param {*} fname 
+ * @param {*} lname 
+ * @param {*} email 
+ * @param {*} setToken 
+ * @param {*} token 
+ * @param {*} setView 
+ */          
 function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email,setToken,token,setView) { 
     if (email.trim() === "") setErrorMessage("Email is required");
 

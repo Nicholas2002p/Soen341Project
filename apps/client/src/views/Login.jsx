@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import "./Registration.scss";
 import Password from '../components/Password';
-import { useAuth } from "../App";
+import { useAuth } from '../utils/Auth'
 import {LogInApi} from '../utils/Api';
 
 export default function Login({ setView }) {
@@ -12,7 +12,6 @@ export default function Login({ setView }) {
     const [passwordType, setPasswordType] = useState(true);
     const [passwordType2, setPasswordType2] = useState(true);
     const { token, setToken } = useAuth();
-
 
   return (
     <section className="registration">  
@@ -26,12 +25,12 @@ export default function Login({ setView }) {
                 </div>
 
                 <Password labelName={"Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
-                
-                               
+                            
                 <section>
                     Don't have an account?
                     <a className='cursor' onClick={() => { setView("registration") }}> Register </a>
                 </section>
+
                 <span class="error-text">
                     {errorMessage}
                 </span>
@@ -43,7 +42,16 @@ export default function Login({ setView }) {
   );
 }
 
-          
+         
+/**
+ * validates the input fields and then calls the api methods
+ * if valid changed screen to profile
+ * @param {*} password 
+ * @param {*} setErrorMessage 
+ * @param {*} email 
+ * @param {*} setToken 
+ * @param {*} setView 
+ */
 function RegisterUser(password, setErrorMessage,email,setToken,setView) { 
     if (email.trim() === "") {
         setErrorMessage("Email is required");
