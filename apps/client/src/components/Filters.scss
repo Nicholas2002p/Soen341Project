@@ -1,38 +1,55 @@
-.filters {
-  flex: 1;
-  overflow-y: scroll;
-  scroll-behavior: smooth;
+// =========================== VARIABLES ==============================
+$black-border: 1px solid black;
+
+// ============================= MIXINS ===============================
+
+@mixin flex-dir($direction) {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding-left: 10px;
-  padding-right: 20px;
-  border-top: 1px solid black;
-  border-right: 1px solid black;
+  flex-direction: $direction;
 }
 
-.filters h2 {
-  font-size: 35px;
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+// ============================= FILTERS ===============================
+
+.filters {
+  @include flex-dir(column);
+  flex: 1;
+  gap: 20px;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+
   padding-left: 10px;
-  margin-bottom: 0;
+  padding-right: 20px;
+
+  border-top: $black-border;
+  border-right: $black-border;
+
+  h2 {
+    font-size: 35px;
+    padding-left: 10px;
+    margin-bottom: 0;
+  }
 }
 
 .filter {
-  display: flex;
-  flex-direction: column;
+  @include flex-dir(column);
   font-size: 25px;
   box-shadow: 0px 5px 5px black;
-}
 
-.filter legend {
-  font-size: 30px;
-  font-weight: 800;
-}
+  legend {
+    font-size: 30px;
+    font-weight: 800;
+  }
 
-.filter label {
-  margin-top: 10px;
-}
+  label {
+    margin-top: 10px;
 
-.filter label input {
-  flex: 0.1;
+    input {
+      flex: 0.1;
+    }
+  }
 }

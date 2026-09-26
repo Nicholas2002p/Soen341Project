@@ -1,26 +1,56 @@
-.job-search h2 {
-  font-size: 35px;
+@use "sass:list";
+
+// =========================== VARIABLES ==============================
+$black-border: 1px solid black;
+$job-board-color: #A5846A;
+$post-it-colors: #FFEBA1, #69C7B5, #9FC7E4, #F4C4D6, #c9c9ff, #e1f7d5;
+
+// ============================= MIXINS ===============================
+
+@mixin flex-align-justify($align, $justify) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
 }
+
+@mixin flex-dir($direction) {
+  display: flex;
+  flex-direction: $direction;
+}
+
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+// =========================== JOB SEARCH ===========================
 
 .job-search {
   flex: 4;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+  @include width-height(none, 100%);
+  @include flex-dir(column);
+  
   padding-left: 10px;
   padding-right: 10px;
-  border-top: 1px black solid;
+  
+  border-top: $black-border;
+  
+  h2 {
+    font-size: 35px;
+  }
 }
 
 .job-board {
-  background-color: #A5846A;
+  @include flex-align-justify(none, center);
+  background-color: $job-board-color;
   border: 4mm ridge black;
+  
   flex: 1;
-  display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  
   overflow-y: scroll;
   scroll-behavior: smooth;
+
   max-height: 700px;
   margin-left: 20px;
   margin-right: 20px;
@@ -28,50 +58,38 @@
 
 .job {
   margin: 10px;
-  width: 45%;
-  height: 400px;
-  display: flex;
-  flex-direction: column;
+  @include width-height(45%, 400px);
+  @include flex-dir(column);
+  
+  font-size: 20px;
   text-wrap: wrap;
+  word-break: break-word;
+  
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 30px;
-  font-size: 20px;
+
   color: black;
+  
   position: relative;
   box-shadow: 3px 3px 10px black;
-  word-break: break-word;
+
+  p {
+    margin: 0;
+  }
 }
 
-.job:nth-child(6n+1) {
-  background-color: pink;
-}
-
-.job:nth-child(6n+2) {
-  background-color: lightcoral;
-}
-
-.job:nth-child(6n+3) {
-  background-color: lightgreen;
-}
-
-.job:nth-child(6n+4) {
-  background-color: lightblue;
-}
-
-.job:nth-child(6n+5) {
-  background-color: lightskyblue;
-}
-
-.job:nth-child(6n) {
-  background-color: aliceblue;
+// REFERENCE: https://sass-lang.com/documentation/at-rules/control/for/, https://sass-lang.com/documentation/values/lists/
+@for $i from 1 to 6 {
+  .job:nth-child(6n + #{$i}) {
+    background-color: list.nth($post-it-colors, $i);
+  }
 }
 
 .pin {
-  height: 10px;
-  width: 10px;
+  @include width-height(10px, 10px);
   border-radius: 20px;
-  border: 1px solid black;
+  border: $black-border;
   position: absolute;
   right: 50%;
   top: 10px;
@@ -80,10 +98,6 @@
 
 .job:visited {
   color: black;
-}
-
-.job p {
-  margin: 0;
 }
 
 .job-title {
@@ -101,16 +115,15 @@
 }
 
 .requirements {
+  @include flex-align-justify(start, none);
   list-style-type: none;
-  display: flex;
   gap: 20px;
   flex-wrap: wrap;
-  align-items: start;
   padding: 0;
-}
 
-.requirements li {
-  border: 1px solid black;
-  padding: 5px;
-  border-radius: 20px;
+  li {
+    border: $black-border;
+    padding: 5px;
+    border-radius: 20px;
+  }
 }
