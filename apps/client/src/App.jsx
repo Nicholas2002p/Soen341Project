@@ -1,12 +1,10 @@
 import { useState, useContext, createContext } from 'react';
 import './App.css';
-
 import Home from './views/Home';
 import Profile from './views/Profile';
 import Registration from './views/Registration';
 import Login from './views/Login';
-
-export const AuthContext = createContext();
+import { AuthContext } from './utils/Auth'
 
 function Main() {
  const [view, setView] = useState("home");
@@ -24,9 +22,4 @@ function Main() {
   );
 };
 
-export function useAuth() {
-  return useContext(AuthContext);
-}
-
 export default Main;
-
