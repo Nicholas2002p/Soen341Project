@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --import tsx --test tests/unit/AuthService.test.ts tests/unit/UserService.test.ts tests/unit/ResumeService.test.ts tests/api/AuthApi.test.ts tests/api/ResumeApi.test.ts tests/integration/AuthLifecycle.test.ts tests/integration/ResumeLifecycle.test.ts",
+    "test": "node --import tsx --test tests/unit/AuthService.test.ts tests/unit/UserService.test.ts tests/unit/ProfileService.test.ts tests/unit/ResumeService.test.ts tests/api/AuthApi.test.ts tests/api/ProfileApi.test.ts tests/api/ResumeApi.test.ts tests/integration/AuthLifecycle.test.ts tests/integration/ProfileLifecycle.test.ts tests/integration/ResumeLifecycle.test.ts",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",

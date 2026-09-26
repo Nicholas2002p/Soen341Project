@@ -135,6 +135,7 @@ test('resume lifecycle works through the HTTP API, database and file storage', a
         const userIds = users.map((user) => user.userId);
 
         await prisma.resume.deleteMany({ where: { userId: { in: userIds } } });
+        await prisma.salt.deleteMany({ where: { userId: { in: userIds } } });
         await prisma.user.deleteMany({ where: { userId: { in: userIds } } });
     }
 });

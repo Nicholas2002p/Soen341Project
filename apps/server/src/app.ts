@@ -1,5 +1,6 @@
 import express, { type Express, type Request, type Response } from 'express';
 import { authRoutes } from './presentation/routes/AuthRoutes.js';
+import { profileRoutes, publicProfileRoutes } from './presentation/routes/ProfileRoutes.js';
 import { resumeRoutes } from './presentation/routes/ResumeRoutes.js';
 
 export const app: Express = express();
@@ -11,17 +12,14 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'This the API BACKEND' });
 });
 
+//-----------------------------------------------------------------------------------------------------------
+// ------------------------------------------ API routes ----------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------
 app.use('/api/auth', authRoutes);
 app.use('/api/resumes', resumeRoutes);
 
-app.get('/api/auth/me', (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Authentication endpoint' });
-});
-
-app.get('/api/auth/profile', (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Get profile endpoint' });
-});
-
-app.put('/api/auth/profile', (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Update profile endpoint' });
-});
+//-----------------------------------------------------------------------------------------------------------
+// ------------------------------------------ Profile routes ------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------
+app.use('/api/auth/profile', profileRoutes);
+app.use('/api/profile', publicProfileRoutes);

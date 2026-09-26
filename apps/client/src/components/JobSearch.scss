@@ -1,0 +1,129 @@
+@use "sass:list";
+
+// =========================== VARIABLES ==============================
+$black-border: 1px solid black;
+$job-board-color: #A5846A;
+$post-it-colors: #FFEBA1, #69C7B5, #9FC7E4, #F4C4D6, #c9c9ff, #e1f7d5;
+
+// ============================= MIXINS ===============================
+
+@mixin flex-align-justify($align, $justify) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin flex-dir($direction) {
+  display: flex;
+  flex-direction: $direction;
+}
+
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+// =========================== JOB SEARCH ===========================
+
+.job-search {
+  flex: 4;
+  @include width-height(none, 100%);
+  @include flex-dir(column);
+  
+  padding-left: 10px;
+  padding-right: 10px;
+  
+  border-top: $black-border;
+  
+  h2 {
+    font-size: 35px;
+  }
+}
+
+.job-board {
+  @include flex-align-justify(none, center);
+  background-color: $job-board-color;
+  border: 4mm ridge black;
+  
+  flex: 1;
+  flex-wrap: wrap;
+  
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+
+  max-height: 700px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.job {
+  margin: 10px;
+  @include width-height(45%, 400px);
+  @include flex-dir(column);
+  
+  font-size: 20px;
+  text-wrap: wrap;
+  word-break: break-word;
+  
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 30px;
+
+  color: black;
+  
+  position: relative;
+  box-shadow: 3px 3px 10px black;
+
+  p {
+    margin: 0;
+  }
+}
+
+// REFERENCE: https://sass-lang.com/documentation/at-rules/control/for/, https://sass-lang.com/documentation/values/lists/
+@for $i from 1 to 6 {
+  .job:nth-child(6n + #{$i}) {
+    background-color: list.nth($post-it-colors, $i);
+  }
+}
+
+.pin {
+  @include width-height(10px, 10px);
+  border-radius: 20px;
+  border: $black-border;
+  position: absolute;
+  right: 50%;
+  top: 10px;
+  box-shadow: 0px 0px 5px black, inset 0em 0 0.2em olive;
+}
+
+.job:visited {
+  color: black;
+}
+
+.job-title {
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.job-recruiter {
+  font-size: 20px;
+}
+
+.job-description {
+  padding-top: 20px;
+  line-height: 1.25;
+}
+
+.requirements {
+  @include flex-align-justify(start, none);
+  list-style-type: none;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 0;
+
+  li {
+    border: $black-border;
+    padding: 5px;
+    border-radius: 20px;
+  }
+}

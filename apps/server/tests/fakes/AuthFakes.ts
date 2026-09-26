@@ -1,5 +1,6 @@
 import type { IPasswordHasher } from '../../src/application/interfaces/infrastructure/IPasswordHasher.js';
 import type { ISessionTokenGenerator } from '../../src/application/interfaces/infrastructure/ISessionTokenGenerator.js';
+import type { ISaltRepository } from '../../src/application/interfaces/repositories/ISaltRepository.js';
 import type { ISessionRepository, session } from '../../src/application/interfaces/repositories/ISessionRepository.js';
 import type { CreateUserData, IUserRepository } from '../../src/application/interfaces/repositories/IUserRepository.js';
 import type { User } from '../../src/domain/entities/User.js';
@@ -81,14 +82,40 @@ export class FakeSessionRepository implements ISessionRepository {
 // Deterministic password fake that makes hashing and verification assertions simple.
 export class FakePasswordHasher implements IPasswordHasher {
     hashedPasswords: string[] = [];
+    generatedSalts: string[] = [];
 
-    async hash(password: string): Promise<string> {
+    async hash(password: string, salt?: string): Promise<string> {
         this.hashedPasswords.push(password);
-        return `hashed:${password}`;
+        return salt ? `hashed:${password}:${salt}` : `hashed:${password}`;
+    }
+
+    async generateSalt(): Promise<string> {
+        const salt = 'salt:10';
+        this.generatedSalts.push(salt);
+        return salt;
+    }
+
+    getDefaultSaltRounds(): number {
+        return 10;
     }
 
     async verify(password: string, hash: string): Promise<boolean> {
-        return `hashed:${password}` === hash;
+        return hash === 'low-rounds-hash'
+            ? password === 'secret-password'
+            : `hashed:${password}` === hash || hash.startsWith(`hashed:${password}:`);
+    }
+}
+
+export class FakeSaltRepository implements ISaltRepository {
+    salts = new Map<number, string>();
+
+    async save(userId: number, salt: string): Promise<void> {
+        this.salts.set(userId, salt);
+    }
+
+    async getSaltRounds(userId: number): Promise<number | null> {
+        const salt = this.salts.get(userId);
+        return salt ? Number(salt.split(':')[1]) : null;
     }
 }
 

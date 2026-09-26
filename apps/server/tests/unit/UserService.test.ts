@@ -3,6 +3,8 @@ import test from 'node:test';
 import { UserService } from '../../src/application/services/UserService.js';
 import { FakeUserRepository, user } from '../fakes/AuthFakes.js';
 
+console.log('\n=== tests/unit/UserService.test.ts ===');
+
 test('getById returns a public user without the password hash', async () => {
     // Create a UserService instance with a FakeUserRepository containing a test user
     const service = new UserService(new FakeUserRepository([user]));

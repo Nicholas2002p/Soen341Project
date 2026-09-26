@@ -7,6 +7,9 @@ import { SessionTokenGenerator } from '../infrastructure/security/SessionTokenGe
 import { LocalFileStorage } from './storage/LocalFileStorage.js';
 import { UserService } from '../application/services/UserService.js';
 import { AuthService } from '../application/services/AuthService.js';
+import { PrismaProfileRepository } from './repositories/PrismaProfileRepository.js';
+import { PrismaSaltRepository } from './repositories/PrismaSaltRepository.js';
+import { ProfileService } from '../application/services/ProfileService.js';
 import { ResumeService } from '../application/services/ResumeService.js';
 
 // Initialize repositories, services, and other dependencies
@@ -14,6 +17,7 @@ const userRepository = new PrismaUserRepository(prisma);
 const sessionRepository = new PrismaSessionRepository();
 const passwordHasher = new BcryptPasswordHasher();
 const sessionTokenGenerator = new SessionTokenGenerator();
+const saltRepository = new PrismaSaltRepository(prisma);
 const resumeRepository = new PrismaResumeRepository(prisma);
 const resumeStorage = new LocalFileStorage(process.env.RESUME_UPLOAD_DIR ?? 'uploads/resumes');
 
@@ -23,8 +27,11 @@ const authService = new AuthService(
   sessionRepository,
   passwordHasher,
   sessionTokenGenerator,
+  saltRepository,
 );
+const profileRepository = new PrismaProfileRepository(prisma);
+const profileService = new ProfileService(profileRepository, userRepository);
 const resumeService = new ResumeService(resumeRepository, resumeStorage);
 
 // Export the initialized services for use in other parts of the application
-export { userService, authService, resumeService };
+export { userService, authService, profileService, resumeService };
