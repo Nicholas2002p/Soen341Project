@@ -44,9 +44,9 @@ export default function Registration({ setView }) {
                     <input className='registration-input' type="text " name="lname" maxlength="50" onChange={(e) => { setlname(e.target.value) }} />
                 </div>
 
-                <div className='password'>
-                    <label for="role"> recruiter:</label>
-                    <input className='registration-input' type="checkbox" name="role" checked={checked} onChange={() => setChecked(prev => !prev)}/>
+                <div className='recruiter'>
+                    <label for="role"> Recruiter:</label>
+                    <input  type="checkbox" name="role" checked={checked} onChange={() => setChecked(prev => !prev)}/>
                 </div>
 
                 <section>
