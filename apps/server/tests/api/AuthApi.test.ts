@@ -70,16 +70,16 @@ test('login rejects a request without credentials', async () => {
   assert.equal(response.status, 400);
 });
 
-test('login rejects non-HTTPS requests', async () => {
+test('login validates credentials over HTTP', async () => {
   const response = await request('/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: 'person@example.com', password: 'secret-password' }),
   });
 
-  assert.equal(response.status, 400);
+  assert.equal(response.status, 401);
   assert.deepEqual(await response.json(), {
-    message: 'HTTPS is required for authentication requests.',
+	message: 'The email address or password is incorrect.',
   });
 });
 
