@@ -6,7 +6,7 @@ export default function Nav({ setView }) {
     <nav>
       <p className="logo"> Career Connect </p>
       <NavItems setView={setView} />
-      <Account />  
+      <Account setView={setView} />  
     </nav>
   );
 }

@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import Home from './views/Home';
-import Profile from './views/Profile';
 
 import './App.css';
+
+import Home from './views/Home';
+import Profile from './views/Profile';
+import Registration from './views/Registration';
 
 function Main() {
  const [view, setView] = useState("home");
@@ -11,6 +13,7 @@ function Main() {
     <div id="app">
       {view === "home" && <Home setView={setView} /> }
       {view === "profile" && <Profile setView={setView} />}
+      {view === "registration" && <Registration setView={setView} />} 
     </div>
   );
 };

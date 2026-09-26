@@ -1,0 +1,57 @@
+.password-display {
+  position: relative;
+  display: flex;
+  align-items:  center;
+  width: 90%;
+}
+
+.eye {
+  position: absolute;
+  right:2px;
+  
+}
+
+.password-display input {
+  width: 90%;
+}
+
+.registration {
+  background-color: #063a4b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+}
+
+.password {
+  display: flex;
+  flex: 1;
+  align-items: start;
+  flex-direction: column;
+}
+
+.loginbox {
+  background-color: #bee3fb;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;   
+  height: 50%;
+  width: 45%;
+}
+
+.register-btn {
+
+}
+
+.reg-inside {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+input {
+  width: 90%;
+}

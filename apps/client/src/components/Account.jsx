@@ -4,11 +4,11 @@
  * 
  * @returns the account component 
  */
-export default function Account() {
+export default function Account({ setView }) {
   return (
     <section className="account">
       <img src="random-pfp.PNG" alt="" />
-      <a href=""> Sign in </a>
+      <a onClick={ () => { setView("registration") }}> Sign in </a>
     </section>
   );
 }
