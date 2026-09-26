@@ -161,6 +161,7 @@ test('profile lifecycle persists and retrieves profile data through HTTP and Pri
         if (user) {
             await prisma.profile.deleteMany({ where: { userId: user.userId } });
             await prisma.session.deleteMany({ where: { userId: user.userId } });
+            await prisma.salt.deleteMany({ where: { userId: user.userId } });
             await prisma.user.delete({ where: { userId: user.userId } });
         }
     }

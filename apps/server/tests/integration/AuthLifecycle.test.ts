@@ -142,6 +142,7 @@ test('authentication lifecycle works through the HTTP API and database', async (
 
         if (user) {
             await prisma.profile.deleteMany({ where: { userId: user.userId } });
+            await prisma.salt.deleteMany({ where: { userId: user.userId } });
             await prisma.user.delete({ where: { userId: user.userId } });
         }
     }

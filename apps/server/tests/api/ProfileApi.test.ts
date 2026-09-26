@@ -38,6 +38,7 @@ async function createAuthenticatedUser(): Promise<{ userId: number; token: strin
 async function deleteUser(userId: number): Promise<void> {
     await prisma.profile.deleteMany({ where: { userId } });
     await prisma.session.deleteMany({ where: { userId } });
+    await prisma.salt.deleteMany({ where: { userId } });
     await prisma.user.delete({ where: { userId } });
 }
 

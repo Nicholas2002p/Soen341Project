@@ -3,6 +3,7 @@ import { IUserRepository } from '../interfaces/repositories/IUserRepository.js';
 import { ISessionRepository } from '../interfaces/repositories/ISessionRepository.js';
 import { ISessionTokenGenerator } from '../interfaces/infrastructure/ISessionTokenGenerator.js';
 import { IPasswordHasher } from '../interfaces/infrastructure/IPasswordHasher.js';
+import { ISaltRepository } from '../interfaces/repositories/ISaltRepository.js';
 import { UserAlreadyExistsError } from '../../domain/errors/UserAlreadyExistsError.js';
 import { InvalidAuthCredentialsError } from '../../domain/errors/InvalidAuthCredentialsError.js';
 import { PublicUser } from '../../domain/entities/PublicUser.js';
@@ -17,7 +18,8 @@ export class AuthService implements IAuthService {
         private readonly userRepository: IUserRepository,
         private readonly sessionRepository: ISessionRepository,
         private readonly passwordHasher: IPasswordHasher,
-        private readonly sessionTokenGenerator: ISessionTokenGenerator
+        private readonly sessionTokenGenerator: ISessionTokenGenerator,
+        private readonly saltRepository: ISaltRepository,
     ) {}
 
     private toPublicUser(user: User): PublicUser {
@@ -38,14 +40,16 @@ export class AuthService implements IAuthService {
             throw new UserAlreadyExistsError(); 
         }
 
-        // Hash the password before storing it in the database
-        const hashedPassword = await this.passwordHasher.hash(data.password);
+        // Generate a salt and hash the password using the provided password hasher
+        const salt = await this.passwordHasher.generateSalt();
+        const hashedPassword = await this.passwordHasher.hash(data.password, salt);
 
         // Create a new user in the repository with the hashed password
         const newUser = await this.userRepository.create({
             email,
             passwordHash: hashedPassword,
         });
+        await this.saltRepository.save(newUser.id, salt);
 
         // Generate a session token and create a new session for the user
         const sessionToken = this.sessionTokenGenerator.generate();
@@ -78,6 +82,29 @@ export class AuthService implements IAuthService {
             throw new InvalidAuthCredentialsError();
         }
 
+        let authenticatedUser = user;
+
+        // If the user's password hash is below the current default salt rounds, upgrade the hash
+        const savedSaltRounds = await this.saltRepository.getSaltRounds(user.id);
+        if (savedSaltRounds !== null && savedSaltRounds < this.passwordHasher.getDefaultSaltRounds()) {
+            // Generate a new salt and hash the password with the new salt
+            const salt = await this.passwordHasher.generateSalt();
+
+            // Hash the password with the new salt and update the user's password hash in the repository
+            const upgradedHash = await this.passwordHasher.hash(password, salt);
+
+            // Update the user's password hash in the repository and retrieve the updated user
+            const updatedUser = await this.userRepository.updatePassword(user.id, upgradedHash);
+
+            // If the update was successful, use the updated user for authentication
+            if (updatedUser) {
+                authenticatedUser = updatedUser;
+            }
+
+            // Save the new salt in the salt repository for future password verifications
+            await this.saltRepository.save(user.id, salt);
+        }
+
         // Generate a session token and create a new session for the user
         const sessionToken = this.sessionTokenGenerator.generate();
 
@@ -85,10 +112,10 @@ export class AuthService implements IAuthService {
         const tokenHash = this.sessionTokenGenerator.hash(sessionToken);
 
         // Create a new session in the repository with the hashed token and expiration date
-        await this.sessionRepository.create(user.id, tokenHash, this.getSessionExpiration()); // Session expires in 24 hours
+        await this.sessionRepository.create(authenticatedUser.id, tokenHash, this.getSessionExpiration()); // Session expires in 24 hours
 
         return {
-            user: this.toPublicUser(user),
+            user: this.toPublicUser(authenticatedUser),
             sessionToken,
         }
     }
