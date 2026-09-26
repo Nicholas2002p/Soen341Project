@@ -54,9 +54,10 @@ export async function CreateProfileApi(fname, lname, setErrorMessage, token){
                 lastName: lname,
             })
         });
+        const data = await response.json();
         if (!response.ok) {
             setErrorMessage("Error Message:", data.message);
-            return false
+            return false;
         } 
         return true;
     } catch (error) {
@@ -103,6 +104,14 @@ export async function UpdateProfileApi(fname, lname, mname, phone, bio, location
 
 }
 
+/**
+ *  send email and password and set token in context
+ * @param {*} email 
+ * @param {*} password 
+ * @param {*} setErrorMessage 
+ * @param {*} setToken 
+ * @returns true if response ok
+ */
 export async function LogInApi(email, password, setErrorMessage, setToken) {
     try {
         const response = await fetch("http://localhost:3000/api/auth/login", {
@@ -121,9 +130,36 @@ export async function LogInApi(email, password, setErrorMessage, setToken) {
             return false;
         } 
         setToken(data.sessionToken);
-        return true
+        return true;
         
     } catch (error) {
         console.error(error);
     }
+}
+
+/**
+ * gets data for profile
+ * @param {*} token 
+ * @returns profile data
+ */
+export async function GetProfileApi(token){
+    try {
+        const response = await fetch("http://localhost:3000/api/auth/profile", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            setErrorMessage("Error Message:", data.message);
+            return false;
+        } 
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+
 }
