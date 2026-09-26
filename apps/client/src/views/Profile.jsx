@@ -24,19 +24,18 @@ export default function Profile({ setView }) {
   const [desc, setDesc] = useState('DESC');
 
   useEffect(() => {
-    if (token) {
-        const getProfile = async () => {
+
+    console.log("PROFILE EFFECT", token);
+
+    if (!token) return;
+      const getProfile = async () => {
             const data = await GetProfileApi(token);
-
-            console.log(data);
-
-            setFName(data.firstName);
-            setLName(data.lastName);
-            setDesc(data.bio);
-        };
-
-        getProfile();
-    }
+            if (!data) return;
+            setFName(data.profile.firstName);
+            setLName(data.profile.lastName);
+            setDesc(data.profile.bio);
+      };
+      getProfile();
 }, []);
 
   return (

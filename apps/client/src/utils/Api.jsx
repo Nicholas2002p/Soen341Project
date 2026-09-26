@@ -26,7 +26,7 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
             return false;
         } 
         setToken(data.sessionToken);
-        CreateProfileApi(fname, lname, setErrorMessage, data.sessionToken);
+        return await CreateProfileApi(fname, lname, setErrorMessage, data.sessionToken);
         
     } catch (error) {
         console.error(error);
@@ -150,14 +150,12 @@ export async function GetProfileApi(token){
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            
         });
         const data = await response.json();
         if (!response.ok) {
-            setErrorMessage("Error Message:", data.message);
+            console.error(data.message);
             return false;
         } 
-        console.log(data);
         return data;
     } catch (error) {
         console.error(error);
