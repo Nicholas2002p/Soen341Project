@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Password from '../components/Password';
-import { useAuth } from '../utils/Auth'
+import { useAuth } from '../utils/Auth';
 import { RegisterApi } from '../utils/Api';
 
 import "./Registration.scss";
@@ -11,8 +11,7 @@ import "./Registration.scss";
  * @returns the registration page
  */
 export default function Registration({ setView }) {
-    const [fname, setfname] = useState('');
-    const [lname, setlname] = useState('');
+   
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
@@ -101,7 +100,6 @@ async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname
         const role = checked? "recruiter":"jobseeker";
         setErrorMessage("");
         const allGood = await RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token, role);
-        //NOt switching after good call
         if(allGood) {
             setView("profile");
         };

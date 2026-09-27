@@ -8,7 +8,7 @@
  * @param {*} setToken 
  * @param {*} token 
  */
-export async function RegisterApi(fname, lname, email, password, setErrorMessage, setToken, role){
+export async function RegisterApi(fname, lname, email, password, setErrorMessage, setToken, role) {
     try {
         const response = await fetch("http://localhost:3000/api/auth/register", {
         method: "POST",
@@ -41,7 +41,7 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
  * @param {*} setErrorMessage 
  * @param {*} token 
  */
-export async function CreateProfileApi(fname, lname, setErrorMessage, token){
+export async function CreateProfileApi(fname, lname, setErrorMessage, token) {
     try {
         const response = await fetch("http://localhost:3000/api/auth/profile", {
             method: "PUT",
@@ -79,9 +79,10 @@ export async function CreateProfileApi(fname, lname, setErrorMessage, token){
  * @param {*} setErrorMessage 
  * @param {*} token 
  */
-export async function UpdateProfileApi(fname, lname, mname, phone, bio, location, profileImg, setErrorMessage, token){
-    try{
-            const response = await fetch("http://localhost:3000/api/auth/profile", {
+export async function UpdateProfileApi(fname, lname, phone, bio, location, profileURL, setErrorMessage, token) {
+    try {
+        console.log("profileURL: " + profileURL);
+        const response = await fetch("http://localhost:3000/api/auth/profile", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -89,15 +90,20 @@ export async function UpdateProfileApi(fname, lname, mname, phone, bio, location
             },
             body: JSON.stringify({
                 firstName: fname,
-                middleName: mname,
+                middleName: "",
                 lastName: lname,
                 phone: phone,
                 bio: bio,
                 location: location,
-                profileURL: "https://example.com",
+                profileURL: profileURL,
             }),
         });
 
+        if (!response.ok) {
+            setErrorMessage("Error Message:", data.message);
+            return false;
+        }
+        return true;
     } catch (error) {
         console.error(error);
     }
@@ -142,7 +148,7 @@ export async function LogInApi(email, password, setErrorMessage, setToken) {
  * @param {*} token 
  * @returns profile data
  */
-export async function GetProfileApi(token){
+export async function GetProfileApi(token) {
     try {
         const response = await fetch("http://localhost:3000/api/auth/profile", {
             method: "GET",
