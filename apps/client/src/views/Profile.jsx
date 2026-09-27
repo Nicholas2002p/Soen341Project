@@ -45,8 +45,6 @@ export default function Profile({ setView }) {
     
   }, []);
 
-  console.log("profile: " + role);
-
   return (
     <main className="profilepage">
       <Nav setView={setView} profileURL={profileURL} />

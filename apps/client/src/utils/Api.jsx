@@ -114,7 +114,6 @@ export async function CreateProfileApi(fname, lname, setErrorMessage, token) {
  */
 export async function UpdateProfileApi(fname, lname, phone, bio, location, setErrorMessage, token) {
     try {
-        console.log("profileURL: " + profileURL);
         const response = await fetch("http://localhost:3000/api/auth/profile", {
             method: "PUT",
             headers: {
