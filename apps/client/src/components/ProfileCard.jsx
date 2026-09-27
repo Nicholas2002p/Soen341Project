@@ -16,7 +16,7 @@ import './ProfileCard.scss';
  * @returns the profile card component
  */
 export default function ProfileCard({ profileURL, fname, lname, role, desc }) {
-  console.log(`http://localhost:3000${profileURL}`);
+  const userRole = role === "jobseeker" ? "Job Seeker" : "Recruiter";
 
   return (
     <section className="profile-card">
@@ -26,7 +26,7 @@ export default function ProfileCard({ profileURL, fname, lname, role, desc }) {
           <img src={profileURL === null ? "random-pfp.PNG" : `http://localhost:3000${profileURL}`} alt="" />
           <section className='profile-card-information-text'>
             <p className="card-name"> {lname}, {fname} </p>
-            <p className="card-role"> {role} </p>
+            <p className="card-role"> {userRole} </p>
             <p className="card-description"> {desc} </p>
           </section>
         </section>

@@ -16,7 +16,7 @@ import './Profile.scss';
  * @returns Profile component
  */
 export default function Profile({ setView }) {
-  const { token, setToken } = useAuth();
+  const { token, setToken, user } = useAuth();
   const [data, setData] = useState({});
  
   const [fname, setFName] = useState('');
@@ -37,7 +37,7 @@ export default function Profile({ setView }) {
       setData(profile);
       setFName(profile.firstName);
       setLName(profile.lastName);
-      setRole(profile.role === undefined ? "ROLE" : profile.role);
+      setRole(user.role);
       setProfileURL(profile.profileURL);
       setDesc(profile.bio);
     };
@@ -45,7 +45,7 @@ export default function Profile({ setView }) {
     
   }, []);
 
-  console.log("profile: " + profileURL);
+  console.log("profile: " + role);
 
   return (
     <main className="profilepage">
