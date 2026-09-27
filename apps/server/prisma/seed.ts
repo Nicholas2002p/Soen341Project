@@ -8,6 +8,7 @@ import {
   PrismaClient,
   UserRole,
 } from "../src/generated/prisma/client.js";
+import { BcryptPasswordHasher } from "../src/infrastructure/security/BcryptPasswordHasher.js";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not defined.");
@@ -24,6 +25,24 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({
   adapter,
 });
+
+//NOTE - Password creation
+const passwordHasher = new BcryptPasswordHasher();
+
+const SEED_PASSWORD = "Password123!";
+
+async function createPasswordCredentials(password: string): Promise<{
+  salt: string;
+  hash: string;
+}> {
+  const salt = await passwordHasher.generateSalt();
+  const hash = await passwordHasher.hash(password, salt);
+
+  return {
+    salt,
+    hash,
+  };
+}
 
 async function clearDatabase() {
   console.log("Clearing existing development data...");
@@ -55,11 +74,17 @@ async function main() {
 
   //NOTE - Users
 
+  const aliceCredentials = await createPasswordCredentials(SEED_PASSWORD);
+  const marcCredentials = await createPasswordCredentials(SEED_PASSWORD);
+  const sophiaCredentials = await createPasswordCredentials(SEED_PASSWORD);
+  const emilyCredentials = await createPasswordCredentials(SEED_PASSWORD);
+  const davidCredentials = await createPasswordCredentials(SEED_PASSWORD);
+  const adminCredentials = await createPasswordCredentials(SEED_PASSWORD);
+
   const alice = await prisma.user.create({
     data: {
       email: "alice.chen@example.com",
-      password:
-        "$2b$10$samplehashalice000000000000000000000000000000",
+      password: aliceCredentials.hash,
       role: UserRole.jobseeker,
       createdAt: new Date("2026-09-01T10:00:00"),
     },
@@ -68,8 +93,7 @@ async function main() {
   const marc = await prisma.user.create({
     data: {
       email: "marc.tremblay@example.com",
-      password:
-        "$2b$10$samplehashmarc00000000000000000000000000000",
+      password: marcCredentials.hash,
       role: UserRole.jobseeker,
       createdAt: new Date("2026-09-02T11:30:00"),
     },
@@ -78,8 +102,7 @@ async function main() {
   const sophia = await prisma.user.create({
     data: {
       email: "sophia.patel@example.com",
-      password:
-        "$2b$10$samplesophia000000000000000000000000000000",
+      password: sophiaCredentials.hash,
       role: UserRole.jobseeker,
       createdAt: new Date("2026-09-03T09:15:00"),
     },
@@ -88,8 +111,7 @@ async function main() {
   const emily = await prisma.user.create({
     data: {
       email: "emily.hr@techcorp.com",
-      password:
-        "$2b$10$samplehashemily000000000000000000000000000000",
+      password: emilyCredentials.hash,
       role: UserRole.recruiter,
       createdAt: new Date("2026-09-01T08:00:00"),
     },
@@ -98,8 +120,7 @@ async function main() {
   const david = await prisma.user.create({
     data: {
       email: "david.jobs@northerndata.com",
-      password:
-        "$2b$10$samplehashdavid000000000000000000000000000000",
+      password: davidCredentials.hash,
       role: UserRole.recruiter,
       createdAt: new Date("2026-09-04T14:00:00"),
     },
@@ -108,8 +129,7 @@ async function main() {
   const admin = await prisma.user.create({
     data: {
       email: "admin@careerconnect.com",
-      password:
-        "$2b$10$samplehashadmin000000000000000000000000000000",
+      password: adminCredentials.hash,
       role: UserRole.admin,
       createdAt: new Date("2026-09-01T07:00:00"),
     },
@@ -178,27 +198,27 @@ async function main() {
     data: [
       {
         userId: alice.userId,
-        Salt: "aliceRandomSalt2026",
+        Salt: aliceCredentials.salt,
       },
       {
         userId: marc.userId,
-        Salt: "marcRandomSalt2026",
+        Salt: marcCredentials.salt,
       },
       {
         userId: sophia.userId,
-        Salt: "sophiaRandomSalt2026",
+        Salt: sophiaCredentials.salt,
       },
       {
         userId: emily.userId,
-        Salt: "emilyRandomSalt2026",
+        Salt: emilyCredentials.salt,
       },
       {
         userId: david.userId,
-        Salt: "davidRandomSalt2026",
+        Salt: davidCredentials.salt,
       },
       {
         userId: admin.userId,
-        Salt: "adminRandomSalt2026",
+        Salt: adminCredentials.salt,
       },
     ],
   });
