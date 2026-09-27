@@ -70,9 +70,7 @@ in root of the project
 - Filter Jobs
 - Apply for job
 - Manage applications
-- 
-- 
-- 
-- 
-- 
+- apply roles to users
+- ai feature
+- more to come!
 
