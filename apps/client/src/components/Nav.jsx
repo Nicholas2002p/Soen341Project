@@ -1,12 +1,19 @@
 import Account from "./Account";
 import "./Nav.scss";
 
+/**
+ * Nav
+ * displays the navigation bar
+ * 
+ * @param {function} setView 
+ * @returns the nav component
+ */
 export default function Nav({ setView }) {
   return (
     <nav>
       <p className="logo"> Career Connect </p>
       <NavItems setView={setView} />
-      <Account />  
+      <Account setView={setView} />  
     </nav>
   );
 }

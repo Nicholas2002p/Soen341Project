@@ -59,6 +59,7 @@ nav {
   @include flex-align-justify(center, center);
   flex: 1;
   gap: 10px;
+  cursor: pointer;
 
   img {
     width: 100px;
