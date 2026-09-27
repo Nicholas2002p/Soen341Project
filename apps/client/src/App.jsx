@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GoogleSignIn from "./GoogleSignIn.jsx";
+import GoogleSignIn from "./components/google.jsx";
 import "./App.css";
 
 function App() {
@@ -12,10 +12,11 @@ function App() {
 
   return (
     <>
-      <h1>
-        Hello, would you like to register to our website?{" "}
-        {username ? username : "Anonymous"}
-      </h1>
+      <h1 style={{ fontSize: "2rem", lineHeight: "1.5" }}>
+  Hello, would you like to register to our website?
+  <br />
+  {username ? username : "Anonymous"}
+</h1>
       {!username && <GoogleSignIn setUsername={setUsername} />}
       {username && <button onClick={handleLogout}>logout</button>}
     </>
