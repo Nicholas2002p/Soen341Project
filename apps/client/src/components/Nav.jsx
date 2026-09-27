@@ -1,4 +1,6 @@
+import { useAuth } from "../utils/Auth";
 import Account from "./Account";
+
 import "./Nav.scss";
 
 /**
@@ -25,11 +27,19 @@ export default function Nav({ setView }) {
  * @returns the nav item component
  */
 function NavItems({ setView }) {
+  const { token, setToken } = useAuth();
+
   return (
     <ul className="nav-list-items">
       <a onClick={() => { setView("home")}}> Home </a>
       <a> Jobs </a>
-      <a onClick={() => { setView("profile")}}> Profile </a>
+      <a onClick={() => { 
+        if (token) {
+          setView("profile");
+        }
+      }}>
+        Profile 
+      </a>
     </ul>
   );
 }
