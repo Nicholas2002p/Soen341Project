@@ -22,27 +22,27 @@ export default function ProfileEdit({ fname, lname, desc, setFName, setLName, se
 
       <label htmlFor="">
         First Name: 
-        <input type="text" id="fname" name="fname" maxlength="50" placeholder={fname} onChange={(e) => { setFName(e.target.value) }} />
+        <input className='profile-edit-input' type="text" id="fname" name="fname" maxlength="50" placeholder={fname} onChange={(e) => { setFName(e.target.value) }} />
       </label>
 
       <label htmlFor="">
         Last Name: 
-        <input type="text" id="lname" name="lname" maxlength="50" placeholder={lname} onChange={(e) => { setLName(e.target.value) }} />
+        <input className='profile-edit-input' type="text" id="lname" name="lname" maxlength="50" placeholder={lname} onChange={(e) => { setLName(e.target.value) }} />
       </label>
 
       <label htmlFor="">
         Password:
-        <input type="password" maxlength="50" onChange={(e) => { setPassword(e.target.value) }} />
+        <input className='profile-edit-input' type="password" maxlength="50" onChange={(e) => { setPassword(e.target.value) }} />
       </label>
 
       <label htmlFor="">
         Description: 
-        <input type="text" id="desc" maxlength="250" name="desc" placeholder={desc} onChange={(e) => { setDesc(e.target.value) }} />
+        <input className='profile-edit-input' type="text" id="desc" maxlength="250" name="desc" placeholder={desc} onChange={(e) => { setDesc(e.target.value) }} />
       </label>
 
       <label htmlFor="">
         Profile Picture:
-        <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />
+        <input className='profile-edit-input' type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />
       </label>
 
       <button className='profile-edit-button' button="type" onClick={() => { Save(fname, lname, desc, password) }}>

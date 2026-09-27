@@ -1,17 +1,24 @@
-import { useState } from 'react';
+import { useState, useContext, createContext } from 'react';
+import './App.css';
 import Home from './views/Home';
 import Profile from './views/Profile';
-
-import './App.css';
+import Registration from './views/Registration';
+import Login from './views/Login';
+import { AuthContext } from './utils/Auth'
 
 function Main() {
  const [view, setView] = useState("home");
+ const [token, setToken] = useState(null);
 
   return (
-    <div id="app">
-      {view === "home" && <Home setView={setView} /> }
-      {view === "profile" && <Profile setView={setView} />}
-    </div>
+    <AuthContext.Provider value={{ token, setToken }}>
+      <div id="app">
+        {view === "home" && <Home setView={setView} /> }
+        {view === "profile" && <Profile setView={setView} />}
+        {view === "registration" && <Registration setView={setView} />} 
+        {view === "sign-in" && <Login setView={setView} />} 
+      </div>
+    </AuthContext.Provider>
   );
 };
 
