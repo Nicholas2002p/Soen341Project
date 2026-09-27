@@ -45,13 +45,13 @@ nav {
   margin-left: 20px;
   flex: 3;
 
-  li {
-    font-size: 25px;
+  a {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  a:visited {
     color: black;
-    
-    a:visited {
-      color: black;
-    }
   }
 }
 
