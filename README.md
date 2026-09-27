@@ -1,7 +1,7 @@
 # CareerConnect Soen341Project
 
-## Discription
-CareerConnect is a website that allows users to find jobs and recruters to find employes easier.
+## Description
+CareerConnect is a website that allows users to find jobs and recruiters to find employees easier.
 
 ### Features implemented
 - login and register
@@ -35,7 +35,7 @@ CareerConnect is a website that allows users to find jobs and recruters to find 
    - prisma ORM
    - bcrypt
    ### test
-   - junit
+   - node Test
 
 ## Setup Instructions
 ### Database Setup
