@@ -110,7 +110,7 @@ export async function UpdateProfileApi(fname, lname, phone, bio, location, setEr
 
 export async function UpdateProfileImageApi(file, setErrorMessage, token) {
     const formData = new FormData();
-    formData.append('profilePicture', new Blob(['profile picture'], { type: 'image/png' }), file);
+    formData.append('profilePicture', file, { type: 'image/png' });
 
     try {
         const response = await fetch('http://localhost:3000/api/auth/profile/picture', {
