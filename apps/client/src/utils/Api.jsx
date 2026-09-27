@@ -110,7 +110,7 @@ export async function UpdateProfileApi(fname, lname, phone, bio, location, setEr
 
 export async function UpdateProfileImageApi(file, setErrorMessage, token) {
     const formData = new FormData();
-    formData.append('profilePicture', file, { type: 'image/png' });
+    formData.append('profilePicture', file);
 
     try {
         const response = await fetch('http://localhost:3000/api/auth/profile/picture', {
@@ -123,13 +123,15 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
         const data = await response.json();
         
         if (!response.ok) {
-            setErrorMessage("Error Message:", data.message);
-            return;
+            setErrorMessage(data.message ?? "Unable to upload profile picture.");
+            return null;
         }
 
         return data.profile;
     } catch (error) {
         console.error(error);
+        setErrorMessage("Unable to upload profile picture.");
+        return null;
     }
 }
 

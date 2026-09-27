@@ -74,7 +74,7 @@ export default function ProfileEdit({ fname, lname, desc, old_profile, setFName,
       <label htmlFor="">
         Profile Picture:
         <input className='profile-edit-input' type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" 
-          onChange={(e) => { setFile(e.target.value) }}
+          onChange={(e) => { setFile(e.target.files?.[0] ?? null) }}
         />
       </label>
 
@@ -104,8 +104,10 @@ async function Save(fname, lname, phone, desc, location, file, setProfileURL, se
   }
 
   if (file) {
-    const profile_url = await UpdateProfileImageApi(file, setErrorMessage, token);
-    setProfileURL(profile_url.profileURL);
+    const profile = await UpdateProfileImageApi(file, setErrorMessage, token);
+    if (profile?.profileURL) {
+      setProfileURL(profile.profileURL);
+    }
   }
 
   if (fname !== old_profile.firstName || lname !== old_profile.lastName || phone !== old_profile.phone || desc !== old_profile.bio || location !== old_profile.location) {
