@@ -2,6 +2,7 @@ import express, { type Express, type Request, type Response } from 'express';
 import path from 'node:path';
 import { authRoutes } from './presentation/routes/AuthRoutes.js';
 import { profileRoutes, publicProfileRoutes } from './presentation/routes/ProfileRoutes.js';
+import { resumeRoutes } from './presentation/routes/ResumeRoutes.js';
 import cors from 'cors';
 
 export const app: Express = express();
@@ -22,6 +23,7 @@ app.get('/', (req: Request, res: Response) => {
 // ------------------------------------------ API routes ----------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
 app.use('/api/auth', authRoutes);
+app.use('/api/resumes', resumeRoutes);
 
 //-----------------------------------------------------------------------------------------------------------
 // ------------------------------------------ Profile routes ------------------------------------------------
