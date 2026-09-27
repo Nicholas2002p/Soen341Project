@@ -5,6 +5,11 @@ import { RegisterApi } from '../utils/Api';
 
 import "./Registration.scss";
 
+/**
+ * Displays the registration for users
+ * @param {function} setView 
+ * @returns the registration page
+ */
 export default function Registration({ setView }) {
     const [fname, setfname] = useState('');
     const [lname, setlname] = useState('');
