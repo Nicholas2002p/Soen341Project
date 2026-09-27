@@ -38,6 +38,17 @@ test('getByUserId returns null when the repository has no profile', async () => 
     assert.equal(repository.requestedUserId, profile.userId);
 });
 
+test('getByUserId uses the default profile picture when profileURL is null', async () => {
+    // Create a fake repository with a profile that has a null profileURL and create the service
+    const repository = new FakeProfileRepository({ ...profile, profileURL: null });
+    const service = createService(repository);
+
+    const result = await service.getByUserId(profile.userId);
+
+    // Assert that the result is not null and that the profileURL is set to the default profile picture URL
+    assert.equal(result?.profileURL, '/uploads/profile-pictures/profile_default.jpg');
+});
+
 test('getPublicByUserId excludes the phone number', async () => {
     const repository = new FakeProfileRepository(profile);
     const service = createService(repository);
