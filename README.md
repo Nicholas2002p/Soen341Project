@@ -73,7 +73,7 @@ in root of the project
 ```bash
    npm build
 ```
-4. finaly run 
+4. finally run 
 ```bash
    npm run dev
 ```
