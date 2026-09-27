@@ -52,6 +52,7 @@ model User {
   sessions      Session[]
 
   @@map("Users")
+  skillOnProfiles SkillOnProfile[]
 }
 
 /// Stores hashed authentication tokens for active sessions.
@@ -79,6 +80,15 @@ model Salt {
   @@map("Salt")
 }
 
+model Skill{
+  skillId Int @id @default(autoincrement())@map("skillId")
+  skill   String @db.VarChar(50)
+
+  skillOnProfiles SkillOnProfile[]
+
+  skillOnJobs SkillOnJob[]
+}
+
 /// information used in the user's profile
 model Profile {
   profileId  Int     @id @default(autoincrement()) @map("profileId")
@@ -89,12 +99,14 @@ model Profile {
   phone      String? @db.VarChar(13)
   bio        String? @db.VarChar(250)
   location   String? @db.VarChar(100)
-  skills     String? @db.VarChar(500)
+  profileURL String?  @db.VarChar(500)
+
 
   user User @relation(fields: [userId], references: [userId])
 
   @@map("Profile")
 }
+
 
 /// saves the users resume 
 model Resume {
@@ -132,6 +144,7 @@ model Job {
   employmentType EmploymentType @map("employment_type")
   deadline       DateTime?
   createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime?       @default(now()) @map("updated_at")
 
   company      Company       @relation(fields: [companyId], references: [companyId])
   recruiter    User          @relation(fields: [recruiterId], references: [userId])
@@ -139,6 +152,7 @@ model Job {
   savedJobs    SavedJob[]
 
   @@map("Job")
+  skillOnJobs SkillOnJob[]
 }
 
 ///The users application to a job
@@ -149,7 +163,7 @@ model Application {
   resumeId      Int               @map("resumeId")
   status        ApplicationStatus
   appliedAt     DateTime          @default(now()) @map("applied_at")
-  updatedAt     DateTime          @default(now()) @map("updated_at")
+  updatedAt     DateTime?         @default(now()) @map("updated_at")
 
   user          User                       @relation(fields: [userId], references: [userId])
   job           Job                        @relation(fields: [jobId], references: [jobId])
@@ -197,4 +211,25 @@ model ApplicationStatusHistory {
   application Application @relation(fields: [applicationId], references: [applicationId])
 
   @@map("ApplicationStatusHistory")
+}
+
+model SkillOnProfile{
+  id            Int      @id @default(autoincrement())
+  skillId       Int      @map("skillId")
+  userId        Int      @map("userId")
+
+  skill Skill @relation(fields: [skillId], references: [skillId])
+  user User @relation(fields: [userId], references: [userId])
+
+
+}
+
+model SkillOnJob{
+  id            Int       @id @default(autoincrement())
+  skillId       Int      @map("skillId")
+  jobId         Int      @map("jobId")
+
+  skill Skill @relation(fields: [skillId], references: [skillId])
+  job Job @relation(fields: [jobId], references: [jobId])
+  
 }

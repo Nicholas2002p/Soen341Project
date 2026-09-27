@@ -1,0 +1,70 @@
+.password-display {
+  position: relative;
+  width: 90%;
+}
+
+.registration-input {
+  width: 90%;
+  margin-left: 10px;
+}
+
+.eye {
+  position: absolute;
+  right: -20px;
+}
+
+.password-display input {
+  width: 100%;
+}
+
+.registration {
+  background: url("registration-login.png"); 
+  background-size: contain;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+}
+
+.password {
+  display: flex;
+  flex: 1;
+  align-items: start;
+  flex-direction: column;
+}
+
+.loginbox {
+  background-color: #bee3fb;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  height: 50%;
+  width: 45%;
+}
+
+.reg-inside {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.register-btn {
+  align-self: center;
+  width: 100px;
+  height: 30px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.cursor{
+  cursor: pointer;
+  color: rgb(218, 8, 106);
+}
+
+.recruiter {
+  display:flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}

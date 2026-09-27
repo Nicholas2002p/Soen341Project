@@ -1,26 +1,26 @@
-import { useState } from "react";
-import GoogleSignIn from "./components/google.jsx";
-import "./App.css";
+import { useState } from 'react';
+import './App.css';
+import Home from './views/Home';
+import Profile from './views/Profile';
+import Registration from './views/Registration';
+import Login from './views/Login';
+import { AuthContext } from './utils/Auth'
 
-function App() {
-  const [username, setUsername] = useState("");
-
-  const handleLogout = async () => {
-    await fetch("/api/logout");
-    setUsername("");
-  };
+function Main() {
+ const [view, setView] = useState("home");
+ const [user, setUser] = useState(null);
+ const [token, setToken] = useState(null);
 
   return (
-    <>
-      <h1 style={{ fontSize: "2rem", lineHeight: "1.5" }}>
-  Hello, would you like to register to our website?
-  <br />
-  {username ? username : "Anonymous"}
-</h1>
-      {!username && <GoogleSignIn setUsername={setUsername} />}
-      {username && <button onClick={handleLogout}>logout</button>}
-    </>
+    <AuthContext.Provider value={{ token, setToken, user, setUser }}>
+      <div id="app">
+        {view === "home" && <Home setView={setView} /> }
+        {view === "profile" && <Profile setView={setView} />}
+        {view === "registration" && <Registration setView={setView} />} 
+        {view === "sign-in" && <Login setView={setView} />} 
+      </div>
+    </AuthContext.Provider>
   );
-}
+};
 
-export default App;
+export default Main;

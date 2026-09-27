@@ -1,14 +1,15 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import { authController } from '../controllers/AuthController.js';
-import { authMiddleware } from '../middleware/authMiddleware.js';
+import { authMiddleware } from '../middleware/AuthMiddleware.js';
 
 export const authRoutes = Router();
 
 function requireHttps(req: Request, res: Response, next: NextFunction): void {
-	if (!req.secure) {
-		res.status(400).json({ message: 'HTTPS is required for authentication requests.' });
-		return;
-	}
+	// Previous HTTPS-only behavior:
+	// if (!req.secure) {
+	// 	res.status(400).json({ message: 'HTTPS is required for authentication requests.' });
+	// 	return;
+	// }
 
 	next();
 }
