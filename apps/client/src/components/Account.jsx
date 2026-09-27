@@ -21,9 +21,11 @@ export default function Account({ setView }) {
 }
 
 /**
+ * Sign In
+ * displays the sign in button for the user to sign in
  * 
  * @param {Function} setView 
- * @returns 
+ * @returns the sign in component
  */
 function SignIn({ setView }) {
   return (
@@ -35,11 +37,13 @@ function SignIn({ setView }) {
 }
 
 /**
+ * Signed In 
+ * will show that the user is signed in
  * Name display will be shown in sprint 2
  * 
  * @param {Function} setView
  * @param {Function} setToken 
- * @returns 
+ * @returns the signed in component
  */
 function SignedIn({ setView, setToken }) {
   return (
