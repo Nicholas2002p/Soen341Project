@@ -72,15 +72,15 @@ export default function Registration({ setView }) {
 /**
  * validates the input fields and then calls the api methods
  * if valid changed screen to profile
- * @param {*} password 
- * @param {*} confirmPass 
- * @param {*} setErrorMessage 
- * @param {*} fname 
- * @param {*} lname 
- * @param {*} email 
- * @param {*} setToken 
- * @param {*} token 
- * @param {*} setView 
+ * @param {string} password 
+ * @param {string} confirmPass 
+ * @param {function} setErrorMessage 
+ * @param {string} fname 
+ * @param {string} lname 
+ * @param {string} email 
+ * @param {functio} setToken 
+ * @param {string} token 
+ * @param {functio} setView 
  */          
 async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email,setToken,token,setView, checked) { 
     if (email.trim() === "") setErrorMessage("Email is required");

@@ -4,6 +4,11 @@ import Password from '../components/Password';
 import { useAuth } from '../utils/Auth'
 import {LogInApi} from '../utils/Api';
 
+/**
+ * Displays the sign in for users
+ * @param {function} setView
+ * @returns returns the sign in page
+ */
 export default function Login({ setView }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -46,11 +51,11 @@ export default function Login({ setView }) {
 /**
  * validates the input fields and then calls the api methods
  * if valid changed screen to profile
- * @param {*} password 
- * @param {*} setErrorMessage 
- * @param {*} email 
- * @param {*} setToken 
- * @param {*} setView 
+ * @param {string} password 
+ * @param {function} setErrorMessage 
+ * @param {string} email 
+ * @param {function} setToken 
+ * @param {function} setView 
  */
 async function RegisterUser(password, setErrorMessage,email,setToken,setView) { 
     if (email.trim() === "") {
