@@ -7,6 +7,8 @@ import { UserAlreadyExistsError } from '../../domain/errors/UserAlreadyExistsErr
 import { InvalidAuthCredentialsError } from '../../domain/errors/InvalidAuthCredentialsError.js';
 import { PublicUser } from '../../domain/entities/PublicUser.js';
 import { User } from '../../domain/entities/User.js';
+import { isValidEmail, normalizeEmail } from '../../domain/validation/Email.js';
+import { InvalidEmailError } from '../../domain/errors/InvalidEmailError.js';
 
 export class AuthService implements IAuthService {
     private static readonly SESSION_EXPIRATION_DAYS = 30; // Session expires in 30 days
@@ -18,9 +20,18 @@ export class AuthService implements IAuthService {
         private readonly sessionTokenGenerator: ISessionTokenGenerator
     ) {}
 
+    private toPublicUser(user: User): PublicUser {
+        const { passwordHash: _passwordHash, ...publicUser } = user;
+        return publicUser;
+    }
+
     async register(data: RegisterData): Promise<AuthenticationResult> {
         // remove leading and trailing whitespace from the email and convert it to lowercase
-        const email = data.email.trim().toLowerCase();
+        const email = normalizeEmail(data.email);
+
+        if (!isValidEmail(email)) {
+            throw new InvalidEmailError();
+        }
 
         const existingUser = await this.userRepository.getByEmail(email);
         if (existingUser) {
@@ -40,23 +51,29 @@ export class AuthService implements IAuthService {
         const sessionToken = this.sessionTokenGenerator.generate();
         await this.sessionRepository.create(newUser.id, 
             this.sessionTokenGenerator.hash(sessionToken), 
-            new Date(Date.now() + 1000 * 60 * 60 * 24)); // Session expires in 24 hours
+            this.getSessionExpiration());
 
         return {
-            user: newUser,
+            user: this.toPublicUser(newUser),
             sessionToken,
         };
     }
 
     async login(email: string, password: string): Promise<AuthenticationResult> {
+        const normalizedEmail = normalizeEmail(email);
+
+        if (!isValidEmail(normalizedEmail)) {
+            throw new InvalidAuthCredentialsError();
+        }
+
         //check if the user exists in the repository
-        const user = await this.userRepository.getByEmail(email);
+        const user = await this.userRepository.getByEmail(normalizedEmail);
         if (!user) {
             throw new InvalidAuthCredentialsError();
         }
 
         //check if the password is correct
-        const valid = this.passwordHasher.verify(password, user.passwordHash);
+        const valid = await this.passwordHasher.verify(password, user.passwordHash);
         if (!valid) {
             throw new InvalidAuthCredentialsError();
         }
@@ -71,7 +88,7 @@ export class AuthService implements IAuthService {
         await this.sessionRepository.create(user.id, tokenHash, this.getSessionExpiration()); // Session expires in 24 hours
 
         return {
-            user,
+            user: this.toPublicUser(user),
             sessionToken,
         }
     }
@@ -102,7 +119,8 @@ export class AuthService implements IAuthService {
         }
 
         // If the session is valid, retrieve the user associated with the session
-        return await this.userRepository.getById(session.userId); // Return the user associated with the session
+        const user = await this.userRepository.getById(session.userId);
+        return user ? this.toPublicUser(user) : null;
     }
     
     private getSessionExpiration(): Date {

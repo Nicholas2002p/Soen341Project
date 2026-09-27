@@ -8,7 +8,7 @@ export interface CreateUserData {
 
 export interface IUserRepository {
     //find a user by their id, returns null if not found
-    getById(id: string): Promise<User | null>;
+    getById(id: number): Promise<User | null>;
 
     //find a user by their email, returns null if not found
     getByEmail(email: string): Promise<User | null>;
@@ -16,6 +16,6 @@ export interface IUserRepository {
     //create a new user, returns the created user
     create(data: CreateUserData): Promise<User>;
 
-    //update a user's role, returns the updated user or null if not found
-    updateRole(id: string, newRole: UserRole): Promise<User | null>;
+    //update a user's password hash, returns the updated user or null if not found
+    updatePassword(id: number, newPasswordHash: string): Promise<User | null>;
 }
