@@ -30,7 +30,6 @@ export default function Account({ setView }) {
 function SignIn({ setView }) {
   return (
     <>
-      <img src="random-pfp.PNG" alt="" />
       <a onClick={ () => { setView("registration") }}> Sign in </a>
     </>
   );
@@ -48,7 +47,6 @@ function SignIn({ setView }) {
 function SignedIn({ setView, setToken }) {
   return (
     <>
-      <img src="random-pfp.PNG" alt="" />
       <a onClick={ () => { setView("home"); setToken(null) }}> Logout </a>
     </>
   )

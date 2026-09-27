@@ -60,6 +60,7 @@ $button-color: #b7fdf8;
 
 .profile-card-information img {
   @include width-height(85%, none);
+  
   align-self: center;
   margin-top: 3em;
   border: $black-border;
