@@ -30,7 +30,7 @@ export default function Registration({ setView }) {
             <section className='reg-inside'>
 
                 <div className='password'>
-                    <label for="email">Email:</label>
+                    <label htmlFor="email">Email:</label>
                     <input className='registration-input' type="text " name="email" maxlength="50" onChange={(e) => { setEmail(e.target.value) }} />
                 </div>
 
@@ -39,17 +39,17 @@ export default function Registration({ setView }) {
                 <Password labelName={"Confirm Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
                 
                 <div className='password'>
-                    <label for="fname">First Name:</label>
+                    <label htmlFor="fname">First Name:</label>
                     <input className='registration-input' type="text " name="fname" maxlength="50" onChange={(e) => { setfname(e.target.value) }} />
                 </div>
 
                 <div className='password'>
-                    <label for="lname"> Last name:</label>
+                    <label htmlFor="lname"> Last name:</label>
                     <input className='registration-input' type="text " name="lname" maxlength="50" onChange={(e) => { setlname(e.target.value) }} />
                 </div>
 
                 <div className='recruiter'>
-                    <label for="role"> Recruiter:</label>
+                    <label htmlFor="role"> Recruiter:</label>
                     <input  type="checkbox" name="role" checked={checked} onChange={() => setChecked(prev => !prev)}/>
                 </div>
 
@@ -57,7 +57,7 @@ export default function Registration({ setView }) {
                     Already have an account?
                     <a className='cursor' onClick={() => { setView("sign-in") }}> Sign In </a>
                 </section>
-                <span class="error-text">
+                <span className="error-text">
                     {errorMessage}
                 </span>
             
@@ -97,7 +97,7 @@ async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname
     else if (lname.trim() === "") setErrorMessage("Last name is required");
     
     else {
-        const role = checked? "recruiter":"jobseeker";
+        const role = checked ? "recruiter":"jobseeker";
         setErrorMessage("");
         const allGood = await RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token, role);
         if(allGood) {

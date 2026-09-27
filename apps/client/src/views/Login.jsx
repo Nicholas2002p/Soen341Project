@@ -25,7 +25,7 @@ export default function Login({ setView }) {
             <section className='reg-inside'>
 
                 <div className='password'>
-                    <label for="email">Email:</label>
+                    <label htmlfor="email">Email:</label>
                     <input className='registration-input' type="text " name="email" maxlength="50" onChange={(e) => { setEmail(e.target.value) }} />
                 </div>
 
@@ -36,7 +36,7 @@ export default function Login({ setView }) {
                     <a className='cursor' onClick={() => { setView("registration") }}> Register </a>
                 </section>
 
-                <span class="error-text">
+                <span className="error-text">
                     {errorMessage}
                 </span>
             
