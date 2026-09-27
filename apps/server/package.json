@@ -13,6 +13,7 @@
     "lint:fix": "eslint src --fix",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "prisma db seed",
     "prisma:studio": "prisma studio"
   },
   "keywords": [],
