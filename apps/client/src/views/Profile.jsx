@@ -16,43 +16,52 @@ import './Profile.scss';
  * @returns Profile component
  */
 export default function Profile({ setView }) {
-  const { token, setToken } = useAuth();
+  const { token, setToken, user } = useAuth();
+  const [data, setData] = useState({});
  
-  const [fname, setFName] = useState('FNAME');
-  const [lname, setLName] = useState('LNAME');
+  const [fname, setFName] = useState('');
+  const [lname, setLName] = useState('');
+  const [profileURL, setProfileURL] = useState(null);
   const [role, setRole] = useState('ROLE');
-  const [desc, setDesc] = useState('DESC');
-
+  const [desc, setDesc] = useState(null);
+  
   useEffect(() => {
-
     console.log("PROFILE EFFECT", token);
 
     if (!token) return;
-      const getProfile = async () => {
-            const data = await GetProfileApi(token);
-            if (!data) return;
-            setFName(data.profile.firstName);
-            setLName(data.profile.lastName);
-            setDesc(data.profile.bio);
-      };
-      getProfile();
-}, []);
+    const getProfile = async () => {
+      const data = await GetProfileApi(token);
+      if (!data) return;
+      const profile = data.profile; 
+
+      setData(profile);
+      setFName(profile.firstName);
+      setLName(profile.lastName);
+      setRole(user.role);
+      setProfileURL(profile.profileURL);
+      setDesc(profile.bio);
+    };
+    getProfile();
+    
+  }, []);
 
   return (
     <main className="profilepage">
-      <Nav setView={setView} />
+      <Nav setView={setView} profileURL={profileURL} />
 
       <section className='profile'>
-        <ProfileCard fname={fname} lname={lname} role={role} desc={desc} />
+        <ProfileCard profileURL={profileURL} fname={fname} lname={lname} role={role} desc={desc} />
 
         <section className='profile-modifications'>
           <ProfileEdit 
             fname={fname}
             lname={lname} 
             desc={desc}
+            old_profile={data}
             setFName={setFName}
             setLName={setLName}
             setDesc={setDesc} 
+            setProfileURL={setProfileURL}
           />
           <ResumeUpload />
         </section>

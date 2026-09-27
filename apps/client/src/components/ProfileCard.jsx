@@ -15,16 +15,18 @@ import './ProfileCard.scss';
  * @param {string} props.desc - A short description of the user.
  * @returns the profile card component
  */
-export default function ProfileCard({ fname, lname, role, desc }) {
+export default function ProfileCard({ profileURL, fname, lname, role, desc }) {
+  const userRole = role === "jobseeker" ? "Job Seeker" : "Recruiter";
+
   return (
     <section className="profile-card">
       <section className='profile-card-display'>
         <div className='card-hole'>  </div>
         <section className='profile-card-information'>
-          <img src="random-pfp.PNG" alt="" />
+          <img src={profileURL === null ? "random-pfp.PNG" : `http://localhost:3000${profileURL}`} alt="" />
           <section className='profile-card-information-text'>
             <p className="card-name"> {lname}, {fname} </p>
-            <p className="card-role"> {role} </p>
+            <p className="card-role"> {userRole} </p>
             <p className="card-description"> {desc} </p>
           </section>
         </section>

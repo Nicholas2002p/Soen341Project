@@ -12,6 +12,7 @@ const uploadsDirectory = path.resolve(process.cwd(), 'uploads');
 app.set('trust proxy', true);
 app.use(cors());
 app.use(express.json());
+
 // Serve static files from the uploads directory
 app.use('/uploads', express.static(uploadsDirectory));
 

@@ -56,20 +56,23 @@ $button-color: #b7fdf8;
   @include width-height(none, 100%);
   border-radius: 20px;
   background: radial-gradient($nav-color, #FFFFFF);
-}
-
-.profile-card-information img {
-  @include width-height(85%, none);
-  align-self: center;
-  margin-top: 3em;
-  border: $black-border;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 
 .profile-card-information-text {
-  @include width-height(none, 100%);
-  padding-left: 30px;
+  width: none;
+  height: 100%;
   font-size: 20px;
   line-height: 1.5;
+}
+
+.profile-card-information img {
+  @include width-height(100%, 350px);
+  align-self: center;
+  margin-top: 3em;
+  border: $black-border;
+  object-fit: fill;
 }
 
 .card-name {

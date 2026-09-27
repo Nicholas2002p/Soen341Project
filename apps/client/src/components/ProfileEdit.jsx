@@ -1,4 +1,7 @@
 import { useState } from 'react';
+
+import { useAuth } from '../utils/Auth';
+import { UpdateProfileApi, UpdateProfileImageApi } from '../utils/Api';
 import './ProfileEdit.scss';
 
 /**
@@ -13,8 +16,14 @@ import './ProfileEdit.scss';
  * @param {Function} props.setDesc - Updates the description state.
  * @returns the profile edit component
  */
-export default function ProfileEdit({ fname, lname, desc, setFName, setLName, setDesc }) {
+export default function ProfileEdit({ fname, lname, desc, old_profile, setFName, setLName, setDesc, setProfileURL }) {
+  const { token, setToken } = useAuth();
   const [password, setPassword] = useState('');
+
+  const [phone, setPhone] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [file, setFile] = useState(null);
 
   return (
     <section className="profile-edit">
@@ -22,30 +31,58 @@ export default function ProfileEdit({ fname, lname, desc, setFName, setLName, se
 
       <label htmlFor="">
         First Name: 
-        <input className='profile-edit-input' type="text" id="fname" name="fname" maxlength="50" placeholder={fname} onChange={(e) => { setFName(e.target.value) }} />
+        <input className='profile-edit-input' type="text" id="fname" name="fname" maxlength="50" placeholder={fname} 
+          onChange={(e) => { setFName(e.target.value) }} 
+        />
       </label>
 
       <label htmlFor="">
         Last Name: 
-        <input className='profile-edit-input' type="text" id="lname" name="lname" maxlength="50" placeholder={lname} onChange={(e) => { setLName(e.target.value) }} />
+        <input className='profile-edit-input' type="text" id="lname" name="lname" maxlength="50" placeholder={lname} 
+          onChange={(e) => { setLName(e.target.value) }} 
+        />
+      </label>
+
+      {/* <label htmlFor="">
+        Password:
+        <input className='profile-edit-input' type="password" maxlength="50" 
+          onChange={(e) => { setPassword(e.target.value) }} 
+        />
+      </label> */}
+
+      <label htmlFor="">
+        Phone:
+        <input className='profile-edit-input' type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder={phone} 
+          onChange={(e) => { setPhone(e.target.value) }} 
+        />
       </label>
 
       <label htmlFor="">
-        Password:
-        <input className='profile-edit-input' type="password" maxlength="50" onChange={(e) => { setPassword(e.target.value) }} />
+        Location:  
+        <input className='profile-edit-input' type="text" id="location" maxlength="250" name="location" placeholder={location} 
+          onChange={(e) => { setLocation(e.target.value) }} 
+        />
       </label>
 
       <label htmlFor="">
         Description: 
-        <input className='profile-edit-input' type="text" id="desc" maxlength="250" name="desc" placeholder={desc} onChange={(e) => { setDesc(e.target.value) }} />
+        <input className='profile-edit-input' type="text" id="desc" maxlength="250" name="desc" placeholder={desc} 
+          onChange={(e) => { setDesc(e.target.value) }} 
+        />
       </label>
 
       <label htmlFor="">
         Profile Picture:
-        <input className='profile-edit-input' type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />
+        <input className='profile-edit-input' type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" 
+          onChange={(e) => { setFile(e.target.files?.[0] ?? null) }}
+        />
       </label>
 
-      <button className='profile-edit-button' button="type" onClick={() => { Save(fname, lname, desc, password) }}>
+      {/* <span> Error: {errorMessage} </span> */}
+
+      <button className='profile-edit-button' button="type" 
+        onClick={() => { Save(fname, lname, phone, desc, location, file, setProfileURL, setErrorMessage, token, password, old_profile) }}
+      >
         Save
       </button>
     </section>
@@ -61,8 +98,19 @@ export default function ProfileEdit({ fname, lname, desc, setFName, setLName, se
  * @param {*} desc 
  * @param {*} password 
  */
-function Save(fname, lname, desc, password) {
-  // call the api to update the database
-  console.log('first name: ' + fname);
-  console.log('last name: ' + lname);
+async function Save(fname, lname, phone, desc, location, file, setProfileURL, setErrorMessage, token, password, old_profile) {
+  if (password.trim() !== "") {
+    // call api to update the password
+  }
+
+  if (file) {
+    const profile = await UpdateProfileImageApi(file, setErrorMessage, token);
+    if (profile?.profileURL) {
+      setProfileURL(profile.profileURL);
+    }
+  }
+
+  if (fname !== old_profile.firstName || lname !== old_profile.lastName || phone !== old_profile.phone || desc !== old_profile.bio || location !== old_profile.location) {
+    await UpdateProfileApi(fname, lname, phone, desc, location, setErrorMessage, token);
+  }
 }

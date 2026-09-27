@@ -16,7 +16,7 @@ export default function Login({ setView }) {
     const [errorMessage, setErrorMessage] = useState('');
     const [passwordType, setPasswordType] = useState(true);
     const [passwordType2, setPasswordType2] = useState(true);
-    const { token, setToken } = useAuth();
+    const { token, setToken, setUser } = useAuth();
 
   return (
     <section className="registration">  
@@ -40,7 +40,7 @@ export default function Login({ setView }) {
                     {errorMessage}
                 </span>
             
-                <button className="register-btn" onClick={() => {  RegisterUser(password,  setErrorMessage, email, setToken,setView) } }> Log in </button>
+                <button className="register-btn" onClick={() => {  RegisterUser(password, setErrorMessage, email, setToken, setView, setUser) } }> Log in </button>
             </section>
         </main>
     </section>
@@ -57,7 +57,7 @@ export default function Login({ setView }) {
  * @param {function} setToken 
  * @param {function} setView 
  */
-async function RegisterUser(password, setErrorMessage,email,setToken,setView) { 
+async function RegisterUser(password, setErrorMessage, email, setToken, setView, setUser) { 
     if (email.trim() === "") {
         setErrorMessage("Email is required");
     } 
@@ -72,7 +72,7 @@ async function RegisterUser(password, setErrorMessage,email,setToken,setView) {
     
     else {
         setErrorMessage("");
-        const allGood = await LogInApi( email, password, setErrorMessage, setToken);
+        const allGood = await LogInApi(email, password, setErrorMessage, setToken, setUser);
         if(allGood) setView("profile");
     }
 }

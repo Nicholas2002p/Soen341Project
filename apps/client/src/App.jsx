@@ -1,4 +1,4 @@
-import { useState, useContext, createContext } from 'react';
+import { useState } from 'react';
 import './App.css';
 import Home from './views/Home';
 import Profile from './views/Profile';
@@ -8,10 +8,11 @@ import { AuthContext } from './utils/Auth'
 
 function Main() {
  const [view, setView] = useState("home");
+ const [user, setUser] = useState(null);
  const [token, setToken] = useState(null);
 
   return (
-    <AuthContext.Provider value={{ token, setToken }}>
+    <AuthContext.Provider value={{ token, setToken, user, setUser }}>
       <div id="app">
         {view === "home" && <Home setView={setView} /> }
         {view === "profile" && <Profile setView={setView} />}
