@@ -11,7 +11,8 @@ import "./Registration.scss";
  * @returns the registration page
  */
 export default function Registration({ setView }) {
-   
+    const [fname, setFName] = useState('');
+    const [lname, setLName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
@@ -40,12 +41,12 @@ export default function Registration({ setView }) {
                 
                 <div className='password'>
                     <label htmlFor="fname">First Name:</label>
-                    <input className='registration-input' type="text " name="fname" maxlength="50" onChange={(e) => { setfname(e.target.value) }} />
+                    <input className='registration-input' type="text " name="fname" maxlength="50" onChange={(e) => { setFName(e.target.value) }} />
                 </div>
 
                 <div className='password'>
                     <label htmlFor="lname"> Last name:</label>
-                    <input className='registration-input' type="text " name="lname" maxlength="50" onChange={(e) => { setlname(e.target.value) }} />
+                    <input className='registration-input' type="text " name="lname" maxlength="50" onChange={(e) => { setLName(e.target.value) }} />
                 </div>
 
                 <div className='recruiter'>

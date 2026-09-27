@@ -79,7 +79,7 @@ export async function CreateProfileApi(fname, lname, setErrorMessage, token) {
  * @param {*} setErrorMessage 
  * @param {*} token 
  */
-export async function UpdateProfileApi(fname, lname, phone, bio, location, profileURL, setErrorMessage, token) {
+export async function UpdateProfileApi(fname, lname, phone, bio, location, setErrorMessage, token) {
     try {
         console.log("profileURL: " + profileURL);
         const response = await fetch("http://localhost:3000/api/auth/profile", {
@@ -94,8 +94,7 @@ export async function UpdateProfileApi(fname, lname, phone, bio, location, profi
                 lastName: lname,
                 phone: phone,
                 bio: bio,
-                location: location,
-                profileURL: profileURL,
+                location: location
             }),
         });
 
@@ -107,7 +106,31 @@ export async function UpdateProfileApi(fname, lname, phone, bio, location, profi
     } catch (error) {
         console.error(error);
     }
+}
 
+export async function UpdateProfileImageApi(file, setErrorMessage, token) {
+    const formData = new FormData();
+    formData.append('profilePicture', new Blob(['profile picture'], { type: 'image/png' }), file);
+
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/profile/picture', {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            body: formData
+        });
+        const data = await response.json();
+        
+        if (!response.ok) {
+            setErrorMessage("Error Message:", data.message);
+            return;
+        }
+
+        return data.profile;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 /**
@@ -166,5 +189,4 @@ export async function GetProfileApi(token) {
     } catch (error) {
         console.error(error);
     }
-
 }

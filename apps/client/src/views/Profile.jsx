@@ -42,14 +42,17 @@ export default function Profile({ setView }) {
       setDesc(profile.bio);
     };
     getProfile();
+    
   }, []);
+
+  console.log("profile: " + profileURL);
 
   return (
     <main className="profilepage">
       <Nav setView={setView} profileURL={profileURL} />
 
       <section className='profile'>
-        <ProfileCard fname={fname} lname={lname} role={role} desc={desc} />
+        <ProfileCard profileURL={profileURL} fname={fname} lname={lname} role={role} desc={desc} />
 
         <section className='profile-modifications'>
           <ProfileEdit 
@@ -57,10 +60,10 @@ export default function Profile({ setView }) {
             lname={lname} 
             desc={desc}
             old_profile={data}
-            profileURL={profileURL}
             setFName={setFName}
             setLName={setLName}
             setDesc={setDesc} 
+            setProfileURL={setProfileURL}
           />
           <ResumeUpload />
         </section>

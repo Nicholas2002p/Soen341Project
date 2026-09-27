@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { useAuth } from '../utils/Auth';
-import { UpdateProfileApi } from '../utils/Api';
+import { UpdateProfileApi, UpdateProfileImageApi } from '../utils/Api';
 import './ProfileEdit.scss';
 
 /**
@@ -16,13 +16,14 @@ import './ProfileEdit.scss';
  * @param {Function} props.setDesc - Updates the description state.
  * @returns the profile edit component
  */
-export default function ProfileEdit({ fname, lname, desc, old_profile, profileURL, setFName, setLName, setDesc, setProfileURL }) {
+export default function ProfileEdit({ fname, lname, desc, old_profile, setFName, setLName, setDesc, setProfileURL }) {
   const { token, setToken } = useAuth();
   const [password, setPassword] = useState('');
 
   const [phone, setPhone] = useState(null);
   const [location, setLocation] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [file, setFile] = useState(null);
 
   return (
     <section className="profile-edit">
@@ -73,14 +74,14 @@ export default function ProfileEdit({ fname, lname, desc, old_profile, profileUR
       <label htmlFor="">
         Profile Picture:
         <input className='profile-edit-input' type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" 
-          onChange={(e) => { setProfileURL(e.target.value) }}
+          onChange={(e) => { setFile(e.target.value) }}
         />
       </label>
 
       {/* <span> Error: {errorMessage} </span> */}
 
       <button className='profile-edit-button' button="type" 
-        onClick={() => { Save(fname, lname, phone, desc, location, profileURL, setErrorMessage, token, password, old_profile) }}
+        onClick={() => { Save(fname, lname, phone, desc, location, file, setProfileURL, setErrorMessage, token, password, old_profile) }}
       >
         Save
       </button>
@@ -97,12 +98,17 @@ export default function ProfileEdit({ fname, lname, desc, old_profile, profileUR
  * @param {*} desc 
  * @param {*} password 
  */
-function Save(fname, lname, phone, desc, location, profileURL, setErrorMessage, token, password, old_profile) {
+async function Save(fname, lname, phone, desc, location, file, setProfileURL, setErrorMessage, token, password, old_profile) {
   if (password.trim() !== "") {
     // call api to update the password
   }
 
-  if (fname !== old_profile.firstName || lname !== old_profile.lastName || phone !== old_profile.phone || desc !== old_profile.bio || location !== old_profile.location || profileURL !== old_profile.profileURL) {
-    UpdateProfileApi(fname, lname, phone, desc, location, profileURL, setErrorMessage, token);
+  if (file) {
+    const profile_url = await UpdateProfileImageApi(file, setErrorMessage, token);
+    setProfileURL(profile_url.profileURL);
+  }
+
+  if (fname !== old_profile.firstName || lname !== old_profile.lastName || phone !== old_profile.phone || desc !== old_profile.bio || location !== old_profile.location) {
+    await UpdateProfileApi(fname, lname, phone, desc, location, setErrorMessage, token);
   }
 }
