@@ -1,7 +1,7 @@
 import express, { type Express, type Request, type Response } from 'express';
 import { authRoutes } from './presentation/routes/AuthRoutes.js';
 import { profileRoutes, publicProfileRoutes } from './presentation/routes/ProfileRoutes.js';
-import cors from 'cors'
+import cors from 'cors';
 
 export const app: Express = express();
 

@@ -18,7 +18,8 @@
 }
 
 .registration {
-  background-color: #063a4b;
+  background: url("registration-login.png"); 
+  background-size: contain;
   display: flex;
   flex-direction: column;
   align-items: center;
