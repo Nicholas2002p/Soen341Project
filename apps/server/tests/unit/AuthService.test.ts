@@ -6,30 +6,35 @@ import { InvalidAuthCredentialsError } from '../../src/domain/errors/InvalidAuth
 import { InvalidEmailError } from '../../src/domain/errors/InvalidEmailError.js';
 import {
     FakePasswordHasher,
+    FakeSaltRepository,
     FakeSessionRepository,
     FakeSessionTokenGenerator,
     FakeUserRepository,
     user,
 } from '../fakes/AuthFakes.js';
 
+console.log('\n=== tests/unit/AuthService.test.ts ===');
+
 function createService(initialUsers: User[] = []) {
     const userRepository = new FakeUserRepository(initialUsers); // Create a fake user repository with optional initial users
     const sessionRepository = new FakeSessionRepository(); // Create a fake session repository
     const passwordHasher = new FakePasswordHasher(); // Create a fake password hasher
+    const saltRepository = new FakeSaltRepository();
     const service = new AuthService( // Create an instance of AuthService with the fake repositories and hasher
         userRepository,
         sessionRepository,
         passwordHasher,
         new FakeSessionTokenGenerator(), // Create a fake session token generator
+        saltRepository,
     );
 
     // Return the service and the fake repositories for use in tests
-    return { service, userRepository, sessionRepository, passwordHasher };
+    return { service, userRepository, sessionRepository, passwordHasher, saltRepository };
 }
 
 test('register normalizes the email, hashes the password, and creates a session', async () => {
     // Create an AuthService instance with no initial users
-    const { service, userRepository, passwordHasher, sessionRepository } = createService();
+    const { service, userRepository, passwordHasher, sessionRepository, saltRepository } = createService();
 
     // Call the register method with an email that has leading/trailing whitespace and uppercase letters
     const result = await service.register({
@@ -44,7 +49,8 @@ test('register normalizes the email, hashes the password, and creates a session'
     // Check that the password has been hashed
     assert.deepEqual(passwordHasher.hashedPasswords, ['secret-password']); 
     // Check that the session token is generated and stored in the session repository
-    assert.equal(userRepository.createdData?.passwordHash, 'hashed:secret-password');
+    assert.equal(userRepository.createdData?.passwordHash, 'hashed:secret-password:salt:10');
+    assert.equal(saltRepository.salts.get(result.user.id), 'salt:10');
     // Check that the session repository has a session for the user with the hashed token
     assert.ok(sessionRepository.sessions.has('hashed-token:plain-session-token'));
 });
@@ -78,6 +84,19 @@ test('login rejects an invalid email format as invalid credentials', async () =>
         service.login('not-an-email', 'secret-password'),
         InvalidAuthCredentialsError,
     );
+});
+
+test('login upgrades a password hash below the current salt rounds', async () => {
+    const lowRoundUser = { ...user, passwordHash: 'low-rounds-hash' };
+    const { service, userRepository, saltRepository } = createService([lowRoundUser]);
+    saltRepository.salts.set(lowRoundUser.id, 'salt:8');
+
+    const result = await service.login(lowRoundUser.email, 'secret-password');
+    const updatedUser = await userRepository.getByEmail(lowRoundUser.email);
+
+    assert.equal(updatedUser?.passwordHash, 'hashed:secret-password:salt:10');
+    assert.equal(saltRepository.salts.get(lowRoundUser.id), 'salt:10');
+    assert.equal(result.user.id, lowRoundUser.id);
 });
 
 test('authenticate removes expired sessions and returns no user', async () => {
