@@ -23,7 +23,7 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
             setErrorMessage("Error Message:", data.message);
             return false;
         } 
-
+        
         setToken(data.sessionToken);
         setUser(data.user);
         return await CreateProfileApi(fname, lname, setErrorMessage, data.sessionToken);

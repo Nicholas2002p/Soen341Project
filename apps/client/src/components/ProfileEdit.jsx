@@ -31,14 +31,14 @@ export default function ProfileEdit({ fname, lname, desc, old_profile, setFName,
 
       <label htmlFor="">
         First Name: 
-        <input className='profile-edit-input' type="text" id="fname" name="fname" maxlength="50" placeholder={fname} 
+        <input className='profile-edit-input' type="text" id="fname" name="fname" maxLength="50" placeholder={fname} 
           onChange={(e) => { setFName(e.target.value) }} 
         />
       </label>
 
       <label htmlFor="">
         Last Name: 
-        <input className='profile-edit-input' type="text" id="lname" name="lname" maxlength="50" placeholder={lname} 
+        <input className='profile-edit-input' type="text" id="lname" name="lname" maxLength="50" placeholder={lname} 
           onChange={(e) => { setLName(e.target.value) }} 
         />
       </label>
@@ -59,14 +59,14 @@ export default function ProfileEdit({ fname, lname, desc, old_profile, setFName,
 
       <label htmlFor="">
         Location:  
-        <input className='profile-edit-input' type="text" id="location" maxlength="250" name="location" placeholder={location} 
+        <input className='profile-edit-input' type="text" id="location" maxLength="250" name="location" placeholder={location} 
           onChange={(e) => { setLocation(e.target.value) }} 
         />
       </label>
 
       <label htmlFor="">
         Description: 
-        <input className='profile-edit-input' type="text" id="desc" maxlength="250" name="desc" placeholder={desc} 
+        <input className='profile-edit-input' type="text" id="desc" maxLength="250" name="desc" placeholder={desc} 
           onChange={(e) => { setDesc(e.target.value) }} 
         />
       </label>
