@@ -10,6 +10,7 @@ import {
     FakeSessionRepository,
     FakeSessionTokenGenerator,
     FakeUserRepository,
+    FakeGoogleTokenVerifier,
     user,
 } from '../fakes/AuthFakes.js';
 
@@ -20,12 +21,17 @@ function createService(initialUsers: User[] = []) {
     const sessionRepository = new FakeSessionRepository(); // Create a fake session repository
     const passwordHasher = new FakePasswordHasher(); // Create a fake password hasher
     const saltRepository = new FakeSaltRepository();
+    const googleTokenVerifier = new FakeGoogleTokenVerifier({
+        'new-user-token': { email: '  New.User@Gmail.com ' },
+        'existing-user-token': { email: user.email },
+    });
     const service = new AuthService( // Create an instance of AuthService with the fake repositories and hasher
         userRepository,
         sessionRepository,
         passwordHasher,
         new FakeSessionTokenGenerator(), // Create a fake session token generator
         saltRepository,
+        googleTokenVerifier,
     );
 
     // Return the service and the fake repositories for use in tests
@@ -112,4 +118,35 @@ test('authenticate removes expired sessions and returns no user', async () => {
 
     assert.equal(result, null);
     assert.deepEqual(sessionRepository.deletedSessionIds, [1]);
+});
+
+test('loginWithGoogle creates a user and a session on first Google login', async () => {
+    const { service, userRepository, sessionRepository } = createService();
+
+    const result = await service.loginWithGoogle('new-user-token');
+
+    // The Google email is normalized and the password hash is never exposed
+    assert.equal(result.user.email, 'new.user@gmail.com');
+    assert.equal('passwordHash' in result.user, false);
+    // A new user was created and a session was stored
+    assert.ok(userRepository.createdData);
+    assert.ok(sessionRepository.sessions.has('hashed-token:plain-session-token'));
+});
+
+test('loginWithGoogle logs in an existing user without creating a new account', async () => {
+    const { service, userRepository } = createService([user]);
+
+    const result = await service.loginWithGoogle('existing-user-token');
+
+    assert.equal(result.user.id, user.id);
+    assert.ok(!userRepository.createdData);
+});
+
+test('loginWithGoogle rejects an invalid Google token', async () => {
+    const { service } = createService();
+
+    await assert.rejects(
+        service.loginWithGoogle('fake-token'),
+        { name: 'InvalidGoogleTokenError' },
+    );
 });

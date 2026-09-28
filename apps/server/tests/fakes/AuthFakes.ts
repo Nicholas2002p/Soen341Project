@@ -5,7 +5,7 @@ import type { ISessionRepository, session } from '../../src/application/interfac
 import type { CreateUserData, IUserRepository } from '../../src/application/interfaces/repositories/IUserRepository.js';
 import type { User } from '../../src/domain/entities/User.js';
 import { UserRole } from '../../src/domain/entities/User.js';
-
+import type { GoogleProfile, IGoogleTokenVerifier } from '../../src/application/interfaces/infrastructure/IGoogleTokenVerifier.js';
 export const user: User = {
     id: 1,
     email: 'person@example.com',
@@ -127,5 +127,18 @@ export class FakeSessionTokenGenerator implements ISessionTokenGenerator {
 
     hash(token: string): string {
         return `hashed-token:${token}`;
+    }
+}
+export class FakeGoogleTokenVerifier implements IGoogleTokenVerifier {
+    constructor(private readonly profilesByToken: Record<string, GoogleProfile> = {}) {}
+
+    async verify(idToken: string): Promise<GoogleProfile> {
+        const profile = this.profilesByToken[idToken];
+        if (!profile) {
+            const error = new Error('Invalid Google token');
+            error.name = 'InvalidGoogleTokenError';
+            throw error;
+        }
+        return profile;
     }
 }
