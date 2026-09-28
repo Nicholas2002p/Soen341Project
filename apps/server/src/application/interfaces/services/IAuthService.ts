@@ -1,11 +1,11 @@
 import { PublicUser } from '../../../domain/entities/PublicUser.js';
 
-export interface RegisterData{
+export interface RegisterData {
     email: string;
     password: string;
 }
 
-export interface AuthenticationResult{
+export interface AuthenticationResult {
     user: PublicUser;
     sessionToken: string;
 }
@@ -16,6 +16,9 @@ export interface IAuthService {
 
     //login a user, returns the user and a session token
     login(email: string, password: string): Promise<AuthenticationResult>;
+
+    //login or register a user with a Google ID token, returns the user and a session token
+    loginWithGoogle(idToken: string): Promise<AuthenticationResult>;
 
     //logout a user, invalidates the session token
     logout(sessionToken: string): Promise<void>;

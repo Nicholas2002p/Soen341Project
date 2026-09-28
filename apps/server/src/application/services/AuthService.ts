@@ -10,6 +10,8 @@ import { PublicUser } from '../../domain/entities/PublicUser.js';
 import { User } from '../../domain/entities/User.js';
 import { isValidEmail, normalizeEmail } from '../../domain/validation/Email.js';
 import { InvalidEmailError } from '../../domain/errors/InvalidEmailError.js';
+import { IGoogleTokenVerifier } from '../interfaces/infrastructure/IGoogleTokenVerifier.js';
+import { randomBytes } from 'node:crypto';
 
 export class AuthService implements IAuthService {
     private static readonly SESSION_EXPIRATION_DAYS = 30; // Session expires in 30 days
@@ -20,7 +22,8 @@ export class AuthService implements IAuthService {
         private readonly passwordHasher: IPasswordHasher,
         private readonly sessionTokenGenerator: ISessionTokenGenerator,
         private readonly saltRepository: ISaltRepository,
-    ) {}
+        private readonly googleTokenVerifier: IGoogleTokenVerifier,
+    ) { }
 
     private toPublicUser(user: User): PublicUser {
         const { passwordHash: _passwordHash, ...publicUser } = user;
@@ -37,7 +40,7 @@ export class AuthService implements IAuthService {
 
         const existingUser = await this.userRepository.getByEmail(email);
         if (existingUser) {
-            throw new UserAlreadyExistsError(); 
+            throw new UserAlreadyExistsError();
         }
 
         // Generate a salt and hash the password using the provided password hasher
@@ -53,8 +56,8 @@ export class AuthService implements IAuthService {
 
         // Generate a session token and create a new session for the user
         const sessionToken = this.sessionTokenGenerator.generate();
-        await this.sessionRepository.create(newUser.id, 
-            this.sessionTokenGenerator.hash(sessionToken), 
+        await this.sessionRepository.create(newUser.id,
+            this.sessionTokenGenerator.hash(sessionToken),
             this.getSessionExpiration());
 
         return {
@@ -120,6 +123,37 @@ export class AuthService implements IAuthService {
         }
     }
 
+    async loginWithGoogle(idToken: string): Promise<AuthenticationResult> {
+        // Verify the Google token and get the user's email
+        const profile = await this.googleTokenVerifier.verify(idToken);
+        const email = normalizeEmail(profile.email);
+
+        // Find the user, or create one on their first Google login
+        let user = await this.userRepository.getByEmail(email);
+        if (!user) {
+            // Google users have no password: store a random one nobody knows
+            const salt = await this.passwordHasher.generateSalt();
+            const randomPassword = randomBytes(32).toString('hex');
+            const passwordHash = await this.passwordHasher.hash(randomPassword, salt);
+
+            user = await this.userRepository.create({ email, passwordHash });
+            await this.saltRepository.save(user.id, salt);
+        }
+
+        // Generate a session token and create a new session for the user
+        const sessionToken = this.sessionTokenGenerator.generate();
+        await this.sessionRepository.create(
+            user.id,
+            this.sessionTokenGenerator.hash(sessionToken),
+            this.getSessionExpiration()
+        );
+
+        return {
+            user: this.toPublicUser(user),
+            sessionToken,
+        };
+    }
+
     async logout(sessionToken: string): Promise<void> {
         // Hash the session token before deleting it from the database
         const tokenHash = this.sessionTokenGenerator.hash(sessionToken);
@@ -149,7 +183,7 @@ export class AuthService implements IAuthService {
         const user = await this.userRepository.getById(session.userId);
         return user ? this.toPublicUser(user) : null;
     }
-    
+
     private getSessionExpiration(): Date {
         const expirationDate = new Date();
         expirationDate.setDate(
