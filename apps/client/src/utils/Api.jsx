@@ -64,6 +64,41 @@ export async function LogInApi(email, password, setErrorMessage, setToken, setUs
     } catch (error) {
         console.error(error);
     }
+} 
+
+/**
+ * sends the Google credential to the server and sets token in context
+ * @param {*} credential
+ * @param {*} setErrorMessage
+ * @param {*} setToken
+ * @param {*} setUser
+ * @returns true if response ok
+ */
+export async function GoogleLogInApi(credential, setErrorMessage, setToken, setUser) {
+    try {
+        const response = await fetch("http://localhost:3000/api/auth/google", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token: credential }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            setErrorMessage("Google sign-in failed. Please try again.");
+            return false;
+        }
+
+        setToken(data.sessionToken);
+        setUser(data.user);
+
+        return true;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Sign-in failed. Make sure the server is running.");
+        return false;
+    }
 }
 
 /**

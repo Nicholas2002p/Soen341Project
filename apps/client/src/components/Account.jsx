@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from "../utils/Auth";
+import { googleLogout } from "@react-oauth/google";
 
 /**
  * Account
@@ -47,7 +48,7 @@ function SignIn({ setView }) {
 function SignedIn({ setView, setToken }) {
   return (
     <>
-      <a onClick={ () => { setView("home"); setToken(null) }}> Logout </a>
+          <a onClick={ () => { googleLogout(); setView("home"); setToken(null) }}> Logout </a>
     </>
   )
 }

@@ -1,40 +1,19 @@
 import { useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogInApi } from "../utils/Api";
 
 export default function GoogleSignIn({ setToken, setUser, setView }) {
   const [error, setError] = useState(null);
 
-  const handleLogin = async (googleData) => {
+ const handleLogin = async (googleData) => {
     setError(null);
-    let data;
-
-    try {
-      const response = await fetch("/api/auth", {
-        method: "POST",
-        body: JSON.stringify({
-          token: googleData.credential,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to connect - HTTP status " + response.status);
-      }
-
-      data = await response.json();
-      setUsername(data.user.name);
-    } catch (err) {
-      console.error("failed to sign in to google", err);
-      setError("La connexion a échoué. Vérifie que le serveur tourne.");
-      return;
-    }
+    const allGood = await GoogleLogInApi(googleData.credential, setError, setToken, setUser);
+    if (allGood) setView("profile");
   };
 
   const handleError = (error) => {
     console.error("Error logging in with google:", error);
-    setError("Erreur lors de la connexion Google.");
+    setError("Google sign-in failed. Please try again.");
   };
 
   return (

@@ -89,3 +89,21 @@ in root of the project
 - ai resume feature
 - more to come!
 
+## Google Sign-In Setup
+Google sign-in needs a Google OAuth Client ID on both the server and the client.
+
+**Option 1 (easiest):** ask the team on Discord for the shared Client ID.
+
+**Option 2: create your own**
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) and create a project
+2. Go to **APIs & Services → OAuth consent screen** and configure it (External, add your email as a test user)
+3. Go to **APIs & Services → Credentials → Create credentials → OAuth client ID**
+4. Choose **Web application**
+5. Under **Authorized JavaScript origins**, add `http://localhost:5173`
+6. Copy the generated **Client ID**
+
+**Then add the same Client ID to both env files:**
+- `apps/server/.env` → `GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com`
+- `apps/client/.env.local` → `VITE_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com`
+
+Restart both servers after editing the env files.
