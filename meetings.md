@@ -34,14 +34,14 @@ No issues so far
 
 ### What was done
 - Michelle : Skeleton of home and profile
-- Nicholas : Schema 
+- Nicholas : Schema, documentaion
 - Chen :  the setup for the project
 - Abdulla : almost done resume api
 - Tyler : user api 
 - Magley : started google sign in
 
 ### Future tasks
-- Michelle : Work on conecting profile to backend and
+- Michelle : Work on connecting profile to backend and documentaion
 - Nicholas : sign in and register ui and connecting it to backend
 - Chen : seeding the db
 - Abdulla :  finish the resume api
@@ -61,7 +61,7 @@ No issues so far
 
 ### What was done
 - Michelle : profile fully conected to backed
-- Nicholas : sign in and register 
+- Nicholas : sign in and register and documentation
 - Chen :  seeding the db
 - Abdulla : finish resume api
 - Tyler : finished profile api
@@ -69,7 +69,7 @@ No issues so far
 
 ### Future tasks
 - Michelle :  work on create job ui and application ui
-- Nicholas : conenct to job api  and show results
+- Nicholas : conenct to job api  and show results and documentation
 - Chen : Job backend delete, get, put, post, 
 - Abdulla :  application backed delete, create and update, get
 - Tyler : CI/CD, Sent photos and files to https, take in role on registration
