@@ -11,23 +11,23 @@
 export async function RegisterApi(fname, lname, email, password, setErrorMessage, setToken, role, setUser) {
     try {
         const response = await fetch("http://localhost:3000/api/auth/register", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password, role }),
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password, role }),
         });
-        
+
         const data = await response.json();
         if (!response.ok) {
             setErrorMessage("Error Message:", data.message);
             return false;
-        } 
-        
+        }
+
         setToken(data.sessionToken);
         setUser(data.user);
         return await CreateProfileApi(fname, lname, setErrorMessage, data.sessionToken);
-        
+
     } catch (error) {
         console.error(error);
     }
@@ -44,30 +44,49 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
 export async function LogInApi(email, password, setErrorMessage, setToken, setUser) {
     try {
         const response = await fetch("http://localhost:3000/api/auth/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
         });
 
         const data = await response.json();
         if (!response.ok) {
             setErrorMessage("Error password or email incorrect");
             return false;
-        } 
+        }
 
         setToken(data.sessionToken);
         setUser(data.user);
-        
-        return true; 
+
+        return true;
     } catch (error) {
         console.error(error);
     }
-} 
+}
+/**
+ * reads the name and email inside the Google credential (display only, the server verifies the token)
+ * @param {*} credential
+ * @returns the decoded payload, or an empty object
+ */
+function decodeGoogleCredential(credential) {
+    try {
+        const base64 = credential.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+        const json = decodeURIComponent(
+            atob(base64)
+                .split("")
+                .map((c) => "%" + c.charCodeAt(0).toString(16).padStart(2, "0"))
+                .join("")
+        );
+        return JSON.parse(json);
+    } catch {
+        return {};
+    }
+}
 
 /**
- * sends the Google credential to the server and sets token in context
+ * sends the Google credential to the server, creates a profile on first login, and sets token in context
  * @param {*} credential
  * @param {*} setErrorMessage
  * @param {*} setToken
@@ -90,6 +109,16 @@ export async function GoogleLogInApi(credential, setErrorMessage, setToken, setU
             return false;
         }
 
+        // Google users have no profile on their first login: create one, like RegisterApi does
+        const existingProfile = await GetProfileApi(data.sessionToken);
+        if (!existingProfile) {
+            const google = decodeGoogleCredential(credential);
+            const firstName = google.given_name || (google.email ?? "").split("@")[0] || "New";
+            const lastName = google.family_name || "User";
+            const created = await CreateProfileApi(firstName, lastName, setErrorMessage, data.sessionToken);
+            if (!created) return false;
+        }
+
         setToken(data.sessionToken);
         setUser(data.user);
 
@@ -98,6 +127,23 @@ export async function GoogleLogInApi(credential, setErrorMessage, setToken, setU
         console.error(error);
         setErrorMessage("Sign-in failed. Make sure the server is running.");
         return false;
+    }
+}
+
+/**
+ * logs out the user on the server by deleting the session
+ * @param {*} token
+ */
+export async function LogOutApi(token) {
+    try {
+        await fetch("http://localhost:3000/api/auth/logout", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+    } catch (error) {
+        console.error(error);
     }
 }
 
@@ -126,7 +172,7 @@ export async function CreateProfileApi(fname, lname, setErrorMessage, token) {
         if (!response.ok) {
             setErrorMessage("Error Message:", data.message);
             return false;
-        } 
+        }
         return true;
     } catch (error) {
         console.error(error);
@@ -188,7 +234,7 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
             body: formData
         });
         const data = await response.json();
-        
+
         if (!response.ok) {
             setErrorMessage(data.message ?? "Unable to upload profile picture.");
             return null;
@@ -222,7 +268,7 @@ export async function GetProfileApi(token) {
         if (!response.ok) {
             console.error(data.message);
             return false;
-        } 
+        }
         return data;
     } catch (error) {
         console.error(error);
