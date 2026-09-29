@@ -14,14 +14,15 @@ CareerConnect is a website that allows users to find jobs and recruiters to find
 
 
 ## Team Members
-- Nicholas Pouliezos
-- Uyen Dinh Michelle Banh
-- Yun Chen Qian
-- Tyler Johnson
-- Abdulla Hareth
-- Magley Pierre
+- Nicholas Pouliezos 40337451
+- Uyen Dinh Michelle Banh 40334488
+- Yun Chen Qian 40337539
+- Tyler Johnson 40299090
+- Abdulla Hareth 402121538
+- Magley Pierre 40210677
 
 ## Problems/Bugs
+- no bugs so far
 
 ## Technologies
    ### Frontend
