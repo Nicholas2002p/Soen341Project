@@ -1,19 +1,28 @@
 # CareerConnect Soen341Project
 
-## Discription
-CareerConnect is a website that allows users to find jobs  and recruters to find employes easier.
-Right now 
+## Description
+CareerConnect is a website that allows users to find jobs and recruiters to find employees easier.
+
+### Features implemented
+- login and register
+- view and update your profile
+- view dummy job postings in home
+
+### Features almost done implementing
+- resume upload and display
+- google login
 
 
 ## Team Members
-- Nicholas Pouliezos
-- Uyen Dinh Michelle Banh
-- Yun Chen Qian
-- Tyler Johnson
-- Abdulla Hareth
-- Magley Pierre
+- Nicholas Pouliezos 40337451
+- Uyen Dinh Michelle Banh 40334488
+- Yun Chen Qian 40337539
+- Tyler Johnson 40299090
+- Abdulla Hareth 402121538
+- Magley Pierre 40210677
 
-## Problems
+## Problems/Bugs
+- no bugs so far
 
 ## Technologies
    ### Frontend
@@ -27,7 +36,7 @@ Right now
    - prisma ORM
    - bcrypt
    ### test
-   - junit
+   - node Test
 
 ## Setup Instructions
 ### Database Setup
@@ -47,30 +56,36 @@ in root of the project
    npx prisma migrate dev
 ```
 
-6. In the same directory, run:
+7. In the same directory, run:
 ```bash
    npx prisma generate
 ```
-7. make sure to keep postgreSQL open 
 
 ### FrontEnd  and server setup
-1. make sure you are back at the root of the project if u already npm install
- then run
+1. in server run 
+```bash
+       npm install
+    ```
+2.  in root of the project run 
+```bash
+       npm install
+    ```
+3. then run 
 ```bash
    npm build
 ```
-2. then run 
+4. finally run 
 ```bash
    npm run dev
 ```
 
 ## Proposed Features
 - Post a job onto the job board
-- Look throught jobs
-- Filter Jobs
+- Look through jobs board
+- Filter Jobs base on skills, location, title
 - Apply for job
-- Manage applications
+- Manage applications reject or accept applicants
 - apply roles to users
-- ai feature
+- ai resume feature
 - more to come!
 

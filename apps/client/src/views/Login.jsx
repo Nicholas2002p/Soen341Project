@@ -2,7 +2,7 @@ import { useState } from 'react';
 import "./Registration.scss";
 import Password from '../components/Password';
 import { useAuth } from '../utils/Auth'
-import {LogInApi} from '../utils/Api';
+import { LogInApi } from '../utils/Api';
 
 /**
  * Displays the sign in for users
@@ -16,7 +16,7 @@ export default function Login({ setView }) {
     const [errorMessage, setErrorMessage] = useState('');
     const [passwordType, setPasswordType] = useState(true);
     const [passwordType2, setPasswordType2] = useState(true);
-    const { token, setToken, setUser } = useAuth();
+    const { token, setToken, user, setUser } = useAuth();
 
   return (
     <section className="registration">  
@@ -26,7 +26,7 @@ export default function Login({ setView }) {
 
                 <div className='password'>
                     <label htmlfor="email">Email:</label>
-                    <input className='registration-input' type="text " name="email" maxlength="50" onChange={(e) => { setEmail(e.target.value) }} />
+                    <input className='registration-input' type="text " name="email" maxLength="50" onChange={(e) => { setEmail(e.target.value) }} />
                 </div>
 
                 <Password labelName={"Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />

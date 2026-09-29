@@ -21,7 +21,7 @@ export default function Registration({ setView }) {
     const [passwordType2, setPasswordType2] = useState(true);
     const [checked, setChecked] = useState(false);
 
-    const { token, setToken, setUser } = useAuth();
+    const { token, setToken, user, setUser } = useAuth();
 
     return (
         <section className="registration">  
@@ -31,7 +31,7 @@ export default function Registration({ setView }) {
 
                     <div className='password'>
                         <label htmlFor="email">Email:</label>
-                        <input className='registration-input' type="text " name="email" maxlength="50" onChange={(e) => { setEmail(e.target.value) }} />
+                        <input className='registration-input' type="text " name="email" maxLength="50" onChange={(e) => { setEmail(e.target.value) }} />
                     </div>
 
                     <Password labelName={"Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
@@ -40,12 +40,12 @@ export default function Registration({ setView }) {
                     
                     <div className='password'>
                         <label htmlFor="fname">First Name:</label>
-                        <input className='registration-input' type="text " name="fname" maxlength="50" onChange={(e) => { setFName(e.target.value) }} />
+                        <input className='registration-input' type="text " name="fname" maxLength="50" onChange={(e) => { setFName(e.target.value) }} />
                     </div>
 
                     <div className='password'>
                         <label htmlFor="lname"> Last name:</label>
-                        <input className='registration-input' type="text " name="lname" maxlength="50" onChange={(e) => { setLName(e.target.value) }} />
+                        <input className='registration-input' type="text " name="lname" maxLength="50" onChange={(e) => { setLName(e.target.value) }} />
                     </div>
 
                     <div className='recruiter'>
@@ -61,7 +61,7 @@ export default function Registration({ setView }) {
                         {errorMessage}
                     </span>
                 
-                    <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken,token,setView, checked, setUser) } }> Register </button>
+                    <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken,token, setView, checked, setUser) } }> Register </button>
                 </section>
             </main>
         </section>
@@ -99,7 +99,7 @@ async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname
     else {
         const role = checked ? "recruiter" : "jobseeker";
         setErrorMessage("");
-        const allGood = await RegisterApi(fname, lname, email, password, setErrorMessage, setToken,token, role, setUser);
+        const allGood = await RegisterApi(fname, lname, email, password, setErrorMessage, setToken, role, setUser);
         if(allGood) {
             setView("profile");
         };
