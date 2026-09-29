@@ -22,6 +22,7 @@ const saltRepository = new PrismaSaltRepository(prisma);
 const resumeRepository = new PrismaResumeRepository(prisma);
 const resumeStorage = new LocalFileStorage(process.env.RESUME_UPLOAD_DIR ?? 'uploads/resumes');
 const googleTokenVerifier = new GoogleTokenVerifier(process.env.GOOGLE_CLIENT_ID ?? '');
+const profileRepository = new PrismaProfileRepository(prisma);
 
 const userService = new UserService(userRepository);
 const authService = new AuthService(
@@ -31,8 +32,8 @@ const authService = new AuthService(
   sessionTokenGenerator,
   saltRepository,
   googleTokenVerifier,
+  profileRepository
 );
-const profileRepository = new PrismaProfileRepository(prisma);
 const profileService = new ProfileService(profileRepository, userRepository);
 const resumeService = new ResumeService(resumeRepository, resumeStorage);
 

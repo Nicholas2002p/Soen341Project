@@ -66,27 +66,8 @@ export async function LogInApi(email, password, setErrorMessage, setToken, setUs
     }
 }
 /**
- * reads the name and email inside the Google credential (display only, the server verifies the token)
- * @param {*} credential
- * @returns the decoded payload, or an empty object
- */
-function decodeGoogleCredential(credential) {
-    try {
-        const base64 = credential.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
-        const json = decodeURIComponent(
-            atob(base64)
-                .split("")
-                .map((c) => "%" + c.charCodeAt(0).toString(16).padStart(2, "0"))
-                .join("")
-        );
-        return JSON.parse(json);
-    } catch {
-        return {};
-    }
-}
-
-/**
- * sends the Google credential to the server, creates a profile on first login, and sets token in context
+ * sends the Google credential to the server and sets token in context
+ * the server creates the user and profile on the first Google login
  * @param {*} credential
  * @param {*} setErrorMessage
  * @param {*} setToken
@@ -107,16 +88,6 @@ export async function GoogleLogInApi(credential, setErrorMessage, setToken, setU
         if (!response.ok) {
             setErrorMessage("Google sign-in failed. Please try again.");
             return false;
-        }
-
-        // Google users have no profile on their first login: create one, like RegisterApi does
-        const existingProfile = await GetProfileApi(data.sessionToken);
-        if (!existingProfile) {
-            const google = decodeGoogleCredential(credential);
-            const firstName = google.given_name || (google.email ?? "").split("@")[0] || "New";
-            const lastName = google.family_name || "User";
-            const created = await CreateProfileApi(firstName, lastName, setErrorMessage, data.sessionToken);
-            if (!created) return false;
         }
 
         setToken(data.sessionToken);

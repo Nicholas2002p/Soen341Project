@@ -1,5 +1,7 @@
 export interface GoogleProfile {
   email: string;
+  firstName: string;
+  lastName: string;
 }
 
 export interface IGoogleTokenVerifier {

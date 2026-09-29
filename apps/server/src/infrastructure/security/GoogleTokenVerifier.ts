@@ -17,7 +17,11 @@ export class GoogleTokenVerifier implements IGoogleTokenVerifier {
         throw new Error('Google account has no verified email');
       }
 
-      return { email: payload.email };
+      return {
+        email: payload.email,
+        firstName: payload.given_name ?? '',
+        lastName: payload.family_name ?? '',
+      };
     } catch {
       const error = new Error('Invalid Google token');
       error.name = 'InvalidGoogleTokenError';

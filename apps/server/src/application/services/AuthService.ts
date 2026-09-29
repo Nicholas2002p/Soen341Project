@@ -11,6 +11,7 @@ import { User } from '../../domain/entities/User.js';
 import { isValidEmail, normalizeEmail } from '../../domain/validation/Email.js';
 import { InvalidEmailError } from '../../domain/errors/InvalidEmailError.js';
 import { IGoogleTokenVerifier } from '../interfaces/infrastructure/IGoogleTokenVerifier.js';
+import { IProfileRepository } from '../interfaces/repositories/IProfileRepository.js';
 import { randomBytes } from 'node:crypto';
 
 export class AuthService implements IAuthService {
@@ -23,6 +24,7 @@ export class AuthService implements IAuthService {
         private readonly sessionTokenGenerator: ISessionTokenGenerator,
         private readonly saltRepository: ISaltRepository,
         private readonly googleTokenVerifier: IGoogleTokenVerifier,
+        private readonly profileRepository: IProfileRepository,
     ) { }
 
     private toPublicUser(user: User): PublicUser {
@@ -138,6 +140,15 @@ export class AuthService implements IAuthService {
 
             user = await this.userRepository.create({ email, passwordHash });
             await this.saltRepository.save(user.id, salt);
+        }
+
+        // Make sure Google users have a profile, filled with their Google name
+        const existingProfile = await this.profileRepository.getByUserId(user.id);
+        if (!existingProfile) {
+            await this.profileRepository.upsert(user.id, {
+                firstName: profile.firstName || email.split('@')[0] || 'New',
+                lastName: profile.lastName || 'User',
+            });
         }
 
         // Generate a session token and create a new session for the user
