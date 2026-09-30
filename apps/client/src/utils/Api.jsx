@@ -107,14 +107,23 @@ export async function GoogleLogInApi(credential, setErrorMessage, setToken, setU
  */
 export async function LogOutApi(token) {
     try {
-        await fetch("http://localhost:3000/api/auth/logout", {
+        const response = await fetch("http://localhost:3000/api/auth/logout", {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            console.error("Logout failed:", data.message ?? response.status);
+            return false;
+        }
+
+        return true;
     } catch (error) {
         console.error(error);
+        return false;
     }
 }
 
