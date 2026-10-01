@@ -1,7 +1,8 @@
-import { PrismaClient } from '../../generated/prisma/client.js';
+import type { PrismaClient } from '../../generated/prisma/client.js';
 import type { User as PrismaUser } from '../../generated/prisma/client.js';
-import { IUserRepository, CreateUserData } from '../../application/interfaces/repositories/IUserRepository.js';
-import { User, UserRole } from '../../domain/entities/User.js';
+import type { IUserRepository, CreateUserData } from '../../application/interfaces/repositories/IUserRepository.js';
+import type { User} from '../../domain/entities/User.js';
+import { UserRole } from '../../domain/entities/User.js';
 
 export class PrismaUserRepository implements IUserRepository {
     constructor(private readonly prisma: PrismaClient) {}
@@ -57,5 +58,13 @@ export class PrismaUserRepository implements IUserRepository {
         });
 
         return this.toDomainUser(updatedUser);
+    }
+
+    async delete(id: number): Promise<void> {
+        await this.prisma.$transaction(async (transaction) => {
+            await transaction.profile.deleteMany({ where: { userId: id } });
+            await transaction.salt.deleteMany({ where: { userId: id } });
+            await transaction.user.delete({ where: { userId: id } });
+        });
     }
 }

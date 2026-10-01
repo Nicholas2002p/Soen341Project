@@ -71,11 +71,11 @@ model Session {
 
 ///To store salt for passwords
 model Salt {
-  SaltId Int    @id @default(autoincrement()) @map("SaltId")
-  userId Int    @unique @map("userId")
-  Salt   String @db.VarChar(60)
+  SaltId     Int @id @default(autoincrement()) @map("SaltId")
+  userId     Int @unique @map("userId")
+  saltRounds Int @map("saltRounds")
 
-  user User @relation(fields: [userId], references: [userId])
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@map("Salt")
 }
@@ -102,7 +102,7 @@ model Profile {
   profileURL String?  @db.VarChar(500)
 
 
-  user User @relation(fields: [userId], references: [userId])
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@map("Profile")
 }

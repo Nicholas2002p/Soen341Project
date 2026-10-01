@@ -92,3 +92,13 @@ test('me rejects requests without a bearer token', async () => {
     message: 'Authentication required',
   });
 });
+
+test('delete account rejects requests without a bearer token', async () => {
+  const response = await request('/api/auth/me', { method: 'DELETE' });
+
+  // Verify protected routes reject unauthenticated requests at the middleware boundary.
+  assert.equal(response.status, 401);
+  assert.deepEqual(await response.json(), {
+    message: 'Authentication required',
+  });
+});

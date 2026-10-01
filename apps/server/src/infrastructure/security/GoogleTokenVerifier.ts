@@ -1,5 +1,5 @@
 import { OAuth2Client } from 'google-auth-library';
-import { GoogleProfile, IGoogleTokenVerifier } from '../../application/interfaces/infrastructure/IGoogleTokenVerifier.js';
+import type { GoogleProfile, IGoogleTokenVerifier } from '../../application/interfaces/infrastructure/IGoogleTokenVerifier.js';
 
 export class GoogleTokenVerifier implements IGoogleTokenVerifier {
   private readonly client: OAuth2Client;

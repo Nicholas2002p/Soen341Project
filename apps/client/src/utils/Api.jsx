@@ -10,7 +10,7 @@
  */
 export async function RegisterApi(fname, lname, email, password, setErrorMessage, setToken, role, setUser) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/register", {
+        const response = await fetch("https://localhost:3000/api/auth/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -43,7 +43,7 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
  */
 export async function LogInApi(email, password, setErrorMessage, setToken, setUser) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/login", {
+        const response = await fetch("https://localhost:3000/api/auth/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export async function LogInApi(email, password, setErrorMessage, setToken, setUs
  */
 export async function GoogleLogInApi(credential, setErrorMessage, setToken, setUser) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/google", {
+        const response = await fetch("https://localhost:3000/api/auth/google", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -107,7 +107,7 @@ export async function GoogleLogInApi(credential, setErrorMessage, setToken, setU
  */
 export async function LogOutApi(token) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/logout", {
+        const response = await fetch("https://localhost:3000/api/auth/logout", {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -137,7 +137,7 @@ export async function LogOutApi(token) {
  */
 export async function CreateProfileApi(fname, lname, setErrorMessage, token) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/profile", {
+        const response = await fetch("https://localhost:3000/api/auth/profile", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -175,7 +175,7 @@ export async function CreateProfileApi(fname, lname, setErrorMessage, token) {
  */
 export async function UpdateProfileApi(fname, lname, phone, bio, location, setErrorMessage, token) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/profile", {
+        const response = await fetch("https://localhost:3000/api/auth/profile", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -191,6 +191,7 @@ export async function UpdateProfileApi(fname, lname, phone, bio, location, setEr
             }),
         });
 
+        const data = await response.json();
         if (!response.ok) {
             setErrorMessage("Error Message:", data.message);
             return false;
@@ -206,7 +207,7 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
     formData.append('profilePicture', file);
 
     try {
-        const response = await fetch('http://localhost:3000/api/auth/profile/picture', {
+        const response = await fetch('https://localhost:3000/api/auth/profile/picture', {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`
@@ -228,6 +229,33 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
     }
 }
 
+export async function UploadResumeApi(file, setErrorMessage, token) {
+    const formData = new FormData();
+    formData.append('resume', file);
+
+    try {
+        const response = await fetch('https://localhost:3000/api/resumes', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            setErrorMessage(data.message ?? 'Unable to upload resume.');
+            return null;
+        }
+
+        return data.resume;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage('Unable to upload resume.');
+        return null;
+    }
+}
+
 
 
 /**
@@ -237,7 +265,7 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
  */
 export async function GetProfileApi(token) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/profile", {
+        const response = await fetch("https://localhost:3000/api/auth/profile", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

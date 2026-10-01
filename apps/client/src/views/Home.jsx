@@ -1,5 +1,4 @@
 import JobPosting from "./JobPosting";
-import Account from "../components/Account";
 import Nav from '../components/Nav';
 
 import './Home.scss';
