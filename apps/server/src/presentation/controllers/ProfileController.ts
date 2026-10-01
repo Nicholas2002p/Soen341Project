@@ -74,8 +74,8 @@ export class ProfileController {
         res.status(200).json({ profile });
     }
 
-    // Update the profile for the authenticated user
-    async update(req: Request, res: Response): Promise<void> {
+    // Upsert the profile for the authenticated user
+    async upsert(req: Request, res: Response): Promise<void> {
         // validate the request body and convert it to ProfileData
         const data = profileData(req.body);
 
@@ -87,8 +87,9 @@ export class ProfileController {
             return;
         }
 
-        // update the profile for the authenticated user
-        const profile = await profileService.update(getAuthenticatedUserId(res), data);
+
+        // upsert the profile for the authenticated user
+        const profile = await profileService.upsert(getAuthenticatedUserId(res), data);
 
         // if the profile was not found, return a 404 Not Found response
         if (!profile) {
@@ -97,6 +98,41 @@ export class ProfileController {
         }
 
         // return the updated profile in the response
+        res.status(200).json({ profile });
+    }
+
+    // Upload and persist a profile picture for the authenticated user
+    async uploadPicture(req: Request, res: Response): Promise<void> {
+        const file = req.file;
+
+        // If no file was uploaded, return a 400 Bad Request response
+        if (!file) {
+            res.status(400).json({ message: 'An image file is required.' });
+            return;
+        }
+
+        // Check if the authenticated user has an existing profile before allowing the upload of a profile picture
+        const userId = getAuthenticatedUserId(res);
+        const existingProfile = await profileService.getByUserId(userId);
+
+        // If the user does not have an existing profile, return a 404 Not Found response
+        if (!existingProfile) {
+            res.status(404).json({ message: 'Create a profile before uploading a profile picture.' });
+            return;
+        }
+
+        // Update the user's profile with the new profile picture URL and return the updated profile
+        const profile = await profileService.upsert(userId, {
+            firstName: existingProfile.firstName,
+            middleName: existingProfile.middleName,
+            lastName: existingProfile.lastName,
+            phone: existingProfile.phone,
+            bio: existingProfile.bio,
+            location: existingProfile.location,
+            profileURL: `/uploads/profile-pictures/${file.filename}`,
+        });
+
+        // Return the updated profile in the response
         res.status(200).json({ profile });
     }
 }

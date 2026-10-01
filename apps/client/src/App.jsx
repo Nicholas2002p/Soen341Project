@@ -1,36 +1,26 @@
-function App() {
-  async function RegisterApi() {
-    try {
-      const email = `test-${Date.now()}@example.com`;
-      const password = "CorrectHorseBatteryStaple1!";
+import { useState } from 'react';
+import './App.css';
+import Home from './views/Home';
+import Profile from './views/Profile';
+import Registration from './views/Registration';
+import Login from './views/Login';
+import { AuthContext } from './utils/Auth'
 
-      const response = await fetch("https://localhost:3000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      console.log("Status:", response.status);
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error("Error Message:", data.message || data.msg);
-      } else {
-        console.log("Registered user:", data.user);
-        console.log("Session token:", data.sessionToken);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
+function Main() {
+ const [view, setView] = useState("home");
+ const [user, setUser] = useState(null);
+ const [token, setToken] = useState(null);
 
   return (
-    <button onClick={RegisterApi}>
-      Register
-    </button>
+    <AuthContext.Provider value={{ token, setToken, user, setUser }}>
+      <div id="app">
+        {view === "home" && <Home setView={setView} /> }
+        {view === "profile" && <Profile setView={setView} />}
+        {view === "registration" && <Registration setView={setView} />} 
+        {view === "sign-in" && <Login setView={setView} />} 
+      </div>
+    </AuthContext.Provider>
   );
-}
+};
 
-export default App;
+export default Main;

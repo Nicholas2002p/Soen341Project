@@ -1,0 +1,58 @@
+// =========================== VARIABLES ==============================
+$black-border: 1px solid black;
+$off-white: #FAF9F6;
+
+// ============================= MIXINS ===============================
+
+@mixin flex-align-justify($align, $justify) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin flex-dir($direction) {
+  display: flex;
+  flex-direction: $direction;
+}
+
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+// =========================== HOME ===========================
+
+.homepage {
+  @include width-height(none, 100vh);
+  @include flex-dir(column);
+}
+
+.home {
+  @include flex-dir(column);
+  background-color: $off-white;
+  flex: 4;
+}
+
+.get-started {
+  padding: 10px;
+  @include flex-dir(column);
+  position: relative;
+  display: none;
+}
+
+.get-started-text {
+  @include flex-dir(column);
+  align-items: center;
+  padding-top: 20px;
+}
+
+.arrow-down {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+
+  background: none;
+  color: inherit;
+  border: none;
+  cursor: pointer;
+}

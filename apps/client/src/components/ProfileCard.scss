@@ -1,0 +1,81 @@
+// =========================== VARIABLES ==============================
+$black-border: 1px solid black;
+$nav-color: #bee3fb;
+$button-color: #b7fdf8;
+
+// ============================= MIXINS ===============================
+
+@mixin flex-align-justify($align, $justify) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin flex-dir($direction) {
+  display: flex;
+  flex-direction: $direction;
+}
+
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+// =========================== PROFILE CARD ===========================
+
+.profile-card {
+  flex: 0.5;
+  @include flex-align-justify(center, center);
+}
+
+.profile-card-display {
+  @include flex-dir(column);
+  
+  border: $black-border;
+  border-radius: 20px;
+  
+  position: relative;
+  @include width-height(90%, 90%);
+}
+
+.card-hole {
+  border: $black-border;
+  border-radius: 20px;
+  background-color: white;
+  
+  position: absolute;
+  top: 10px;
+  left: 52%;
+  transform: translateX(-51%);
+
+  @include width-height(10em, 1em);
+}
+
+.profile-card-information {
+  @include flex-dir(column);
+  @include width-height(none, 100%);
+  border-radius: 20px;
+  background: radial-gradient($nav-color, #FFFFFF);
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+.profile-card-information-text {
+  width: none;
+  height: 100%;
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.profile-card-information img {
+  @include width-height(100%, 350px);
+  align-self: center;
+  margin-top: 3em;
+  border: $black-border;
+  object-fit: fill;
+}
+
+.card-name {
+  font-size: 25px;
+  margin-top: 10px;
+}

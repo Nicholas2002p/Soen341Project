@@ -38,6 +38,17 @@ test('getByUserId returns null when the repository has no profile', async () => 
     assert.equal(repository.requestedUserId, profile.userId);
 });
 
+test('getByUserId uses the default profile picture when profileURL is null', async () => {
+    // Create a fake repository with a profile that has a null profileURL and create the service
+    const repository = new FakeProfileRepository({ ...profile, profileURL: null });
+    const service = createService(repository);
+
+    const result = await service.getByUserId(profile.userId);
+
+    // Assert that the result is not null and that the profileURL is set to the default profile picture URL
+    assert.equal(result?.profileURL, '/uploads/profile-pictures/profile_default.jpg');
+});
+
 test('getPublicByUserId excludes the phone number', async () => {
     const repository = new FakeProfileRepository(profile);
     const service = createService(repository);
@@ -67,21 +78,21 @@ test('update delegates the user id and profile data to upsert', async () => {
     };
 
     // Call the service method to update a profile with a specific userId and data
-    const result = await service.update(profile.userId, data);
+    const result = await service.upsert(profile.userId, data);
 
     // Assert that the repository's upsert method was called with the correct userId and data, and that the result matches the expected profile
     assert.equal(repository.upsertedUserId, profile.userId);
     assert.deepEqual(repository.upsertedData, data);
     assert.ok(result);
-    assert.equal(result.userId, profile.userId);
-    assert.equal(result.firstName, 'Grace');
+    assert.equal(result!.userId, profile.userId);
+    assert.equal(result!.firstName, 'Grace');
 });
 
 test('update does not create a profile when the user does not exist', async () => {
     const repository = new FakeProfileRepository();
     const service = new ProfileService(repository, new FakeUserRepository());
 
-    const result = await service.update(404, {
+    const result = await service.upsert(404, {
         firstName: 'Missing',
         lastName: 'User',
     });

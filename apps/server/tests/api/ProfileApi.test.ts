@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
+import { unlink } from 'node:fs/promises';
 import type { Server } from 'node:http';
+import path from 'node:path';
 import test from 'node:test';
 import { app } from '../../src/app.js';
 import { prisma } from '../../src/infrastructure/prisma/prisma.js';
@@ -140,6 +142,58 @@ test('profile update rejects non-text optional fields', async () => {
         });
     } finally {
         // Clean up by deleting the user after the test.
+        await deleteUser(account.userId);
+    }
+});
+
+test('profile picture upload stores and serves the picture path', async () => {
+    const account = await createAuthenticatedUser();
+    let uploadedPath: string | undefined;
+
+    // Test the profile picture upload functionality for an authenticated user.
+    try {
+        const profileResponse = await request('/api/auth/profile', {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${account.token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ firstName: 'Ada', lastName: 'Lovelace' }),
+        });
+        assert.equal(profileResponse.status, 200); // Ensure the profile was created successfully.
+
+        // Prepare a FormData object with a sample profile picture for upload.
+        const formData = new FormData();
+        formData.append('profilePicture', new Blob(['profile picture'], { type: 'image/png' }), 'avatar.png');
+
+        // Upload the profile picture and verify the response.
+        const uploadResponse = await request('/api/auth/profile/picture', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${account.token}` },
+            body: formData,
+        });
+
+        // Ensure the upload was successful and the response contains the expected profile picture URL.
+        assert.equal(uploadResponse.status, 200);
+        const uploaded = (await uploadResponse.json()) as { profile: { profileURL: string } };
+        uploadedPath = uploaded.profile.profileURL;
+        assert.match(uploadedPath, /^\/uploads\/profile-pictures\/[^/]+\.png$/);
+
+        // Verify that the public profile endpoint returns the correct profile picture URL.
+        const publicResponse = await request(`/api/profile/${account.userId}`);
+        assert.equal(publicResponse.status, 200);
+        const publicProfile = (await publicResponse.json()) as { profile: { profileURL: string } };
+        assert.equal(publicProfile.profile.profileURL, uploadedPath);
+
+        // Verify that the uploaded profile picture can be accessed and served correctly.
+        const pictureResponse = await request(uploadedPath);
+        assert.equal(pictureResponse.status, 200);
+        assert.equal(await pictureResponse.text(), 'profile picture');
+    } finally {
+        // Clean up by deleting the uploaded profile picture and the user after the test.
+        if (uploadedPath) {
+            await unlink(path.join(process.cwd(), uploadedPath.slice(1))).catch(() => undefined);
+        }
         await deleteUser(account.userId);
     }
 });
