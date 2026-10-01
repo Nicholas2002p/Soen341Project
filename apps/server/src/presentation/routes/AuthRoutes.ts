@@ -23,6 +23,9 @@ authRoutes.post('/register', requireHttps, authController.register.bind(authCont
 // Login route
 authRoutes.post('/login', requireHttps, authController.login.bind(authController));
 
+// Google login route
+authRoutes.post('/google', requireHttps, authController.googleLogin.bind(authController));
+
 // Logout route
 authRoutes.post('/logout', authController.logout.bind(authController));
 

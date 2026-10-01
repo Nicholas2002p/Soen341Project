@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from "../utils/Auth";
+import { googleLogout } from "@react-oauth/google";
+import { LogOutApi } from "../utils/Api";
 
 /**
  * Account
@@ -13,9 +15,9 @@ export default function Account({ setView }) {
 
   return (
     <section className="account">
-      { !token && <SignIn setView={setView} /> }
-      { token && <SignedIn setView={setView} setToken={setToken} /> }
-      
+      {!token && <SignIn setView={setView} />}
+      {token && <SignedIn setView={setView} setToken={setToken} token={token} />}
+
     </section>
   );
 }
@@ -30,7 +32,7 @@ export default function Account({ setView }) {
 function SignIn({ setView }) {
   return (
     <>
-      <a onClick={ () => { setView("registration") }}> Sign in </a>
+      <a onClick={() => { setView("registration") }}> Sign in </a>
     </>
   );
 }
@@ -44,10 +46,10 @@ function SignIn({ setView }) {
  * @param {Function} setToken 
  * @returns the signed in component
  */
-function SignedIn({ setView, setToken }) {
+function SignedIn({ setView, setToken, token }) {
   return (
     <>
-      <a onClick={ () => { setView("home"); setToken(null) }}> Logout </a>
+      <a onClick={async () => { await LogOutApi(token); googleLogout(); setView("home"); setToken(null) }}> Logout </a>
     </>
   )
 }
