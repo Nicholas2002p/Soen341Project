@@ -1,0 +1,4 @@
+This is mostly a placeholder file for the certificates directory in the server application. 
+It serves as a reminder to add actual certificate files in this location for secure communication. 
+Please ensure that you replace this placeholder with valid SSL/TLS certificates before running
+the server.
