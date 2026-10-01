@@ -6,10 +6,12 @@ import { app } from "./app.js";
 
 // Load environment variables from .env file
 const HTTPS_PORT = Number(process.env.PORT) || 3000;
+
 // Optional HTTP redirect port for redirecting HTTP traffic to HTTPS
 const HTTP_REDIRECT_PORT = process.env.HTTP_REDIRECT_PORT
   ? Number(process.env.HTTP_REDIRECT_PORT)
   : undefined;
+  
 // Ensure that TLS key and certificate paths are provided in the environment variables
 const TLS_KEY_PATH = process.env.TLS_KEY_PATH;
 const TLS_CERT_PATH = process.env.TLS_CERT_PATH;

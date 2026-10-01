@@ -163,3 +163,6 @@ npm-debug.log*
 .claude/
 .windsurf/
 .vscode/
+
+# Certificates
+apps/server/certs/*.pem
