@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { profileController } from '../controllers/ProfileController.js';
-import { authMiddleware } from '../middleware/authMiddleware.js';
+import { authMiddleware } from '../middleware/AuthMiddleware.js';
 
 export const profileRoutes = Router();
 export const publicProfileRoutes = Router();
@@ -47,6 +47,9 @@ profileRoutes.get('/', profileController.get.bind(profileController));
 
 // Upsert the profile for the authenticated user
 profileRoutes.put('/', profileController.upsert.bind(profileController));
+
+// Allow admins to update another user's profile, while the controller enforces ownership.
+profileRoutes.put('/:userId', profileController.upsert.bind(profileController));
 
 // Upload and persist a profile picture for the authenticated user
 profileRoutes.post('/picture', profilePictureUpload.single('profilePicture'), profileController.uploadPicture.bind(profileController));

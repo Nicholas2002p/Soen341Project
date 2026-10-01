@@ -1,18 +1,21 @@
-import { IAuthService, RegisterData, AuthenticationResult } from '../interfaces/services/IAuthService.js';
-import { IUserRepository } from '../interfaces/repositories/IUserRepository.js';
-import { ISessionRepository } from '../interfaces/repositories/ISessionRepository.js';
-import { ISessionTokenGenerator } from '../interfaces/infrastructure/ISessionTokenGenerator.js';
-import { IPasswordHasher } from '../interfaces/infrastructure/IPasswordHasher.js';
-import { ISaltRepository } from '../interfaces/repositories/ISaltRepository.js';
+import type { IAuthService, RegisterData, AuthenticationResult } from '../interfaces/services/IAuthService.js';
+import type { IUserRepository } from '../interfaces/repositories/IUserRepository.js';
+import type { ISessionRepository } from '../interfaces/repositories/ISessionRepository.js';
+import type { ISessionTokenGenerator } from '../interfaces/infrastructure/ISessionTokenGenerator.js';
+import type { IPasswordHasher } from '../interfaces/infrastructure/IPasswordHasher.js';
+import type { ISaltRepository } from '../interfaces/repositories/ISaltRepository.js';
 import { UserAlreadyExistsError } from '../../domain/errors/UserAlreadyExistsError.js';
 import { InvalidAuthCredentialsError } from '../../domain/errors/InvalidAuthCredentialsError.js';
-import { PublicUser } from '../../domain/entities/PublicUser.js';
-import { User } from '../../domain/entities/User.js';
+import type { PublicUser } from '../../domain/entities/PublicUser.js';
+import type { User } from '../../domain/entities/User.js';
 import { isValidEmail, normalizeEmail } from '../../domain/validation/Email.js';
 import { InvalidEmailError } from '../../domain/errors/InvalidEmailError.js';
-import { IGoogleTokenVerifier } from '../interfaces/infrastructure/IGoogleTokenVerifier.js';
-import { IProfileRepository } from '../interfaces/repositories/IProfileRepository.js';
+import type { IGoogleTokenVerifier } from '../interfaces/infrastructure/IGoogleTokenVerifier.js';
+import type { IProfileRepository } from '../interfaces/repositories/IProfileRepository.js';
 import { randomBytes } from 'node:crypto';
+import { UserRole } from '../../domain/entities/User.js';
+import { UserNotFoundError } from '../../domain/errors/UserNotFoundError.js';
+import { UnauthorizedUserActionError } from '../../domain/errors/UnauthorizedUserActionError.js';
 
 export class AuthService implements IAuthService {
     private static readonly SESSION_EXPIRATION_DAYS = 30; // Session expires in 30 days
@@ -45,16 +48,15 @@ export class AuthService implements IAuthService {
             throw new UserAlreadyExistsError();
         }
 
-        // Generate a salt and hash the password using the provided password hasher
-        const salt = await this.passwordHasher.generateSalt();
-        const hashedPassword = await this.passwordHasher.hash(data.password, salt);
+        const saltRounds = this.passwordHasher.getDefaultSaltRounds();
+        const hashedPassword = await this.passwordHasher.hash(data.password, saltRounds);
 
         // Create a new user in the repository with the hashed password
         const newUser = await this.userRepository.create({
             email,
             passwordHash: hashedPassword,
         });
-        await this.saltRepository.save(newUser.id, salt);
+        await this.saltRepository.save(newUser.id, saltRounds);
 
         // Generate a session token and create a new session for the user
         const sessionToken = this.sessionTokenGenerator.generate();
@@ -91,14 +93,12 @@ export class AuthService implements IAuthService {
 
         // If the user's password hash is below the current default salt rounds, upgrade the hash
         const savedSaltRounds = await this.saltRepository.getSaltRounds(user.id);
-        if (savedSaltRounds !== null && savedSaltRounds < this.passwordHasher.getDefaultSaltRounds()) {
-            // Generate a new salt and hash the password with the new salt
-            const salt = await this.passwordHasher.generateSalt();
+        const currentSaltRounds = this.passwordHasher.getDefaultSaltRounds();
+        if (savedSaltRounds === null || savedSaltRounds < currentSaltRounds) {
+            // The hasher owns salt generation; the service only supplies the current work factor.
+            const upgradedHash = await this.passwordHasher.hash(password, currentSaltRounds);
 
-            // Hash the password with the new salt and update the user's password hash in the repository
-            const upgradedHash = await this.passwordHasher.hash(password, salt);
-
-            // Update the user's password hash in the repository and retrieve the updated user
+            // Update the user's password hash in the repository and retrieve the updated user.
             const updatedUser = await this.userRepository.updatePassword(user.id, upgradedHash);
 
             // If the update was successful, use the updated user for authentication
@@ -106,8 +106,8 @@ export class AuthService implements IAuthService {
                 authenticatedUser = updatedUser;
             }
 
-            // Save the new salt in the salt repository for future password verifications
-            await this.saltRepository.save(user.id, salt);
+            // Save the work factor for future password upgrades.
+            await this.saltRepository.save(user.id, currentSaltRounds);
         }
 
         // Generate a session token and create a new session for the user
@@ -134,12 +134,12 @@ export class AuthService implements IAuthService {
         let user = await this.userRepository.getByEmail(email);
         if (!user) {
             // Google users have no password: store a random one nobody knows
-            const salt = await this.passwordHasher.generateSalt();
             const randomPassword = randomBytes(32).toString('hex');
-            const passwordHash = await this.passwordHasher.hash(randomPassword, salt);
+            const saltRounds = this.passwordHasher.getDefaultSaltRounds();
+            const passwordHash = await this.passwordHasher.hash(randomPassword, saltRounds);
 
             user = await this.userRepository.create({ email, passwordHash });
-            await this.saltRepository.save(user.id, salt);
+            await this.saltRepository.save(user.id, saltRounds);
         }
 
         // Make sure Google users have a profile, filled with their Google name
@@ -171,6 +171,20 @@ export class AuthService implements IAuthService {
 
         // Delete the session from the repository using the hashed token
         await this.sessionRepository.deleteTokenByHash(tokenHash);
+    }
+
+    async deleteUser(userId: number, requestingUserId = userId, requestingUserRole = UserRole.JobSeeker): Promise<void> {
+        const user = await this.userRepository.getById(userId);
+        if (!user) {
+            throw new UserNotFoundError();
+        }
+
+        if (requestingUserId !== userId && requestingUserRole !== UserRole.Admin) {
+            throw new UnauthorizedUserActionError('You can only delete your own account.');
+        }
+
+        // Delete all sessions associated with the user
+        await this.userRepository.delete(userId);
     }
 
     async authenticate(sessionToken: string): Promise<PublicUser | null> {

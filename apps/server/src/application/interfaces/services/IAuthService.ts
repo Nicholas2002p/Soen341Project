@@ -1,4 +1,5 @@
-import { PublicUser } from '../../../domain/entities/PublicUser.js';
+import type { PublicUser } from '../../../domain/entities/PublicUser.js';
+import type { UserRole } from '../../../domain/entities/User.js';
 
 export interface RegisterData {
     email: string;
@@ -22,6 +23,9 @@ export interface IAuthService {
 
     //logout a user, invalidates the session token
     logout(sessionToken: string): Promise<void>;
+
+    // Delete a user and their profile and password-round metadata.
+    deleteUser(userId: number, requestingUserId?: number, requestingUserRole?: UserRole): Promise<void>;
 
     //authenticate a user by their session token, returns the user or null if not found
     authenticate(sessionToken: string): Promise<PublicUser | null>;

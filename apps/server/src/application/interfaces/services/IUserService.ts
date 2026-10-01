@@ -1,4 +1,5 @@
-import { PublicUser } from '../../../domain/entities/PublicUser.js';
+import type { PublicUser } from '../../../domain/entities/PublicUser.js';
+import type { UserRole } from '../../../domain/entities/User.js';
 
 export interface IUserService {
     //find a user by their id, returns null if not found
@@ -8,5 +9,5 @@ export interface IUserService {
     getByEmail(email: string): Promise<PublicUser | null>;
 
     //update a user's password, returns the updated user or null if not found
-    updatePassword(id: number, newPasswordHash: string): Promise<PublicUser | null>;
+    updatePassword(id: number, newPasswordHash: string, requestingUserId?: number, requestingUserRole?: UserRole): Promise<PublicUser | null>;
 }

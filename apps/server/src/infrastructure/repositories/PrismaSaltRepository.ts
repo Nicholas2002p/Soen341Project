@@ -1,17 +1,15 @@
-import bcrypt from 'bcrypt';
 import type { PrismaClient } from '../../generated/prisma/client.js';
 import type { ISaltRepository } from '../../application/interfaces/repositories/ISaltRepository.js';
 
 export class PrismaSaltRepository implements ISaltRepository {
     constructor(private readonly prisma: PrismaClient) {}
 
-    // Saves the salt associated with a specific user ID. If a salt already exists for the user, it will be updated; otherwise, 
-    // a new entry will be created.
-    async save(userId: number, salt: string): Promise<void> {
+    // Saves the password work factor associated with a user.
+    async save(userId: number, saltRounds: number): Promise<void> {
         await this.prisma.salt.upsert({
             where: { userId },
-            create: { userId, Salt: salt },
-            update: { Salt: salt },
+            create: { userId, saltRounds },
+            update: { saltRounds },
         });
     }
 
@@ -20,6 +18,6 @@ export class PrismaSaltRepository implements ISaltRepository {
             where: { userId },
         });
 
-        return savedSalt ? bcrypt.getRounds(savedSalt.Salt) : null;
+        return savedSalt?.saltRounds ?? null;
     }
 }
