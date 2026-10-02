@@ -3,6 +3,7 @@ import "./Registration.scss";
 import Password from '../components/Password';
 import { useAuth } from '../utils/Auth'
 import { LogInApi } from '../utils/Api';
+import GoogleSignIn from '../components/google';
 
 /**
  * Displays the sign in for users
@@ -18,36 +19,37 @@ export default function Login({ setView }) {
     const [passwordType2, setPasswordType2] = useState(true);
     const { token, setToken, user, setUser } = useAuth();
 
-  return (
-    <section className="registration">  
-        <main className="loginbox">
-            <h2>Login</h2>
-            <section className='reg-inside'>
+    return (
+        <section className="registration">
+            <main className="loginbox">
+                <h2>Login</h2>
+                <section className='reg-inside'>
 
-                <div className='password'>
-                    <label htmlfor="email">Email:</label>
-                    <input className='registration-input' type="text " name="email" maxLength="50" onChange={(e) => { setEmail(e.target.value) }} />
-                </div>
+                    <div className='password'>
+                        <label htmlfor="email">Email:</label>
+                        <input className='registration-input' type="text " name="email" maxLength="50" onChange={(e) => { setEmail(e.target.value) }} />
+                    </div>
 
-                <Password labelName={"Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
-                            
-                <section>
-                    Don't have an account?
-                    <a className='cursor' onClick={() => { setView("registration") }}> Register </a>
+                    <Password labelName={"Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
+
+                    <section>
+                        Don't have an account?
+                        <a className='cursor' onClick={() => { setView("registration") }}> Register </a>
+                    </section>
+
+                    <span className="error-text">
+                        {errorMessage}
+                    </span>
+
+                    <button className="register-btn" onClick={() => { RegisterUser(password, setErrorMessage, email, setToken, setView, setUser) }}> Log in </button>
+                    <GoogleSignIn setToken={setToken} setUser={setUser} setView={setView} />
                 </section>
-
-                <span className="error-text">
-                    {errorMessage}
-                </span>
-            
-                <button className="register-btn" onClick={() => {  RegisterUser(password, setErrorMessage, email, setToken, setView, setUser) } }> Log in </button>
-            </section>
-        </main>
-    </section>
-  );
+            </main>
+        </section>
+    );
 }
 
-         
+
 /**
  * validates the input fields and then calls the api methods
  * if valid changed screen to profile
@@ -57,22 +59,22 @@ export default function Login({ setView }) {
  * @param {function} setToken 
  * @param {function} setView 
  */
-async function RegisterUser(password, setErrorMessage, email, setToken, setView, setUser) { 
+async function RegisterUser(password, setErrorMessage, email, setToken, setView, setUser) {
     if (email.trim() === "") {
         setErrorMessage("Email is required");
-    } 
+    }
 
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         setErrorMessage("Please enter a valid email address");
-    } 
+    }
 
     else if (password === "") {
         setErrorMessage("Password is required");
-    } 
-    
+    }
+
     else {
         setErrorMessage("");
         const allGood = await LogInApi(email, password, setErrorMessage, setToken, setUser);
-        if(allGood) setView("profile");
+        if (allGood) setView("profile");
     }
 }

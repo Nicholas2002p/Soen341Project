@@ -11,23 +11,23 @@
 export async function RegisterApi(fname, lname, email, password, setErrorMessage, setToken, role, setUser) {
     try {
         const response = await fetch("http://localhost:3000/api/auth/register", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password, role }),
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password, role }),
         });
-        
+
         const data = await response.json();
         if (!response.ok) {
             setErrorMessage("Error Message:", data.message);
             return false;
-        } 
-        
+        }
+
         setToken(data.sessionToken);
         setUser(data.user);
         return await CreateProfileApi(fname, lname, setErrorMessage, data.sessionToken);
-        
+
     } catch (error) {
         console.error(error);
     }
@@ -44,25 +44,86 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
 export async function LogInApi(email, password, setErrorMessage, setToken, setUser) {
     try {
         const response = await fetch("http://localhost:3000/api/auth/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
         });
 
         const data = await response.json();
         if (!response.ok) {
             setErrorMessage("Error password or email incorrect");
             return false;
-        } 
+        }
 
         setToken(data.sessionToken);
         setUser(data.user);
-        
-        return true; 
+
+        return true;
     } catch (error) {
         console.error(error);
+    }
+}
+/**
+ * sends the Google credential to the server and sets token in context
+ * the server creates the user and profile on the first Google login
+ * @param {*} credential
+ * @param {*} setErrorMessage
+ * @param {*} setToken
+ * @param {*} setUser
+ * @returns true if response ok
+ */
+export async function GoogleLogInApi(credential, setErrorMessage, setToken, setUser) {
+    try {
+        const response = await fetch("http://localhost:3000/api/auth/google", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token: credential }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            setErrorMessage("Google sign-in failed. Please try again.");
+            return false;
+        }
+
+        setToken(data.sessionToken);
+        setUser(data.user);
+
+        return true;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Sign-in failed. Make sure the server is running.");
+        return false;
+    }
+}
+
+/**
+ * logs out the user on the server by deleting the session
+ * @param {*} token
+ */
+export async function LogOutApi(token) {
+    try {
+        const response = await fetch("http://localhost:3000/api/auth/logout", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            console.error("Logout failed:", data.message ?? response.status);
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
     }
 }
 
@@ -91,7 +152,7 @@ export async function CreateProfileApi(fname, lname, setErrorMessage, token) {
         if (!response.ok) {
             setErrorMessage("Error Message:", data.message);
             return false;
-        } 
+        }
         return true;
     } catch (error) {
         console.error(error);
@@ -153,7 +214,7 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
             body: formData
         });
         const data = await response.json();
-        
+
         if (!response.ok) {
             setErrorMessage(data.message ?? "Unable to upload profile picture.");
             return null;
@@ -187,7 +248,7 @@ export async function GetProfileApi(token) {
         if (!response.ok) {
             console.error(data.message);
             return false;
-        } 
+        }
         return data;
     } catch (error) {
         console.error(error);

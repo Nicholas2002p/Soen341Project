@@ -13,6 +13,7 @@ import { ProfileService } from '../application/services/ProfileService.js';
 import { ResumeService } from '../application/services/ResumeService.js';
 import { PrismaCompanyRepository } from './repositories/PrismaCompanyRepository.js';
 import { CompanyService } from '../application/services/CompanyService.js';
+import { GoogleTokenVerifier } from './security/GoogleTokenVerifier.js';
 
 // Initialize repositories, services, and other dependencies
 const userRepository = new PrismaUserRepository(prisma);
@@ -24,6 +25,8 @@ const resumeRepository = new PrismaResumeRepository(prisma);
 const resumeStorage = new LocalFileStorage(process.env.RESUME_UPLOAD_DIR ?? 'uploads/resumes');
 const companyRepository = new PrismaCompanyRepository(prisma);
 const companyService = new CompanyService(companyRepository);
+const googleTokenVerifier = new GoogleTokenVerifier(process.env.GOOGLE_CLIENT_ID ?? '');
+const profileRepository = new PrismaProfileRepository(prisma);
 
 const userService = new UserService(userRepository);
 const authService = new AuthService(
@@ -32,8 +35,9 @@ const authService = new AuthService(
   passwordHasher,
   sessionTokenGenerator,
   saltRepository,
+  googleTokenVerifier,
+  profileRepository
 );
-const profileRepository = new PrismaProfileRepository(prisma);
 const profileService = new ProfileService(profileRepository, userRepository);
 const resumeService = new ResumeService(resumeRepository, resumeStorage);
 
