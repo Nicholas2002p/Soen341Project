@@ -3,11 +3,11 @@ name: CI
 on:
   pull_request:
     branches:
-      [main, dev, CI_tests]
+      [*]
   workflow_dispatch:
   push:
     branches:
-      [main, dev, CI_tests]
+      [main, dev]
 
 permissions:
   contents: read
