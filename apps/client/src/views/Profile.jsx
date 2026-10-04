@@ -16,7 +16,7 @@ import './Profile.scss';
  * @returns Profile component
  */
 export default function Profile({ setView }) {
-  const { token, setToken, user } = useAuth();
+  const { token, user } = useAuth();
   const [data, setData] = useState({});
  
   const [fname, setFName] = useState('');
@@ -43,7 +43,7 @@ export default function Profile({ setView }) {
     };
     getProfile();
     
-  }, []);
+  }, [token, user.role]);
 
   return (
     <main className="profilepage">
