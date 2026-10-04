@@ -1,4 +1,4 @@
-import { PublicUser } from '../../../domain/entities/PublicUser.js';
+import type { PublicUser } from '../../../domain/entities/PublicUser.js';
 
 export interface IUserService {
     //find a user by their id, returns null if not found
