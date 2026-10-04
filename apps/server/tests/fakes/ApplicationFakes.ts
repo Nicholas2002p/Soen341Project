@@ -32,7 +32,7 @@ export const application: Application = {
     userId: jobSeeker.id,
     jobId: openJob.id,
     resumeId: 1,
-    status: ApplicationStatus.OnHold,
+    status: ApplicationStatus.Applied,
     appliedAt: createdAt,
     updatedAt: createdAt,
 };
@@ -56,7 +56,7 @@ export class FakeApplicationRepository implements IApplicationRepository {
     }
 
     private withJob(stored: Application): ApplicationWithJob {
-        return { ...stored, job: { id: stored.jobId, companyName: 'TechCorp', location: 'Montreal, QC', employmentType: 'hybrid' } };
+        return { ...stored, job: { id: stored.jobId, title: 'Junior Developer', companyName: 'TechCorp', location: 'Montreal, QC', employmentType: 'hybrid' } };
     }
 
     async create(data: CreateApplicationData): Promise<Application> {
@@ -86,6 +86,19 @@ export class FakeApplicationRepository implements IApplicationRepository {
 
     async listByJobId(jobId: number): Promise<Application[]> {
         return [...this.applications.values()].filter((stored) => stored.jobId === jobId);
+    }
+
+    async updateStatus(id: number, status: ApplicationStatus): Promise<Application> {
+        const stored = this.applications.get(id);
+        if (!stored) {
+            throw new Error('Application not found');
+        }
+
+        const now = new Date();
+        const updated = { ...stored, status, updatedAt: now };
+        this.applications.set(id, updated);
+        this.statusHistory.get(id)?.push({ status, changedAt: now });
+        return updated;
     }
 
     async getStatusHistory(applicationId: number): Promise<ApplicationStatusChange[]> {

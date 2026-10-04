@@ -10,7 +10,7 @@ interface ApplicationResponse {
     userId: number;
     jobId: number;
     status: string;
-    job?: { id: number; companyName: string };
+    job?: { id: number; title: string; companyName: string };
     statusHistory?: { status: string }[];
 }
 
@@ -74,7 +74,7 @@ test('application lifecycle works through the HTTP API and database', async () =
         const company = await prisma.company.create({ data: { name: `Test Company ${suffix}` } });
         companyId = company.companyId;
         const job = await prisma.job.create({
-            data: { companyId, recruiterId: recruiter.id, salary: 60000, employmentType: 'hybrid', location: 'Montreal, QC' },
+            data: { companyId, recruiterId: recruiter.id, title: 'Junior Developer', salary: 60000, employmentType: 'hybrid', location: 'Montreal, QC' },
         });
         const resume = await prisma.resume.create({
             data: { userId: seeker.id, fileName: 'cv.pdf', fileURL: `integration-${suffix}.pdf` },
@@ -89,7 +89,7 @@ test('application lifecycle works through the HTTP API and database', async () =
 
         assert.equal(applyResponse.status, 201);
         const { application } = (await applyResponse.json()) as { application: ApplicationResponse };
-        assert.equal(application.status, 'onhold');
+        assert.equal(application.status, 'Applied');
 
         // Applying twice to the same job is rejected.
         const duplicateResponse = await request('/api/applications', {
@@ -128,13 +128,14 @@ test('application lifecycle works through the HTTP API and database', async () =
         const { applications } = (await listResponse.json()) as { applications: ApplicationResponse[] };
         assert.deepEqual(applications.map((listed) => listed.id), [application.id]);
         assert.equal(applications[0]?.job?.companyName, company.name);
+        assert.equal(applications[0]?.job?.title, 'Junior Developer');
 
         // The applicant and the recruiter can see the application and its status history.
         for (const token of [seeker.token, recruiter.token]) {
             const detailResponse = await request(`/api/applications/${application.id}`, { headers: auth(token) });
             assert.equal(detailResponse.status, 200);
             const detail = (await detailResponse.json()) as { application: ApplicationResponse };
-            assert.deepEqual(detail.application.statusHistory?.map((entry) => entry.status), ['onhold']);
+            assert.deepEqual(detail.application.statusHistory?.map((entry) => entry.status), ['Applied']);
         }
 
         // Another job seeker cannot see or withdraw it.
@@ -151,6 +152,35 @@ test('application lifecycle works through the HTTP API and database', async () =
 
         const seekerJobListResponse = await request(`/api/applications/jobs/${job.jobId}`, { headers: auth(seeker.token) });
         assert.equal(seekerJobListResponse.status, 403);
+
+        // The recruiter moves the application to Interview, which is added to its history.
+        const updateResponse = await request(`/api/applications/${application.id}/status`, {
+            method: 'PATCH',
+            headers: auth(recruiter.token, true),
+            body: JSON.stringify({ status: 'Interview' }),
+        });
+        assert.equal(updateResponse.status, 200);
+        const updated = (await updateResponse.json()) as { application: ApplicationResponse };
+        assert.equal(updated.application.status, 'Interview');
+
+        const historyResponse = await request(`/api/applications/${application.id}`, { headers: auth(seeker.token) });
+        const withHistory = (await historyResponse.json()) as { application: ApplicationResponse };
+        assert.deepEqual(withHistory.application.statusHistory?.map((entry) => entry.status), ['Applied', 'Interview']);
+
+        // An unknown status is rejected, and the applicant cannot change the status.
+        const unknownStatusResponse = await request(`/api/applications/${application.id}/status`, {
+            method: 'PATCH',
+            headers: auth(recruiter.token, true),
+            body: JSON.stringify({ status: 'Hired' }),
+        });
+        assert.equal(unknownStatusResponse.status, 400);
+
+        const applicantUpdateResponse = await request(`/api/applications/${application.id}/status`, {
+            method: 'PATCH',
+            headers: auth(seeker.token, true),
+            body: JSON.stringify({ status: 'Offered' }),
+        });
+        assert.equal(applicantUpdateResponse.status, 403);
 
         // An invalid id in the URL is rejected with a clear message.
         const invalidIdResponse = await request('/api/applications/abc', { headers: auth(seeker.token) });

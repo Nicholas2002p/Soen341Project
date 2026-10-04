@@ -5,6 +5,7 @@ import { ApplicationStatus } from '../../src/domain/entities/Application.js';
 import { ApplicationNotAllowedError } from '../../src/domain/errors/ApplicationNotAllowedError.js';
 import { ApplicationNotFoundError } from '../../src/domain/errors/ApplicationNotFoundError.js';
 import { DuplicateApplicationError } from '../../src/domain/errors/DuplicateApplicationError.js';
+import { InvalidApplicationStatusError } from '../../src/domain/errors/InvalidApplicationStatusError.js';
 import { JobClosedError } from '../../src/domain/errors/JobClosedError.js';
 import { JobNotFoundError } from '../../src/domain/errors/JobNotFoundError.js';
 import { ResumeNotFoundError } from '../../src/domain/errors/ResumeNotFoundError.js';
@@ -35,8 +36,8 @@ test('apply creates an application with the initial status and a first history e
 
     assert.equal(result.userId, jobSeeker.id);
     assert.equal(result.jobId, openJob.id);
-    assert.equal(result.status, ApplicationStatus.OnHold);
-    assert.deepEqual((await applications.getStatusHistory(result.id)).map((entry) => entry.status), [ApplicationStatus.OnHold]);
+    assert.equal(result.status, ApplicationStatus.Applied);
+    assert.deepEqual((await applications.getStatusHistory(result.id)).map((entry) => entry.status), [ApplicationStatus.Applied]);
 });
 
 test('apply rejects users who are not job seekers', async () => {
@@ -102,6 +103,38 @@ test('getById hides the application from other users', async () => {
     // Another job seeker and a recruiter of a different job both get "not found"
     await assert.rejects(service.getById(otherJobSeeker, application.id), ApplicationNotFoundError);
     await assert.rejects(service.getById(otherRecruiter, application.id), ApplicationNotFoundError);
+});
+
+test('updateStatus lets the recruiter change the status and records it in the history', async () => {
+    const { service, applications } = createService(new FakeApplicationRepository([openJob], [application]));
+
+    const result = await service.updateStatus(recruiter, application.id, ApplicationStatus.Interview);
+
+    assert.equal(result.status, ApplicationStatus.Interview);
+    assert.deepEqual(
+        (await applications.getStatusHistory(application.id)).map((entry) => entry.status),
+        [ApplicationStatus.Applied, ApplicationStatus.Interview],
+    );
+});
+
+test('updateStatus refuses the applicant, who can see the application but not change it', async () => {
+    const { service } = createService(new FakeApplicationRepository([openJob], [application]));
+
+    await assert.rejects(service.updateStatus(jobSeeker, application.id, ApplicationStatus.Offered), ApplicationNotAllowedError);
+});
+
+test('updateStatus hides the application from other users', async () => {
+    const { service } = createService(new FakeApplicationRepository([openJob], [application]));
+
+    await assert.rejects(service.updateStatus(otherRecruiter, application.id, ApplicationStatus.Rejected), ApplicationNotFoundError);
+    await assert.rejects(service.updateStatus(otherJobSeeker, application.id, ApplicationStatus.Rejected), ApplicationNotFoundError);
+});
+
+test('updateStatus rejects the status the application already has', async () => {
+    const { service, applications } = createService(new FakeApplicationRepository([openJob], [application]));
+
+    await assert.rejects(service.updateStatus(recruiter, application.id, ApplicationStatus.Applied), InvalidApplicationStatusError);
+    assert.equal((await applications.getStatusHistory(application.id)).length, 1); // No duplicate history entry
 });
 
 test('withdraw deletes the application of its applicant', async () => {
