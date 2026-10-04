@@ -3,11 +3,14 @@ import { applicationService } from '../../infrastructure/container.js';
 import type { PublicUser } from '../../domain/entities/PublicUser.js';
 import { InvalidApplicationIdError } from '../../domain/errors/InvalidApplicationIdError.js';
 import { InvalidApplicationRequestError } from '../../domain/errors/InvalidApplicationRequestError.js';
+import { InvalidApplicationStatusError } from '../../domain/errors/InvalidApplicationStatusError.js';
+import { isApplicationStatus } from '../../domain/entities/Application.js';
 
 // Status code for each application error. Their messages are written for users, so they can be sent as they are.
 const APPLICATION_ERROR_STATUS: Record<string, number> = {
   InvalidApplicationIdError: 400,
   InvalidApplicationRequestError: 400,
+  InvalidApplicationStatusError: 400,
   JobClosedError: 400,
   ApplicationNotAllowedError: 403,
   ApplicationNotFoundError: 404,
@@ -88,6 +91,25 @@ export class ApplicationController {
             res.status(200).json({ application });
         } catch (error: unknown) {
             handleApplicationError(error, res, 'The application could not be loaded. Please try again.');
+        }
+    }
+
+    async updateStatus(req: Request, res: Response): Promise<void> {
+        try {
+            const user = res.locals.user as PublicUser;
+            const applicationId = parseId(req.params.id);
+            const { status } = req.body ?? {};
+
+            // The status must be one of the values in the ApplicationStatus enum
+            if (!isApplicationStatus(status)) {
+              throw new InvalidApplicationStatusError();
+            }
+
+            // Return a 200 OK response with the updated application
+            const application = await applicationService.updateStatus(user, applicationId, status);
+            res.status(200).json({ application });
+        } catch (error: unknown) {
+            handleApplicationError(error, res, 'The application status could not be updated. Please try again.');
         }
     }
 

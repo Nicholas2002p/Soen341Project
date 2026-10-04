@@ -23,5 +23,8 @@ applicationRoutes.get('/jobs/:jobId', applicationController.listForJob.bind(appl
 // Get one application with its status history (applicant or recruiter of the job)
 applicationRoutes.get('/:id', applicationController.getById.bind(applicationController));
 
+// Change the status of an application (JSON body: { status }, recruiter of the job only)
+applicationRoutes.patch('/:id/status', applicationController.updateStatus.bind(applicationController));
+
 // Withdraw an application (applicant only)
 applicationRoutes.delete('/:id', applicationController.withdraw.bind(applicationController));
