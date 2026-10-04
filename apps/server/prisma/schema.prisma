@@ -26,9 +26,11 @@ enum EmploymentType {
 }
 
 enum ApplicationStatus {
-  onhold
-  rejected
-  accepted
+  Applied
+  Under_Review
+  Interview
+  Offered
+  Rejected
 }
 
 //tables

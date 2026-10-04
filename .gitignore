@@ -147,7 +147,7 @@ apps/client/dist/
 # Build
 dist/
 build/
-
+certs/*
 # Prisma generated client
 apps/server/src/generated/
 
@@ -160,3 +160,4 @@ npm-debug.log*
 .claude/
 .windsurf/
 .vscode/
+
