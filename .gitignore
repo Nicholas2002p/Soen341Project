@@ -147,7 +147,7 @@ apps/client/dist/
 # Build
 dist/
 build/
-certs/*
+certs/
 # Prisma generated client
 apps/server/src/generated/
 
