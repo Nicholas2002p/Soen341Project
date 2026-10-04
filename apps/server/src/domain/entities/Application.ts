@@ -2,13 +2,20 @@
 
 // Possible statuses of an application. These match the ApplicationStatus enum in the database.
 export enum ApplicationStatus {
-    OnHold = 'onhold',
-    Rejected = 'rejected',
-    Accepted = 'accepted',
+    Applied = 'Applied',
+    UnderReview = 'Under_Review',
+    Interview = 'Interview',
+    Offered = 'Offered',
+    Rejected = 'Rejected',
 }
 
 // Status given to every new application
-export const INITIAL_APPLICATION_STATUS = ApplicationStatus.OnHold;
+export const INITIAL_APPLICATION_STATUS = ApplicationStatus.Applied;
+
+// Check if a value (e.g. from a request body) is one of the application statuses
+export function isApplicationStatus(value: unknown): value is ApplicationStatus {
+    return Object.values(ApplicationStatus).includes(value as ApplicationStatus);
+}
 
 export interface Application {
     id: number; // Unique identifier for the application
@@ -29,6 +36,7 @@ export interface ApplicationStatusChange {
 // Short job information shown with an application so the client does not need a second request
 export interface ApplicationJobSummary {
     id: number;
+    title: string;
     companyName: string;
     location: string | null;
     employmentType: string;
