@@ -5,7 +5,7 @@ CREATE TYPE "UserRole" AS ENUM ('recruiter', 'jobseeker', 'admin');
 CREATE TYPE "EmploymentType" AS ENUM ('on_site', 'hybrid', 'remote');
 
 -- CreateEnum
-CREATE TYPE "ApplicationStatus" AS ENUM ('onhold', 'rejected', 'accepted');
+CREATE TYPE "ApplicationStatus" AS ENUM ('Applied', 'Under_Review', 'Interview', 'Offered', 'Rejected');
 
 -- CreateTable
 CREATE TABLE "Users" (
