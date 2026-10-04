@@ -29,6 +29,9 @@ export interface IApplicationRepository {
     //list all applications submitted to a job, newest first
     listByJobId(jobId: number): Promise<Application[]>;
 
+    //change the status of an application and add the change to its status history, returns the updated application
+    updateStatus(id: number, status: ApplicationStatus): Promise<Application>;
+
     //get the status history of an application, oldest first
     getStatusHistory(applicationId: number): Promise<ApplicationStatusChange[]>;
 

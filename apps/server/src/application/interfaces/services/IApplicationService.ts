@@ -1,4 +1,4 @@
-import type { Application, ApplicationDetails, ApplicationWithJob } from '../../../domain/entities/Application.js';
+import type { Application, ApplicationDetails, ApplicationStatus, ApplicationWithJob } from '../../../domain/entities/Application.js';
 import type { PublicUser } from '../../../domain/entities/PublicUser.js';
 
 export interface ApplyToJobData {
@@ -15,6 +15,9 @@ export interface IApplicationService {
 
     //get one application with its status history, for the applicant or the recruiter of the job
     getById(user: PublicUser, applicationId: number): Promise<ApplicationDetails>;
+
+    //change the status of an application, only the recruiter who posted the job can do this
+    updateStatus(user: PublicUser, applicationId: number, status: ApplicationStatus): Promise<Application>;
 
     //withdraw (delete) an application, only the applicant can do this
     withdraw(userId: number, applicationId: number): Promise<void>;

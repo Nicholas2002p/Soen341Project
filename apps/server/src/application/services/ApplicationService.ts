@@ -1,13 +1,14 @@
 import type { ApplyToJobData, IApplicationService } from '../interfaces/services/IApplicationService.js';
 import type { IApplicationRepository } from '../interfaces/repositories/IApplicationRepository.js';
 import type { IResumeRepository } from '../interfaces/repositories/IResumeRepository.js';
-import type { Application, ApplicationDetails, ApplicationJob, ApplicationWithJob } from '../../domain/entities/Application.js';
+import type { Application, ApplicationDetails, ApplicationJob, ApplicationStatus, ApplicationWithJob } from '../../domain/entities/Application.js';
 import { INITIAL_APPLICATION_STATUS } from '../../domain/entities/Application.js';
 import type { PublicUser } from '../../domain/entities/PublicUser.js';
 import { UserRole } from '../../domain/entities/User.js';
 import { ApplicationNotFoundError } from '../../domain/errors/ApplicationNotFoundError.js';
 import { ApplicationNotAllowedError } from '../../domain/errors/ApplicationNotAllowedError.js';
 import { DuplicateApplicationError } from '../../domain/errors/DuplicateApplicationError.js';
+import { InvalidApplicationStatusError } from '../../domain/errors/InvalidApplicationStatusError.js';
 import { JobClosedError } from '../../domain/errors/JobClosedError.js';
 import { JobNotFoundError } from '../../domain/errors/JobNotFoundError.js';
 import { ResumeNotFoundError } from '../../domain/errors/ResumeNotFoundError.js';
@@ -86,6 +87,33 @@ export class ApplicationService implements IApplicationService {
 
         const statusHistory = await this.applicationRepository.getStatusHistory(applicationId);
         return { ...application, statusHistory };
+    }
+
+    //change the status of an application, only the recruiter who posted the job can do this.
+    //The applicant gets ApplicationNotAllowedError (they can see the application but not change it),
+    //anyone else gets ApplicationNotFoundError.
+    async updateStatus(user: PublicUser, applicationId: number, status: ApplicationStatus): Promise<Application> {
+        const application = await this.applicationRepository.getById(applicationId);
+
+        if (!application) {
+            throw new ApplicationNotFoundError();
+        }
+
+        const job = await this.applicationRepository.getJob(application.jobId);
+
+        if (!job || job.recruiterId !== user.id) {
+            if (application.userId === user.id) {
+                throw new ApplicationNotAllowedError('Only the recruiter who posted this job can change the status of an application.');
+            }
+            throw new ApplicationNotFoundError();
+        }
+
+        // Saving the same status again would only add a duplicate entry to the history
+        if (application.status === status) {
+            throw new InvalidApplicationStatusError('The application already has this status.');
+        }
+
+        return this.applicationRepository.updateStatus(applicationId, status);
     }
 
     //withdraw (delete) an application, only the applicant can do this
