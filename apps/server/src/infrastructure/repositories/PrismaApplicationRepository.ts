@@ -16,13 +16,14 @@ import { DuplicateApplicationError } from '../../domain/errors/DuplicateApplicat
 // Job fields loaded with an application
 const jobSummarySelect = {
     jobId: true,
+    title: true,
     location: true,
     employmentType: true,
     company: { select: { name: true } },
 } as const;
 
 type PrismaApplicationWithJob = PrismaApplication & {
-    job: { jobId: number; location: string | null; employmentType: string; company: { name: string } };
+    job: { jobId: number; title: string; location: string | null; employmentType: string; company: { name: string } };
 };
 
 // Prisma error code for a unique constraint violation (here: the same user applying to the same job twice)
@@ -50,6 +51,7 @@ export class PrismaApplicationRepository implements IApplicationRepository {
             ...this.toDomainApplication(record),
             job: {
                 id: record.job.jobId,
+                title: record.job.title,
                 companyName: record.job.company.name,
                 location: record.job.location,
                 employmentType: record.job.employmentType,
@@ -118,6 +120,21 @@ export class PrismaApplicationRepository implements IApplicationRepository {
         });
 
         return applications.map((application) => this.toDomainApplication(application));
+    }
+
+    // Change the status of an application and add the change to its status history in one transaction
+    async updateStatus(id: number, status: ApplicationStatus): Promise<Application> {
+        const [application] = await this.prisma.$transaction([
+            this.prisma.application.update({
+                where: { applicationId: id },
+                data: { status, updatedAt: new Date() },
+            }),
+            this.prisma.applicationStatusHistory.create({
+                data: { applicationId: id, status },
+            }),
+        ]);
+
+        return this.toDomainApplication(application);
     }
 
     // Get the status history of an application, oldest first
