@@ -79,6 +79,16 @@ in root of the project
    npm run dev
 ```
 
+### Client Environment Setup
+Create `apps/client/.env.local` from `apps/client/.env.example` and set the API target:
+
+```env
+VITE_API_URL=https://localhost:3000
+VITE_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+```
+
+The client uses `VITE_API_URL` for all server requests. Restart the Vite client after changing environment variables.
+
 ## Proposed Features
 - Post a job onto the job board
 - Look through jobs board
