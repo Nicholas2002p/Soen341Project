@@ -1,9 +1,6 @@
 export interface IPasswordHasher {
-    // Hashes a password with an optional salt. If no salt is provided, a new salt will be generated.
-    hash(password: string, salt?: string): Promise<string>;
-
-    // Generates a new salt for password hashing.
-    generateSalt(): Promise<string>;
+    // Hashes a password using the requested work factor. The implementation owns the salt generation.
+    hash(password: string, saltRounds?: number): Promise<string>;
 
     // Retrieves the default number of salt rounds used for hashing.
     getDefaultSaltRounds(): number;

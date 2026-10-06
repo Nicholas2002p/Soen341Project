@@ -59,4 +59,12 @@ export class PrismaUserRepository implements IUserRepository {
 
         return this.toDomainUser(updatedUser);
     }
+
+    async delete(id: number): Promise<void> {
+        await this.prisma.$transaction(async (transaction) => {
+            await transaction.profile.deleteMany({ where: { userId: id } });
+            await transaction.salt.deleteMany({ where: { userId: id } });
+            await transaction.user.delete({ where: { userId: id } });
+        });
+    }
 }

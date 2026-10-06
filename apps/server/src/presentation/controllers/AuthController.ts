@@ -2,6 +2,8 @@ import type { Request, Response } from 'express';
 import { authService } from '../../infrastructure/container.js';
 import type { PublicUser } from '../../domain/entities/PublicUser.js';
 import { isValidEmail } from '../../domain/validation/Email.js';
+import { UserNotFoundError } from '../../domain/errors/UserNotFoundError.js';
+import { UnauthorizedUserActionError } from '../../domain/errors/UnauthorizedUserActionError.js';
 
 function errorMessage(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
@@ -24,8 +26,13 @@ export class AuthController {
         return;
       }
 
-      // Call the authService to register the user
-      const result = await authService.register({ email, password });
+            // Call the authService to register the user
+            const result = await authService.register({ email, password });
+
+            if (!result.user || !result.sessionToken) {
+              res.status(500).json({ message: 'Registration failed: Missing user or session token.' });
+              return;
+            }
 
       // Return a 201 Created response with the user and session token
       res.status(201).json({
@@ -146,6 +153,32 @@ export class AuthController {
 
     // Return a 200 OK response with the authenticated user's information
     res.status(200).json({ user });
+  }
+
+  async deleteUser(req: Request, res: Response): Promise<void> {
+    try {
+      // Retrieve the authenticated user from res.locals set by authMiddleware
+      const user = res.locals.user as PublicUser;
+      const requestedUserId = req.params.userId ? Number(req.params.userId) : user.id;
+      if (!Number.isInteger(requestedUserId) || requestedUserId <= 0) {
+        res.status(400).json({ message: 'A valid user id is required.' });
+        return;
+      }
+      // Call the authService to delete the user account
+      await authService.deleteUser(requestedUserId, user.id, user.role);
+      // Return a 204 No Content response indicating successful deletion
+      res.status(204).send();
+    } catch (error: unknown) {
+      if (error instanceof UserNotFoundError) {
+        res.status(404).json({ message: error.message });
+        return;
+      }
+      if (error instanceof UnauthorizedUserActionError) {
+        res.status(403).json({ message: error.message });
+        return;
+      }
+      res.status(500).json({ message: errorMessage(error, 'Account deletion failed') });
+    }
   }
 }
 

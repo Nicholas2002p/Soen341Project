@@ -21,7 +21,7 @@ export default function Registration({ setView }) {
     const [passwordType2, setPasswordType2] = useState(true);
     const [checked, setChecked] = useState(false);
 
-    const { token, setToken, user, setUser } = useAuth();
+    const { setToken, setUser } = useAuth();
 
     return (
         <section className="registration">  
@@ -61,7 +61,7 @@ export default function Registration({ setView }) {
                         {errorMessage}
                     </span>
                 
-                    <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken,token, setView, checked, setUser) } }> Register </button>
+                    <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken, setView, checked, setUser) } }> Register </button>
                 </section>
             </main>
         </section>
@@ -81,7 +81,7 @@ export default function Registration({ setView }) {
  * @param {string} token 
  * @param {functio} setView 
  */          
-async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken, token, setView, checked, setUser) { 
+async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken, setView, checked, setUser) { 
     if (email.trim() === "") setErrorMessage("Email is required");
 
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setErrorMessage("Please enter a valid email address");
