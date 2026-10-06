@@ -150,7 +150,7 @@ apps/server/certs/
 # Build
 dist/
 build/
-
+certs/
 # Prisma generated client
 apps/server/src/generated/
 

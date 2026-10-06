@@ -3,6 +3,7 @@ import path from 'node:path';
 import { authRoutes } from './presentation/routes/AuthRoutes.js';
 import { profileRoutes, publicProfileRoutes } from './presentation/routes/ProfileRoutes.js';
 import { resumeRoutes } from './presentation/routes/ResumeRoutes.js';
+import { companyRoutes } from './presentation/routes/CompanyRoutes.js';
 import cors from 'cors';
 
 export const app: Express = express();
@@ -36,6 +37,7 @@ app.use('/api/auth', authRoutes);
 //------------------------------------------- Resume routes ------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
 app.use('/api/resumes', resumeRoutes);
+app.use('/api/companies', companyRoutes);
 
 //-----------------------------------------------------------------------------------------------------------
 // ------------------------------------------ Profile routes ------------------------------------------------
