@@ -27,7 +27,7 @@ export default function Nav({ setView, profileURL }) {
  * @returns the nav item component
  */
 function NavItems({ setView }) {
-  const { token, setToken } = useAuth();
+  const { token } = useAuth();
 
   return (
     <ul className="nav-list-items">
