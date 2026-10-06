@@ -240,30 +240,7 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
 }
 
 export async function UploadResumeApi(file, setErrorMessage, token) {
-    const formData = new FormData();
-    formData.append('resume', file);
-
-    try {
-        const response = await fetch(getApiUrl("/api/resumes"), {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-        });
-        const data = await response.json();
-
-        if (!response.ok) {
-            setErrorMessage(data.message ?? 'Unable to upload resume.');
-            return null;
-        }
-
-        return data.resume;
-    } catch (error) {
-        console.error(error);
-        setErrorMessage('Unable to upload resume.');
-        return null;
-    }
+    throw new Error("UploadResumeApi is not implemented yet.");
 }
 
 
