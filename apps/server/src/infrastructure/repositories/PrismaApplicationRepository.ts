@@ -6,6 +6,7 @@ import type {
 } from '../../application/interfaces/repositories/IApplicationRepository.js';
 import type {
     Application,
+    ApplicationDetails,
     ApplicationJob,
     ApplicationStatus,
     ApplicationStatusChange,
@@ -110,6 +111,26 @@ export class PrismaApplicationRepository implements IApplicationRepository {
         });
 
         return applications.map((application) => this.toDomainApplicationWithJob(application));
+    }
+
+    // List the applications of a job seeker with their job and status history in one query, newest first
+    async listHistoryByUserId(userId: number, statuses?: ApplicationStatus[]): Promise<ApplicationDetails[]> {
+        const applications = await this.prisma.application.findMany({
+            where: { userId, ...(statuses ? { status: { in: statuses } } : {}) },
+            include: {
+                job: { select: jobSummarySelect },
+                statusHistory: { orderBy: { createdAt: 'asc' } },
+            },
+            orderBy: { appliedAt: 'desc' },
+        });
+
+        return applications.map((application) => ({
+            ...this.toDomainApplicationWithJob(application),
+            statusHistory: application.statusHistory.map((entry) => ({
+                status: entry.status as ApplicationStatus,
+                changedAt: entry.createdAt,
+            })),
+        }));
     }
 
     // List all applications submitted to a job, newest first

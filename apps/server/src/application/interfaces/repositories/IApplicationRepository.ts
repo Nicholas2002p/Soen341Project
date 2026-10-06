@@ -1,5 +1,6 @@
 import type {
     Application,
+    ApplicationDetails,
     ApplicationJob,
     ApplicationStatus,
     ApplicationStatusChange,
@@ -25,6 +26,10 @@ export interface IApplicationRepository {
 
     //list all applications of a job seeker, newest first
     listByUserId(userId: number): Promise<ApplicationWithJob[]>;
+
+    //list the applications of a job seeker with their status history, newest first.
+    //When statuses is given, only applications whose current status is in the list are returned.
+    listHistoryByUserId(userId: number, statuses?: ApplicationStatus[]): Promise<ApplicationDetails[]>;
 
     //list all applications submitted to a job, newest first
     listByJobId(jobId: number): Promise<Application[]>;
