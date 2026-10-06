@@ -18,6 +18,7 @@ export default function ResumeUpload() {
     <section className="resume-upload">
       <h2>Resume Upload</h2>
 
+      <img src="random_cv.png" alt="" />
       <input
         type="file"
         accept=".pdf,.doc,.docx"
