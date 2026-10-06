@@ -4,7 +4,7 @@ import type { PublicUser } from '../../domain/entities/PublicUser.js';
 import { InvalidApplicationIdError } from '../../domain/errors/InvalidApplicationIdError.js';
 import { InvalidApplicationRequestError } from '../../domain/errors/InvalidApplicationRequestError.js';
 import { InvalidApplicationStatusError } from '../../domain/errors/InvalidApplicationStatusError.js';
-import { isApplicationStatus } from '../../domain/entities/Application.js';
+import { isApplicationStatus, type ApplicationStatus } from '../../domain/entities/Application.js';
 
 // Status code for each application error. Their messages are written for users, so they can be sent as they are.
 const APPLICATION_ERROR_STATUS: Record<string, number> = {
@@ -48,6 +48,26 @@ function handleApplicationError(error: unknown, res: Response, fallbackMessage: 
   res.status(500).json({ message: fallbackMessage });
 }
 
+// Read the optional "status" query parameter, e.g. ?status=Offered,Rejected
+// Returns undefined when there is no filter, and throws if one of the values is not a valid status.
+function parseStatusFilter(value: unknown): ApplicationStatus[] | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  // ?status=a,b and ?status=a&status=b are both accepted
+  const values = (Array.isArray(value) ? value : [value])
+    .flatMap((item) => String(item).split(','))
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+
+  if (!values.every(isApplicationStatus)) {
+    throw new InvalidApplicationStatusError();
+  }
+
+  return values;
+}
+
 export class ApplicationController {
     async apply(req: Request, res: Response): Promise<void> {
         try {
@@ -78,6 +98,19 @@ export class ApplicationController {
             res.status(200).json({ applications });
         } catch (error: unknown) {
             handleApplicationError(error, res, 'Your applications could not be loaded. Please try again.');
+        }
+    }
+
+    async listHistory(req: Request, res: Response): Promise<void> {
+        try {
+            const user = res.locals.user as PublicUser;
+            const statuses = parseStatusFilter(req.query.status);
+
+            // Return a 200 OK response with the applications and their status history
+            const applications = await applicationService.listHistory(user.id, statuses);
+            res.status(200).json({ applications });
+        } catch (error: unknown) {
+            handleApplicationError(error, res, 'Your application history could not be loaded. Please try again.');
         }
     }
 
