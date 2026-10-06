@@ -4,6 +4,7 @@ import type {
 } from '../../src/application/interfaces/repositories/IApplicationRepository.js';
 import type {
     Application,
+    ApplicationDetails,
     ApplicationJob,
     ApplicationStatusChange,
     ApplicationWithJob,
@@ -82,6 +83,12 @@ export class FakeApplicationRepository implements IApplicationRepository {
 
     async listByUserId(userId: number): Promise<ApplicationWithJob[]> {
         return [...this.applications.values()].filter((stored) => stored.userId === userId).map((stored) => this.withJob(stored));
+    }
+
+    async listHistoryByUserId(userId: number, statuses?: ApplicationStatus[]): Promise<ApplicationDetails[]> {
+        return (await this.listByUserId(userId))
+            .filter((stored) => !statuses || statuses.includes(stored.status))
+            .map((stored) => ({ ...stored, statusHistory: this.statusHistory.get(stored.id) ?? [] }));
     }
 
     async listByJobId(jobId: number): Promise<Application[]> {

@@ -167,6 +167,24 @@ test('application lifecycle works through the HTTP API and database', async () =
         const withHistory = (await historyResponse.json()) as { application: ApplicationResponse };
         assert.deepEqual(withHistory.application.statusHistory?.map((entry) => entry.status), ['Applied', 'Interview']);
 
+        // The history endpoint returns the application with its full status history, and can filter by status.
+        const fullHistoryResponse = await request('/api/applications/history', { headers: auth(seeker.token) });
+        assert.equal(fullHistoryResponse.status, 200);
+        const fullHistory = (await fullHistoryResponse.json()) as { applications: ApplicationResponse[] };
+        assert.deepEqual(fullHistory.applications.map((listed) => listed.id), [application.id]);
+        assert.deepEqual(fullHistory.applications[0]?.statusHistory?.map((entry) => entry.status), ['Applied', 'Interview']);
+
+        const interviewsResponse = await request('/api/applications/history?status=Interview,Offered', { headers: auth(seeker.token) });
+        const interviews = (await interviewsResponse.json()) as { applications: ApplicationResponse[] };
+        assert.equal(interviews.applications.length, 1);
+
+        const rejectedResponse = await request('/api/applications/history?status=Rejected', { headers: auth(seeker.token) });
+        const rejected = (await rejectedResponse.json()) as { applications: ApplicationResponse[] };
+        assert.equal(rejected.applications.length, 0);
+
+        const badFilterResponse = await request('/api/applications/history?status=Hired', { headers: auth(seeker.token) });
+        assert.equal(badFilterResponse.status, 400);
+
         // An unknown status is rejected, and the applicant cannot change the status.
         const unknownStatusResponse = await request(`/api/applications/${application.id}/status`, {
             method: 'PATCH',

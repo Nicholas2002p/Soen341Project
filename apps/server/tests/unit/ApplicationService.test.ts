@@ -80,6 +80,28 @@ test('listMine only returns the applications of the given user', async () => {
     assert.deepEqual(result.map((listed) => listed.id), [application.id]);
 });
 
+test('listHistory returns the applications of the user with their status history', async () => {
+    const othersApplication = { ...application, id: 2, userId: otherJobSeeker.id };
+    const { service } = createService(new FakeApplicationRepository([openJob], [application, othersApplication]));
+    await service.updateStatus(recruiter, application.id, ApplicationStatus.Interview);
+
+    const result = await service.listHistory(jobSeeker.id);
+
+    assert.deepEqual(result.map((listed) => listed.id), [application.id]); // Only the user's own applications
+    assert.deepEqual(result[0]?.statusHistory.map((entry) => entry.status), [ApplicationStatus.Applied, ApplicationStatus.Interview]);
+});
+
+test('listHistory only returns applications with one of the given statuses', async () => {
+    const rejected = { ...application, id: 2, jobId: 200, status: ApplicationStatus.Rejected };
+    const { service } = createService(new FakeApplicationRepository([openJob], [application, rejected]));
+
+    const finished = await service.listHistory(jobSeeker.id, [ApplicationStatus.Offered, ApplicationStatus.Rejected]);
+    const all = await service.listHistory(jobSeeker.id, []); // An empty filter means no filter
+
+    assert.deepEqual(finished.map((listed) => listed.id), [rejected.id]);
+    assert.equal(all.length, 2);
+});
+
 test('getById returns the application and its status history to the applicant', async () => {
     const { service } = createService(new FakeApplicationRepository([openJob], [application]));
 
