@@ -1,3 +1,4 @@
+# Sprint 1 Logs
 Task ID/Title: Using AI to generate sample data for our database
 Purpose of AI Use: It is easy for AI to just randomly generate sample data, since it can be whatever we want it to be
 Chat Link or Prompt/Response: 
@@ -439,3 +440,84 @@ Validation: Looked through it and as long as everything made sense for example h
 Decision: Modified before use. I decided to not use hard coded id but incremental id from the database and my teammate suggested we actually hash our password instead of writing a fake hash
 Reflection: AI quickly generated sample data for our project and was useful so we saved time on making new ideas.
 Responsible Person: Qian Yun Chen
+
+# Sprint 2 Log
+## #1
+Task ID/Title: giving me ideas for test function creation
+Purpose of AI Use: wanted to brainstorm the tests i would have to write 
+Chat Link or Prompt/Response: 
+Prompt
+```
+import { Router } from 'express';
+import { companyController } from '../controllers/CompanyController.js';
+import { authMiddleware } from '../middleware/AuthMiddleware.js';
+
+export const companyRoutes = Router();
+
+//NOTE - routes without needing auth
+companyRoutes.get(
+    '/',
+    companyController.getAll.bind(companyController),
+);
+
+companyRoutes.get(
+    '/:companyId',
+    companyController.getById.bind(companyController),
+);
+
+//NOTE - routes needing auth
+companyRoutes.post(
+    '/',
+    authMiddleware,
+    companyController.create.bind(companyController),
+);
+
+companyRoutes.put(
+    '/:companyId',
+    authMiddleware,
+    companyController.update.bind(companyController),
+);
+
+companyRoutes.delete(
+    '/:companyId',
+    authMiddleware,
+    companyController.delete.bind(companyController),
+);
+
+
+
+
+here is my current routes for my company API backend, give me suggestions for test cases.
+```
+
+response
+```
+Your route structure gives you a good set of API tests. For the Company API, I would test these cases.
+| Endpoint | Test case | Expected result |
+|---|---|---|
+| `GET /api/companies` | Companies exist | `200`, returns array of companies |
+| `GET /api/companies` | No companies exist | `200`, returns empty array |
+| `GET /api/companies/:companyId` | Valid existing ID | `200`, returns correct company |
+| `GET /api/companies/:companyId` | Valid non-existing ID | `404` |
+| `GET /api/companies/:companyId` | Invalid ID such as `abc` | `400` |
+| `GET /api/companies/:companyId` | Invalid numeric ID such as `0` or `-1` | `400` |
+| `POST /api/companies` | Authenticated user + valid body | `201`, company created |
+| `POST /api/companies` | No authentication token | `401` |
+| `POST /api/companies` | Missing required name | `400` |
+| `POST /api/companies` | Empty/whitespace-only name | `400` |
+| `POST /api/companies` | Name exceeds DB limit | `400` |
+| `POST /api/companies` | Description exceeds DB limit | `400` |
+| `PUT /api/companies/:companyId` | Authenticated + valid update | `200`, values updated |
+| `PUT /api/companies/:companyId` | Company does not exist | `404` |
+| `PUT /api/companies/:companyId` | No authentication | `401` |
+| `PUT /api/companies/:companyId` | Invalid body | `400` |
+| `DELETE /api/companies/:companyId` | Authenticated + existing company | `204` |
+| `DELETE /api/companies/:companyId` | Company not found | `404` |
+| `DELETE /api/companies/:companyId` | No authentication | `401` |
+| `DELETE /api/companies/:companyId` | Company referenced by jobs | likely `409`, depending on your service design |
+```
+AI-Suggested Content: AI proposed tests I should write
+Validation: Manual review of the tests suggested and what we should test
+Decision: Modified before use, I decided to put some of the tests together
+Reflection: AI is pretty good at suggesting tests
+Responsible Person: Yun Chen Qian
