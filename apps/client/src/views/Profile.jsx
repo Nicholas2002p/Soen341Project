@@ -26,8 +26,6 @@ export default function Profile({ setView }) {
   const [desc, setDesc] = useState(null);
   
   useEffect(() => {
-    console.log("PROFILE EFFECT", token);
-
     if (!token) return;
     const getProfile = async () => {
       const data = await GetProfileApi(token);

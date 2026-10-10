@@ -1,0 +1,18 @@
+.dropdown{
+    padding: 8px;
+    cursor: pointer;
+}
+#searchBar{
+    padding: 8px;
+    flex-grow : 1;
+}
+#jobSearchForm{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+}
+.formBtn{
+    padding: 8px 16px;
+    cursor: pointer;
+}

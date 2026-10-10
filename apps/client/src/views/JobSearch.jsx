@@ -1,20 +1,31 @@
 import JobPosting from "./JobPosting";
 import Nav from '../components/Nav';
-import { useState } from "react";
+import SearchBar from "../components/Search";
+import { useState, useEffect } from "react";
+import GetJobsApi from "../utils/Api";
 
 export default function JobSearch({ setView }) {
-    const [searchBar, setSearchBar] = useState('');
+  const [jobs, setJobs] = useState();
+
+  useEffect(() => {
+      const getOptions = async () => {
+        //check to see if token is needed
+        const data = await GetJobsApi();
+        if (!data) return;
+        //change to propername later
+        setJobs(data);
+      };
+      getOptions();
+
+  }, []);
 
   return (
     <section className="homepage">
       <Nav setView={setView} />      
-          <div className='searchBar'>
-              <label htmlfor="search">Job Search</label>
-              <input className='registration-input' type="text" name="search" maxLength="50" onChange={(e) => { setSearchBar(e.target.value) }} />
-          </div>
+ 
       <main className="home">
-        
-        <JobPosting />
+        <SearchBar setJobs={setJobs}/>
+        <JobPosting jobs={jobs} />
       </main>
     </section>
   );
