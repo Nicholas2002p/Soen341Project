@@ -1,4 +1,4 @@
-import { UserRole } from './User.js';
+import type { UserRole } from './User.js';
 
 // This file defines a PublicUser entity, which represents a user without sensitive information like passwordHash.
 export interface PublicUser {

@@ -1,5 +1,5 @@
 import { prisma } from '../prisma/prisma.js';
-import { ISessionRepository, session } from '../../application/interfaces/repositories/ISessionRepository.js';
+import type { ISessionRepository, session } from '../../application/interfaces/repositories/ISessionRepository.js';
 
 export class PrismaSessionRepository implements ISessionRepository {
     // Create a new session in the database with the provided user ID, token hash, and expiration date

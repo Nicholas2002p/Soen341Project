@@ -1,4 +1,4 @@
-import { User, UserRole } from '../../../domain/entities/User.js';
+import type { User, UserRole } from '../../../domain/entities/User.js';
 
 export interface CreateUserData {
     email: string; // User's email address

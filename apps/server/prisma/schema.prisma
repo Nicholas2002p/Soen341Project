@@ -26,9 +26,11 @@ enum EmploymentType {
 }
 
 enum ApplicationStatus {
-  onhold
-  rejected
-  accepted
+  Applied
+  Under_Review
+  Interview
+  Offered
+  Rejected
 }
 
 //tables
@@ -138,6 +140,7 @@ model Job {
   jobId          Int            @id @default(autoincrement()) @map("jobId")
   companyId      Int            @map("companyId")
   recruiterId    Int            @map("recruitorId")
+  title          String         @db.VarChar(50)
   location       String?        @db.VarChar(100)
   description    String?        @db.VarChar(250)
   salary         Int
