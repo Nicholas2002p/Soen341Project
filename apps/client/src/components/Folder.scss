@@ -1,0 +1,52 @@
+.folder-tabs {
+  margin: 0;
+  display: flex;
+}
+
+.folder-tabs li {
+  list-style-type: none;
+  background-color: brown;
+  padding: 10px;
+  width: 15%;
+  border-radius: 10px 10px 0 0;
+  border: solid 1px black;
+  border-bottom: none;
+  cursor: pointer;
+}
+
+.folder-content {
+  background-color: lightcoral;
+  display: flex;
+  gap: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  border-radius: 10px;
+  height: 85vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+
+}
+
+.folder-job-openings {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 20px;
+  width: 100%;
+  min-height: 100%;
+}
+
+.folder-job-openings::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 15px;
+}
+
+.job {
+  background-color: lightgrey;
+  height: 561.33px;
+  width: 396.67px;
+  padding: 10px;
+}
