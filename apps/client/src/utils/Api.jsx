@@ -191,6 +191,7 @@ export async function UpdateProfileApi(fname, lname, phone, bio, location, setEr
             }),
         });
 
+        const data = await response.json();
         if (!response.ok) {
             setErrorMessage("Error Message:", data.message);
             return false;
