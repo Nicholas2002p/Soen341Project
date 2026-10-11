@@ -10,7 +10,7 @@ export default function RecruiterJobPosting({}) {
   return (
     <main className="recruiter-job-posting">
       <h2> Job Posting </h2>
-      { !isAdding && <Folder setIsAdding={setIsAdding} /> }
+      <Folder setIsAdding={setIsAdding} />
       { isAdding && <AddJobOpeningPage setIsAdding={setIsAdding} /> }
     </main>
   );
