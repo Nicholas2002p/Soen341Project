@@ -1,17 +1,17 @@
-import { IAuthService, RegisterData, AuthenticationResult } from '../interfaces/services/IAuthService.js';
-import { IUserRepository } from '../interfaces/repositories/IUserRepository.js';
-import { ISessionRepository } from '../interfaces/repositories/ISessionRepository.js';
-import { ISessionTokenGenerator } from '../interfaces/infrastructure/ISessionTokenGenerator.js';
-import { IPasswordHasher } from '../interfaces/infrastructure/IPasswordHasher.js';
-import { ISaltRepository } from '../interfaces/repositories/ISaltRepository.js';
+import type { IAuthService, RegisterData, AuthenticationResult } from '../interfaces/services/IAuthService.js';
+import type { IUserRepository } from '../interfaces/repositories/IUserRepository.js';
+import type { ISessionRepository } from '../interfaces/repositories/ISessionRepository.js';
+import type { ISessionTokenGenerator } from '../interfaces/infrastructure/ISessionTokenGenerator.js';
+import type { IPasswordHasher } from '../interfaces/infrastructure/IPasswordHasher.js';
+import type { ISaltRepository } from '../interfaces/repositories/ISaltRepository.js';
 import { UserAlreadyExistsError } from '../../domain/errors/UserAlreadyExistsError.js';
 import { InvalidAuthCredentialsError } from '../../domain/errors/InvalidAuthCredentialsError.js';
-import { PublicUser } from '../../domain/entities/PublicUser.js';
-import { User } from '../../domain/entities/User.js';
+import type { PublicUser } from '../../domain/entities/PublicUser.js';
+import type { User } from '../../domain/entities/User.js';
 import { isValidEmail, normalizeEmail } from '../../domain/validation/Email.js';
 import { InvalidEmailError } from '../../domain/errors/InvalidEmailError.js';
-import { IGoogleTokenVerifier } from '../interfaces/infrastructure/IGoogleTokenVerifier.js';
-import { IProfileRepository } from '../interfaces/repositories/IProfileRepository.js';
+import type { IGoogleTokenVerifier } from '../interfaces/infrastructure/IGoogleTokenVerifier.js';
+import type { IProfileRepository } from '../interfaces/repositories/IProfileRepository.js';
 import { randomBytes } from 'node:crypto';
 
 export class AuthService implements IAuthService {

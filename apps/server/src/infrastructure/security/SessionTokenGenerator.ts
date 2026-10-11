@@ -1,5 +1,5 @@
 import { randomBytes, createHash } from 'node:crypto';
-import { ISessionTokenGenerator } from '../../application/interfaces/infrastructure/ISessionTokenGenerator.js';
+import type { ISessionTokenGenerator } from '../../application/interfaces/infrastructure/ISessionTokenGenerator.js';
 
 export class SessionTokenGenerator implements ISessionTokenGenerator {
     // Generate a random session token and return it as a hexadecimal string
