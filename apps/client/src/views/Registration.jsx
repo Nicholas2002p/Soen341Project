@@ -21,7 +21,7 @@ export default function Registration({ setView }) {
     const [passwordType2, setPasswordType2] = useState(true);
     const [checked, setChecked] = useState(false);
 
-    const { token, setToken, user, setUser } = useAuth();
+    const { token, setToken, setUser } = useAuth();
 
     return (
         <section className="registration">  

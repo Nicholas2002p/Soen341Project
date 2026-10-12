@@ -13,11 +13,10 @@ import GoogleSignIn from '../components/google';
 export default function Login({ setView }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPass, setConfirmPass] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [passwordType, setPasswordType] = useState(true);
     const [passwordType2, setPasswordType2] = useState(true);
-    const { token, setToken, user, setUser } = useAuth();
+    const { setToken, setUser } = useAuth();
 
     return (
         <section className="registration">
@@ -30,7 +29,7 @@ export default function Login({ setView }) {
                         <input className='registration-input' type="text " name="email" maxLength="50" onChange={(e) => { setEmail(e.target.value) }} />
                     </div>
 
-                    <Password labelName={"Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} setConfirmPass={setConfirmPass} />
+                    <Password labelName={"Password"} passwordType={passwordType} passwordType2={passwordType2} setPasswordType={setPasswordType} setPasswordType2={setPasswordType2} setPassword={setPassword} />
 
                     <section>
                         Don't have an account?
