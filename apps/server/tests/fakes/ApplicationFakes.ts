@@ -11,7 +11,7 @@ import type {
 import { ApplicationStatus } from '../../src/domain/entities/Application.js';
 import type { PublicUser } from '../../src/domain/entities/PublicUser.js';
 import { UserRole } from '../../src/domain/entities/User.js';
-import { DuplicateApplicationError } from '../../src/domain/errors/DuplicateApplicationError.js';
+import { DuplicateApplicationError } from '../../src/domain/errors/ApplicationErrors.js';
 
 const createdAt = new Date('2026-01-01');
 

@@ -1,9 +1,11 @@
 import type { Request, Response } from 'express';
 import { applicationService } from '../../infrastructure/container.js';
 import type { PublicUser } from '../../domain/entities/PublicUser.js';
-import { InvalidApplicationIdError } from '../../domain/errors/InvalidApplicationIdError.js';
-import { InvalidApplicationRequestError } from '../../domain/errors/InvalidApplicationRequestError.js';
-import { InvalidApplicationStatusError } from '../../domain/errors/InvalidApplicationStatusError.js';
+import {
+    InvalidApplicationIdError,
+    InvalidApplicationRequestError,
+    InvalidApplicationStatusError,
+} from '../../domain/errors/ApplicationErrors.js';
 import { isApplicationStatus } from '../../domain/entities/Application.js';
 
 // Status code for each application error. Their messages are written for users, so they can be sent as they are.

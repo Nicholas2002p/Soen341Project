@@ -2,12 +2,14 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { ApplicationService } from '../../src/application/services/ApplicationService.js';
 import { ApplicationStatus } from '../../src/domain/entities/Application.js';
-import { ApplicationNotAllowedError } from '../../src/domain/errors/ApplicationNotAllowedError.js';
-import { ApplicationNotFoundError } from '../../src/domain/errors/ApplicationNotFoundError.js';
-import { DuplicateApplicationError } from '../../src/domain/errors/DuplicateApplicationError.js';
-import { InvalidApplicationStatusError } from '../../src/domain/errors/InvalidApplicationStatusError.js';
-import { JobClosedError } from '../../src/domain/errors/JobClosedError.js';
-import { JobNotFoundError } from '../../src/domain/errors/JobNotFoundError.js';
+import {
+    ApplicationNotFoundError,
+    ApplicationNotAllowedError,
+    DuplicateApplicationError,
+    InvalidApplicationStatusError,
+    JobClosedError,
+    JobNotFoundError,
+} from '../../src/domain/errors/ApplicationErrors.js';
 import { ResumeNotFoundError } from '../../src/domain/errors/ResumeNotFoundError.js';
 import {
     FakeApplicationRepository,
