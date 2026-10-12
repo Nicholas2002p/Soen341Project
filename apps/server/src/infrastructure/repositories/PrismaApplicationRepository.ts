@@ -12,7 +12,7 @@ import type {
     ApplicationStatusChange,
     ApplicationWithJob,
 } from '../../domain/entities/Application.js';
-import { DuplicateApplicationError } from '../../domain/errors/DuplicateApplicationError.js';
+import { DuplicateApplicationError } from '../../domain/errors/ApplicationErrors.js';
 
 // Job fields loaded with an application
 const jobSummarySelect = {

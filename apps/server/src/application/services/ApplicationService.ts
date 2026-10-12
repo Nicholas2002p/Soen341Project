@@ -5,12 +5,14 @@ import type { Application, ApplicationDetails, ApplicationJob, ApplicationStatus
 import { INITIAL_APPLICATION_STATUS } from '../../domain/entities/Application.js';
 import type { PublicUser } from '../../domain/entities/PublicUser.js';
 import { UserRole } from '../../domain/entities/User.js';
-import { ApplicationNotFoundError } from '../../domain/errors/ApplicationNotFoundError.js';
-import { ApplicationNotAllowedError } from '../../domain/errors/ApplicationNotAllowedError.js';
-import { DuplicateApplicationError } from '../../domain/errors/DuplicateApplicationError.js';
-import { InvalidApplicationStatusError } from '../../domain/errors/InvalidApplicationStatusError.js';
-import { JobClosedError } from '../../domain/errors/JobClosedError.js';
-import { JobNotFoundError } from '../../domain/errors/JobNotFoundError.js';
+import {
+    ApplicationNotFoundError,
+    ApplicationNotAllowedError,
+    DuplicateApplicationError,
+    InvalidApplicationStatusError,
+    JobClosedError,
+    JobNotFoundError,
+} from '../../domain/errors/ApplicationErrors.js';
 import { ResumeNotFoundError } from '../../domain/errors/ResumeNotFoundError.js';
 
 export class ApplicationService implements IApplicationService {
