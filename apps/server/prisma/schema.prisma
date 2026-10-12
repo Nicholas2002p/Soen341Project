@@ -138,8 +138,10 @@ model Job {
   jobId          Int            @id @default(autoincrement()) @map("jobId")
   companyId      Int            @map("companyId")
   recruiterId    Int            @map("recruitorId")
+  name           String         @db.VarChar(120)
+  category       String         @db.VarChar(80)
   location       String?        @db.VarChar(100)
-  description    String?        @db.VarChar(250)
+  description    String?        @db.Text
   salary         Int
   employmentType EmploymentType @map("employment_type")
   deadline       DateTime?
