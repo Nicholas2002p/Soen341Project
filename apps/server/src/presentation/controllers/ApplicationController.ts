@@ -110,7 +110,7 @@ export class ApplicationController {
             const statuses = parseStatusFilter(req.query.status);
 
             // Return a 200 OK response with the applications and their status history
-            const applications = await applicationService.listHistory(user.id, statuses);
+            const applications = await applicationService.listHistory(user, statuses);
             res.status(200).json({ applications });
         } catch (error: unknown) {
             handleApplicationError(error, res, 'Your application history could not be loaded. Please try again.');

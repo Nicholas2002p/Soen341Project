@@ -88,7 +88,7 @@ test('listHistory returns the applications of the user with their status history
     const { service } = createService(new FakeApplicationRepository([openJob], [application, othersApplication]));
     await service.updateStatus(recruiter, application.id, ApplicationStatus.Interview);
 
-    const result = await service.listHistory(jobSeeker.id);
+    const result = await service.listHistory(jobSeeker);
 
     assert.deepEqual(result.map((listed) => listed.id), [application.id]); // Only the user's own applications
     assert.deepEqual(result[0]?.statusHistory.map((entry) => entry.status), [ApplicationStatus.Applied, ApplicationStatus.Interview]);
@@ -98,11 +98,17 @@ test('listHistory only returns applications with one of the given statuses', asy
     const rejected = { ...application, id: 2, jobId: 200, status: ApplicationStatus.Rejected };
     const { service } = createService(new FakeApplicationRepository([openJob], [application, rejected]));
 
-    const finished = await service.listHistory(jobSeeker.id, [ApplicationStatus.Offered, ApplicationStatus.Rejected]);
-    const all = await service.listHistory(jobSeeker.id, []); // An empty filter means no filter
+    const finished = await service.listHistory(jobSeeker, [ApplicationStatus.Offered, ApplicationStatus.Rejected]);
+    const all = await service.listHistory(jobSeeker, []); // An empty filter means no filter
 
     assert.deepEqual(finished.map((listed) => listed.id), [rejected.id]);
     assert.equal(all.length, 2);
+});
+
+test('listHistory refuses users who are not job seekers', async () => {
+    const { service } = createService(new FakeApplicationRepository([openJob], [application]));
+
+    await assert.rejects(service.listHistory(recruiter), ApplicationNotAllowedError);
 });
 
 test('listMine refuses users who are not job seekers', async () => {

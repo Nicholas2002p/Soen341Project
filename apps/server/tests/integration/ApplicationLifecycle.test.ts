@@ -189,6 +189,10 @@ test('application lifecycle works through the HTTP API and database', async () =
         const badFilterResponse = await request('/api/applications/history?status=Hired', { headers: auth(seeker.token) });
         assert.equal(badFilterResponse.status, 400);
 
+        // Recruiters have no application history of their own.
+        const recruiterHistoryResponse = await request('/api/applications/history', { headers: auth(recruiter.token) });
+        assert.equal(recruiterHistoryResponse.status, 403);
+
         // Moving backwards (Interview to Applied) is rejected.
         const backwardsResponse = await request(`/api/applications/${application.id}/status`, {
             method: 'PATCH',
