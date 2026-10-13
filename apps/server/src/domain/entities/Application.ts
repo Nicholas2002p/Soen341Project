@@ -1,3 +1,5 @@
+import type { EmploymentType } from './EmploymentType.js';
+
 // This file defines the Application entity, which represents a job seeker applying to a job with one of their resumes.
 
 // Possible statuses of an application. These match the ApplicationStatus enum in the database.
@@ -39,7 +41,7 @@ export interface ApplicationJobSummary {
     title: string;
     companyName: string;
     location: string | null;
-    employmentType: string;
+    employmentType: EmploymentType;
 }
 
 // An application together with the job it was submitted to

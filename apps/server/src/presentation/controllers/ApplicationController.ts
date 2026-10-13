@@ -19,6 +19,7 @@ const APPLICATION_ERROR_STATUS: Record<string, number> = {
   JobNotFoundError: 404,
   ResumeNotFoundError: 404,
   DuplicateApplicationError: 409,
+  InvalidStatusChangeError: 409,
 };
 
 function isPositiveInteger(value: unknown): value is number {
@@ -96,7 +97,7 @@ export class ApplicationController {
             const user = res.locals.user as PublicUser;
 
             // Return a 200 OK response with all applications of the user
-            const applications = await applicationService.listMine(user.id);
+            const applications = await applicationService.listMine(user);
             res.status(200).json({ applications });
         } catch (error: unknown) {
             handleApplicationError(error, res, 'Your applications could not be loaded. Please try again.');

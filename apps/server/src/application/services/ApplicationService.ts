@@ -10,10 +10,12 @@ import {
     ApplicationNotAllowedError,
     DuplicateApplicationError,
     InvalidApplicationStatusError,
+    InvalidStatusChangeError,
     JobClosedError,
     JobNotFoundError,
 } from '../../domain/errors/ApplicationErrors.js';
 import { ResumeNotFoundError } from '../../domain/errors/ResumeNotFoundError.js';
+import { canChangeStatus } from '../../domain/validation/ApplicationStatusChange.js';
 
 export class ApplicationService implements IApplicationService {
     constructor(
@@ -65,9 +67,14 @@ export class ApplicationService implements IApplicationService {
         });
     }
 
-    //list the applications of a job seeker
-    async listMine(userId: number): Promise<ApplicationWithJob[]> {
-        return this.applicationRepository.listByUserId(userId);
+    //list the applications of a job seeker.
+    //Only job seekers apply to jobs, so other roles get a clear error instead of an empty list.
+    async listMine(user: PublicUser): Promise<ApplicationWithJob[]> {
+        if (user.role !== UserRole.JobSeeker) {
+            throw new ApplicationNotAllowedError('Only job seekers have applications. Recruiters can see the applications to their jobs at /api/applications/jobs/:jobId.');
+        }
+
+        return this.applicationRepository.listByUserId(user.id);
     }
 
     //list the applications of a job seeker with their status history, optionally only those with one of the given statuses
@@ -120,6 +127,11 @@ export class ApplicationService implements IApplicationService {
         // Saving the same status again would only add a duplicate entry to the history
         if (application.status === status) {
             throw new InvalidApplicationStatusError('The application already has this status.');
+        }
+
+        // Statuses only move forward, and Offered and Rejected are final
+        if (!canChangeStatus(application.status, status)) {
+            throw new InvalidStatusChangeError(`An application that is ${application.status} cannot be changed to ${status}.`);
         }
 
         return this.applicationRepository.updateStatus(applicationId, status);

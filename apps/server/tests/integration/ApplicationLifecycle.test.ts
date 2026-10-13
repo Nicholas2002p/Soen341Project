@@ -130,6 +130,10 @@ test('application lifecycle works through the HTTP API and database', async () =
         assert.equal(applications[0]?.job?.companyName, company.name);
         assert.equal(applications[0]?.job?.title, 'Junior Developer');
 
+        // A recruiter has no applications of their own, so listing them is refused.
+        const recruiterListResponse = await request('/api/applications', { headers: auth(recruiter.token) });
+        assert.equal(recruiterListResponse.status, 403);
+
         // The applicant and the recruiter can see the application and its status history.
         for (const token of [seeker.token, recruiter.token]) {
             const detailResponse = await request(`/api/applications/${application.id}`, { headers: auth(token) });
@@ -184,6 +188,14 @@ test('application lifecycle works through the HTTP API and database', async () =
 
         const badFilterResponse = await request('/api/applications/history?status=Hired', { headers: auth(seeker.token) });
         assert.equal(badFilterResponse.status, 400);
+
+        // Moving backwards (Interview to Applied) is rejected.
+        const backwardsResponse = await request(`/api/applications/${application.id}/status`, {
+            method: 'PATCH',
+            headers: auth(recruiter.token, true),
+            body: JSON.stringify({ status: 'Applied' }),
+        });
+        assert.equal(backwardsResponse.status, 409);
 
         // An unknown status is rejected, and the applicant cannot change the status.
         const unknownStatusResponse = await request(`/api/applications/${application.id}/status`, {

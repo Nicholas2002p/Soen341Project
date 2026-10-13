@@ -10,8 +10,8 @@ export interface IApplicationService {
     //apply to a job as a job seeker, returns the created application
     apply(user: PublicUser, data: ApplyToJobData): Promise<Application>;
 
-    //list the applications of a job seeker
-    listMine(userId: number): Promise<ApplicationWithJob[]>;
+    //list the applications of a job seeker, other roles get ApplicationNotAllowedError
+    listMine(user: PublicUser): Promise<ApplicationWithJob[]>;
 
     //list the applications of a job seeker with their status history, optionally only those with one of the given statuses
     listHistory(userId: number, statuses?: ApplicationStatus[]): Promise<ApplicationDetails[]>;
