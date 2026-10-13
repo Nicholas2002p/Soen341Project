@@ -167,6 +167,14 @@ test('application lifecycle works through the HTTP API and database', async () =
         const withHistory = (await historyResponse.json()) as { application: ApplicationResponse };
         assert.deepEqual(withHistory.application.statusHistory?.map((entry) => entry.status), ['Applied', 'Interview']);
 
+        // Moving backwards (Interview to Applied) is rejected.
+        const backwardsResponse = await request(`/api/applications/${application.id}/status`, {
+            method: 'PATCH',
+            headers: auth(recruiter.token, true),
+            body: JSON.stringify({ status: 'Applied' }),
+        });
+        assert.equal(backwardsResponse.status, 409);
+
         // An unknown status is rejected, and the applicant cannot change the status.
         const unknownStatusResponse = await request(`/api/applications/${application.id}/status`, {
             method: 'PATCH',

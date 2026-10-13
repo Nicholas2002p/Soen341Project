@@ -10,10 +10,12 @@ import {
     ApplicationNotAllowedError,
     DuplicateApplicationError,
     InvalidApplicationStatusError,
+    InvalidStatusChangeError,
     JobClosedError,
     JobNotFoundError,
 } from '../../domain/errors/ApplicationErrors.js';
 import { ResumeNotFoundError } from '../../domain/errors/ResumeNotFoundError.js';
+import { canChangeStatus } from '../../domain/validation/ApplicationStatusChange.js';
 
 export class ApplicationService implements IApplicationService {
     constructor(
@@ -113,6 +115,11 @@ export class ApplicationService implements IApplicationService {
         // Saving the same status again would only add a duplicate entry to the history
         if (application.status === status) {
             throw new InvalidApplicationStatusError('The application already has this status.');
+        }
+
+        // Statuses only move forward, and Offered and Rejected are final
+        if (!canChangeStatus(application.status, status)) {
+            throw new InvalidStatusChangeError(`An application that is ${application.status} cannot be changed to ${status}.`);
         }
 
         return this.applicationRepository.updateStatus(applicationId, status);

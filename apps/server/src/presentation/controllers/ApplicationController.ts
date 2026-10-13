@@ -19,6 +19,7 @@ const APPLICATION_ERROR_STATUS: Record<string, number> = {
   JobNotFoundError: 404,
   ResumeNotFoundError: 404,
   DuplicateApplicationError: 409,
+  InvalidStatusChangeError: 409,
 };
 
 function isPositiveInteger(value: unknown): value is number {

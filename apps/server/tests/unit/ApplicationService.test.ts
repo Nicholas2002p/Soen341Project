@@ -7,6 +7,7 @@ import {
     ApplicationNotAllowedError,
     DuplicateApplicationError,
     InvalidApplicationStatusError,
+    InvalidStatusChangeError,
     JobClosedError,
     JobNotFoundError,
 } from '../../src/domain/errors/ApplicationErrors.js';
@@ -137,6 +138,26 @@ test('updateStatus rejects the status the application already has', async () => 
 
     await assert.rejects(service.updateStatus(recruiter, application.id, ApplicationStatus.Applied), InvalidApplicationStatusError);
     assert.equal((await applications.getStatusHistory(application.id)).length, 1); // No duplicate history entry
+});
+
+test('updateStatus refuses to move an application backwards or out of a final status', async () => {
+    const rejected = { ...application, status: ApplicationStatus.Rejected };
+    const interviewing = { ...application, id: 2, jobId: 200, status: ApplicationStatus.Interview };
+    const { service } = createService(new FakeApplicationRepository([openJob, { ...openJob, id: 200 }], [rejected, interviewing]));
+
+    // Rejected is final
+    await assert.rejects(service.updateStatus(recruiter, rejected.id, ApplicationStatus.Interview), InvalidStatusChangeError);
+    // Interview cannot go back to Under_Review
+    await assert.rejects(service.updateStatus(recruiter, interviewing.id, ApplicationStatus.UnderReview), InvalidStatusChangeError);
+});
+
+test('updateStatus allows skipping steps forward', async () => {
+    const { service } = createService(new FakeApplicationRepository([openJob], [application]));
+
+    // A recruiter can make an offer straight from Applied
+    const result = await service.updateStatus(recruiter, application.id, ApplicationStatus.Offered);
+
+    assert.equal(result.status, ApplicationStatus.Offered);
 });
 
 test('withdraw deletes the application of its applicant', async () => {

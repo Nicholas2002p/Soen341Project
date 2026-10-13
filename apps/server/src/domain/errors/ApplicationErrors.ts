@@ -49,6 +49,14 @@ export class InvalidApplicationStatusError extends Error {
     }
 }
 
+// The status cannot change from its current value to the requested one (e.g. Rejected to Interview)
+export class InvalidStatusChangeError extends Error {
+    constructor(message = 'The application status cannot be changed this way.') {
+        super(message);
+        this.name = 'InvalidStatusChangeError';
+    }
+}
+
 // The deadline to apply to the job has passed
 export class JobClosedError extends Error {
     constructor(message = 'The deadline to apply to this job has passed.') {
