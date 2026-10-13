@@ -14,6 +14,8 @@ import { ResumeService } from '../application/services/ResumeService.js';
 import { PrismaCompanyRepository } from './repositories/PrismaCompanyRepository.js';
 import { CompanyService } from '../application/services/CompanyService.js';
 import { GoogleTokenVerifier } from './security/GoogleTokenVerifier.js';
+import { PrismaJobRepository } from './repositories/PrismaJobRepository.js';
+import { JobService } from '../application/services/JobService.js';
 
 // Initialize repositories, services, and other dependencies
 const userRepository = new PrismaUserRepository(prisma);
@@ -27,6 +29,8 @@ const companyRepository = new PrismaCompanyRepository(prisma);
 const companyService = new CompanyService(companyRepository);
 const googleTokenVerifier = new GoogleTokenVerifier(process.env.GOOGLE_CLIENT_ID ?? '');
 const profileRepository = new PrismaProfileRepository(prisma);
+const jobRepository = new PrismaJobRepository(prisma);
+const jobService = new JobService(jobRepository);
 
 const userService = new UserService(userRepository);
 const authService = new AuthService(
@@ -42,4 +46,4 @@ const profileService = new ProfileService(profileRepository, userRepository);
 const resumeService = new ResumeService(resumeRepository, resumeStorage);
 
 // Export the initialized services for use in other parts of the application
-export { userService, authService, profileService, resumeService, companyService,};
+export { userService, authService, profileService, resumeService, companyService, jobService,};
