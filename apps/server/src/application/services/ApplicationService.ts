@@ -67,9 +67,14 @@ export class ApplicationService implements IApplicationService {
         });
     }
 
-    //list the applications of a job seeker
-    async listMine(userId: number): Promise<ApplicationWithJob[]> {
-        return this.applicationRepository.listByUserId(userId);
+    //list the applications of a job seeker.
+    //Only job seekers apply to jobs, so other roles get a clear error instead of an empty list.
+    async listMine(user: PublicUser): Promise<ApplicationWithJob[]> {
+        if (user.role !== UserRole.JobSeeker) {
+            throw new ApplicationNotAllowedError('Only job seekers have applications. Recruiters can see the applications to their jobs at /api/applications/jobs/:jobId.');
+        }
+
+        return this.applicationRepository.listByUserId(user.id);
     }
 
     //get one application with its status history, for the applicant or the recruiter of the job.

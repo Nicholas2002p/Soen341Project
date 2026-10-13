@@ -77,7 +77,7 @@ export class ApplicationController {
             const user = res.locals.user as PublicUser;
 
             // Return a 200 OK response with all applications of the user
-            const applications = await applicationService.listMine(user.id);
+            const applications = await applicationService.listMine(user);
             res.status(200).json({ applications });
         } catch (error: unknown) {
             handleApplicationError(error, res, 'Your applications could not be loaded. Please try again.');

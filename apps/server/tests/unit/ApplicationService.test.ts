@@ -78,9 +78,15 @@ test('listMine only returns the applications of the given user', async () => {
     const othersApplication = { ...application, id: 2, userId: otherJobSeeker.id };
     const { service } = createService(new FakeApplicationRepository([openJob], [application, othersApplication]));
 
-    const result = await service.listMine(jobSeeker.id);
+    const result = await service.listMine(jobSeeker);
 
     assert.deepEqual(result.map((listed) => listed.id), [application.id]);
+});
+
+test('listMine refuses users who are not job seekers', async () => {
+    const { service } = createService(new FakeApplicationRepository([openJob], [application]));
+
+    await assert.rejects(service.listMine(recruiter), ApplicationNotAllowedError);
 });
 
 test('getById returns the application and its status history to the applicant', async () => {

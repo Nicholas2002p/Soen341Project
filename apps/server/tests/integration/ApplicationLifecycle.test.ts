@@ -130,6 +130,10 @@ test('application lifecycle works through the HTTP API and database', async () =
         assert.equal(applications[0]?.job?.companyName, company.name);
         assert.equal(applications[0]?.job?.title, 'Junior Developer');
 
+        // A recruiter has no applications of their own, so listing them is refused.
+        const recruiterListResponse = await request('/api/applications', { headers: auth(recruiter.token) });
+        assert.equal(recruiterListResponse.status, 403);
+
         // The applicant and the recruiter can see the application and its status history.
         for (const token of [seeker.token, recruiter.token]) {
             const detailResponse = await request(`/api/applications/${application.id}`, { headers: auth(token) });
