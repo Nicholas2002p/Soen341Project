@@ -1,12 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, "");
-
-export function getApiUrl(path) {
-    if (!API_BASE_URL) {
-        throw new Error("VITE_API_URL is not configured");
-    }
-
-    return `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
-}
+import { getApiUrl } from "./apiConfig";
 
 /**
  * Registers a user 
@@ -239,7 +231,7 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
     }
 }
 
-export async function UploadResumeApi(file, setErrorMessage, token) {
+export async function UploadResumeApi() {
     throw new Error("UploadResumeApi is not implemented yet.");
 }
 

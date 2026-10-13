@@ -21,7 +21,7 @@ export default function ProfileEdit({ fname, lname, desc, old_profile, setFName,
 
   const [phone, setPhone] = useState(null);
   const [location, setLocation] = useState(null);
-  const [, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [file, setFile] = useState(null);
 
   return (
