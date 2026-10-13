@@ -1,5 +1,5 @@
 import './ProfileCard.scss';
-import { getApiUrl } from '../utils/Api';
+import { getApiUrl } from '../utils/apiConfig';
 
 /**
  * Profile Card
