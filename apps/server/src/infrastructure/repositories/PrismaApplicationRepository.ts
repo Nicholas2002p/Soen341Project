@@ -11,6 +11,7 @@ import type {
     ApplicationStatusChange,
     ApplicationWithJob,
 } from '../../domain/entities/Application.js';
+import type { EmploymentType } from '../../domain/entities/EmploymentType.js';
 import { DuplicateApplicationError } from '../../domain/errors/ApplicationErrors.js';
 
 // Job fields loaded with an application
@@ -54,7 +55,7 @@ export class PrismaApplicationRepository implements IApplicationRepository {
                 title: record.job.title,
                 companyName: record.job.company.name,
                 location: record.job.location,
-                employmentType: record.job.employmentType,
+                employmentType: record.job.employmentType as EmploymentType,
             },
         };
     }

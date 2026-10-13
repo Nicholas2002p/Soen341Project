@@ -9,6 +9,7 @@ import type {
     ApplicationWithJob,
 } from '../../src/domain/entities/Application.js';
 import { ApplicationStatus } from '../../src/domain/entities/Application.js';
+import { EmploymentType } from '../../src/domain/entities/EmploymentType.js';
 import type { PublicUser } from '../../src/domain/entities/PublicUser.js';
 import { UserRole } from '../../src/domain/entities/User.js';
 import { DuplicateApplicationError } from '../../src/domain/errors/ApplicationErrors.js';
@@ -56,7 +57,7 @@ export class FakeApplicationRepository implements IApplicationRepository {
     }
 
     private withJob(stored: Application): ApplicationWithJob {
-        return { ...stored, job: { id: stored.jobId, title: 'Junior Developer', companyName: 'TechCorp', location: 'Montreal, QC', employmentType: 'hybrid' } };
+        return { ...stored, job: { id: stored.jobId, title: 'Junior Developer', companyName: 'TechCorp', location: 'Montreal, QC', employmentType: EmploymentType.Hybrid } };
     }
 
     async create(data: CreateApplicationData): Promise<Application> {
