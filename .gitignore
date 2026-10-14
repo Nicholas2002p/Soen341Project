@@ -161,3 +161,4 @@ npm-debug.log*
 .windsurf/
 .vscode/
 
+.DS_Store
