@@ -13,9 +13,11 @@ export class PrismaJobRepository implements IJobRepository {
     async search(filters: JobSearchFilters): Promise<JobSummary[]> {
         const jobs = await this.prisma.job.findMany({
             where: {
+                //NOTE - if this filter exists, add it to the query if not, add nothing
                 ...(filters.keyword
                     ? {
                           OR: [
+                            //NOTE - looking for the keyword in title, description, company name or job skill requirements
                               { title: { contains: filters.keyword, mode: 'insensitive' } },
                               { description: { contains: filters.keyword, mode: 'insensitive' } },
                               { company: { name: { contains: filters.keyword, mode: 'insensitive' } } },
@@ -54,6 +56,7 @@ export class PrismaJobRepository implements IJobRepository {
                     : {}),
             },
 
+            //NOTE - also include these data 
             include: {
                 company: {
                     select: {
