@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import type { ProfileData } from '../../application/interfaces/repositories/IProfileRepository.js';
-import { profileService } from '../../infrastructure/container.js';
+import { profileImageStorage, profileService } from '../../infrastructure/container.js';
 
 function getAuthenticatedUserId(res: Response): number {
     return (res.locals.user as { id: number }).id;
@@ -129,7 +129,11 @@ export class ProfileController {
             phone: existingProfile.phone,
             bio: existingProfile.bio,
             location: existingProfile.location,
-            profileURL: `/uploads/profile-pictures/${file.filename}`,
+            profileURL: await profileImageStorage.save(
+                file.buffer,
+                file.mimetype,
+                file.mimetype === 'image/png' ? 'png' : 'jpg',
+            ),
         });
 
         // Return the updated profile in the response

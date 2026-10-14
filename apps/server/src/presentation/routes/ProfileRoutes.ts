@@ -1,8 +1,5 @@
 import { Router } from 'express';
 import multer from 'multer';
-import fs from 'node:fs';
-import path from 'node:path';
-import { randomUUID } from 'node:crypto';
 import { profileController } from '../controllers/ProfileController.js';
 import { authMiddleware } from '../middleware/AuthMiddleware.js';
 
@@ -12,24 +9,15 @@ export const publicProfileRoutes = Router();
 //-----------------------------------------------------------------------------------------------------------
 // ------------------------------------------ Profile picture upload configuration -------------------------
 //-----------------------------------------------------------------------------------------------------------
-const profilePicturesDirectory = path.resolve(process.cwd(), 'uploads', 'profile-pictures');
-fs.mkdirSync(profilePicturesDirectory, { recursive: true });
-
 // Configure multer for handling profile picture uploads
 const profilePictureUpload = multer({
     // Store uploaded files in the profile pictures directory with a unique filename
-	storage: multer.diskStorage({
-		destination: profilePicturesDirectory,
-		filename: (_req, file, callback) => {
-			const extension = path.extname(file.originalname).toLowerCase() || '.img';
-			callback(null, `${randomUUID()}${extension}`);
-		},
-	}),
+	storage: multer.memoryStorage(),
     // Only accept image files and limit the file size to 5MB
 	fileFilter: (_req, file, callback) => {
-		callback(null, file.mimetype.startsWith('image/'));
+		callback(null, file.mimetype === 'image/png' || file.mimetype === 'image/jpeg'); // Accept only PNG and JPEG images
 	},
-	limits: { fileSize: 5 * 1024 * 1024 },
+	limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
 
 publicProfileRoutes.get('/:userId', profileController.getPublic.bind(profileController));

@@ -14,8 +14,9 @@ app.set('trust proxy', true);
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from the uploads directory
-app.use('/uploads', express.static(uploadsDirectory));
+if (process.env.NODE_ENV === 'test') {
+  app.use('/uploads', express.static(uploadsDirectory));
+}
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'This the API BACKEND' });
