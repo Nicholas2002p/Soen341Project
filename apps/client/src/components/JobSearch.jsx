@@ -22,7 +22,7 @@ export default function JobSearch({ jobs }) {
       <h2> Job Search </h2>
 
       <JobBoard jobs={currentJobs} /> 
-      <Stack spacing={2} sx={{ alignItems: 'center', mt: 4, mb: 4 }}>
+      <Stack className="stack">
         <Pagination 
           count={totalPages} 
           page={page} 
@@ -45,25 +45,32 @@ export default function JobSearch({ jobs }) {
  * @returns the job board component
  */
 function JobBoard({ jobs }) {
-  const displayJobs = jobs.map((job) => (
-    <a href="" key={job.id} className="job">
-      <div className="pin"> </div>
-      <p className="job-title"> {job.title} </p>
-      <p className="job-recruiter"> {job.recruiter} </p>
-      <div className="job-meta">
-        <span className="job-location"> {job.location} </span>
-        <span className="job-salary"> {job.salary} </span>
-        <span className="job-type"> {job.employmentType} </span>
-      </div>
-      <p className="job-description"> {job.description} </p>
-      <Requirements requirements={job.requirements} />
-    </a>
-  ));
+  const displayJobs = jobs.map((job) => {
+    const recruiterName = job.recruiter?.profile
+      ? `${job.recruiter.profile.firstName} ${job.recruiter.profile.lastName}`
+      : "";
+    const deadlineDate = new Date(job.deadline).toLocaleDateString();
+
+    return (
+      <a href={`/jobs/${job.jobId}`} key={job.jobId} className="job">
+        <div className="pin"></div>
+        <p className="job-title">{job.title}</p>
+        <p className="job-company">{job.company?.name}</p>
+        <p className="job-recruiter">Posted by {recruiterName}</p>
+        <div className="job-meta">
+          <div className="job-location">{job.location}</div>
+          <span className="job-salary">${job.salary.toLocaleString()} </span>
+          <span className="job-type">{job.employmentType}</span>
+          <div className="job-deadline">Deadline: {deadlineDate}</div>
+        </div>
+        <p className="job-description">{job.description}</p>
+        <Requirements requirements={job.skills} />
+      </a>
+    );
+  });
 
   return (
-    <section className="job-board">
-      { displayJobs } 
-    </section>
+    <div className="job-board">{displayJobs}</div>
   );
 }
 
@@ -76,7 +83,7 @@ function JobBoard({ jobs }) {
  */
 function Requirements({ requirements }) {
   const displayReq =  requirements.map( (req) =>
-    <li> {req} </li>
+    <li key={req.skillId}> {req.skill} </li>
   );
     
   return (

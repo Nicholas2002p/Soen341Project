@@ -10,10 +10,8 @@ export default function JobSearch({ setView }) {
 
   useEffect(() => {
       const getOptions = async () => {
-        //check to see if token is needed
         const data = await GetJobsApi();
         if (!data) return;
-        //change to propername later
         setJobs(data);
       };
       getOptions();

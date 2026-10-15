@@ -127,3 +127,13 @@ $post-it-colors: #FFEBA1, #69C7B5, #9FC7E4, #F4C4D6, #c9c9ff, #e1f7d5;
     border-radius: 20px;
   }
 }
+.job-search {
+  .stack {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    margin-top: 32px;
+    margin-bottom: 32px;
+    gap: 16px;
+  }
+}
