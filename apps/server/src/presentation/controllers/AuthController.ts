@@ -5,10 +5,6 @@ import { isValidEmail } from '../../domain/validation/Email.js';
 import { UserNotFoundError } from '../../domain/errors/UserNotFoundError.js';
 import { UnauthorizedUserActionError } from '../../domain/errors/UnauthorizedUserActionError.js';
 
-function errorMessage(error: unknown, fallback: string): string {
-  return error instanceof Error ? error.message : fallback;
-}
-
 export class AuthController {
   async register(req: Request, res: Response): Promise<void> {
     try {
@@ -54,7 +50,7 @@ export class AuthController {
         return;
       }
 
-      res.status(500).json({ message: errorMessage(error, 'Registration failed') });
+      res.status(500).json({ message: 'Registration failed.' });
     }
   }
 
@@ -94,7 +90,7 @@ export class AuthController {
         return;
       }
 
-      res.status(500).json({ message: errorMessage(error, 'Login failed') });
+      res.status(500).json({ message: 'Login failed.' });
     }
   }
 
@@ -116,7 +112,7 @@ export class AuthController {
       res.status(200).json({ message: 'Logged out successfully' });
     } catch (error: unknown) {
       // Return a 500 Internal Server Error response if logout fails
-      res.status(500).json({ message: errorMessage(error, 'Logout failed') });
+      res.status(500).json({ message: 'Logout failed.' });
     }
   }
   async googleLogin(req: Request, res: Response): Promise<void> {
@@ -143,7 +139,7 @@ export class AuthController {
         return;
       }
 
-      res.status(500).json({ message: errorMessage(error, 'Google login failed') });
+      res.status(500).json({ message: 'Google login failed.' });
     }
   }
 
@@ -177,7 +173,7 @@ export class AuthController {
         res.status(403).json({ message: error.message });
         return;
       }
-      res.status(500).json({ message: errorMessage(error, 'Account deletion failed') });
+      res.status(500).json({ message: 'Account deletion failed.' });
     }
   }
 }
