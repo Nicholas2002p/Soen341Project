@@ -256,37 +256,11 @@ export async function GetProfileApi(token) {
     }
 }
 
-export async function JobFilter(option1, option2, searchText, token) { 
+// Example using fetch
+export const JobFilter = async (filterField, sortBy, searchQuery, token) => {
     return;
-    // try {
-    //     const response = await fetch("http://localhost:3000/api/auth/", {
-    //         method: "GET",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             Authorization: `Bearer ${token}`,
-    //         },
-    //         body: JSON.stringify({
-    //             filter1: option1,
-    //             filter2: option2,
-    //             searchText: searchText,
-   
-    //         }),
-    //     });
-    //     const data = await response.json();
-    //     if (!response.ok) {
-    //         console.error(data.message);
-    //         return false;
-    //     }
-    //     return data;
-    // } catch (error) {
-    //     console.error(error);
-        //  return null;
-    // }
-}
+};
 
-export async function GetOptionsApi(token) { 
-    return;
-}
 export async function GetJobsApi() {
     return;
 }

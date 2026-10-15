@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { JobFilter, GetOptionsApi } from "../utils/Api";
+import { JobFilter } from "../utils/Api";
 import { useAuth } from '../utils/Auth';
 import './Search.scss';
 
 export default function SearchBar(setJobs) { 
-    const { token} = useAuth();
-    const [dropdownOne, setDropdownOne] = useState('');
-    const [dropdownTwo, setDropdownTwo] = useState('');
+    const {token} = useAuth();
+    const [dropdownOne, setDropdownOne] = useState('all');
+    const [dropdownTwo, setDropdownTwo] = useState('recent');
     const [searchBar, setSearchBar] = useState('');
     const optionsOne = [
     { id: "all", name: "All fields" },
@@ -23,23 +23,16 @@ export default function SearchBar(setJobs) {
     { id: "titleAsc", name: "Title A-Z" },
     ];
     
-    useEffect(() => {
-        const getOptions = async () => {
-            //check to see if token is needed
-            const data = await GetOptionsApi(token);
-            if (!data) return;
-            //change to propername later
-            setOptionsOne(data.one)
-            setOptionsTwo(data.two)
-
-        };
-        getOptions();
-
-    }, []);
 
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
-        await JobFilter(dropdownOne,dropdownTwo,searchBar, token);
+        try {
+            const results = await JobFilter(dropdownOne, dropdownTwo, searchBar, token);
+            
+            setJobs(results);
+        } catch (error) {
+            console.error("Failed to fetch filtered jobs:", error);
+        }
     };
 
     return(

@@ -17,16 +17,13 @@ export default function Home({ setView }) {
   const [jobs, setJobs] = useState(sampleRequirements);
   
   useEffect(() => {
-    const getOptions = async () => {
-      //check to see if token is needed
-      //to get job data
-      const data = await GetJobsApi();
-      if (!data) return;
-      //change to propername later
-      setJobs(data);
-    };
-    getOptions();
-    }, []);
+      const getOptions = async () => {
+        const data = await GetJobsApi();
+        if (!data) return;
+        setJobs(data);
+      };
+      getOptions();
+  }, []);
 
   return (
     <section className="homepage">
