@@ -35,13 +35,13 @@ export default function Profile({ setView }) {
       setData(profile);
       setFName(profile.firstName);
       setLName(profile.lastName);
-      setRole(user.role);
+      setRole(user?.role ?? 'ROLE');
       setProfileURL(profile.profileURL);
       setDesc(profile.bio);
     };
     getProfile();
     
-  }, [token, user.role]);
+  }, [token, user?.role]);
 
   return (
     <main className="profilepage">
