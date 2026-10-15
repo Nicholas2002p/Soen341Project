@@ -41,9 +41,12 @@ export default function Filters({ filters, setFilters }) {
 }
 
 /**
- * 
- * @param {*} param0 
- * @returns 
+ * shows all filter options 
+ * @param {*} id 
+ * @param {*} choices 
+ * @param {*} selected 
+ * @param {*} onToggle
+ * @returns  the filter html
  */
 function Filter({ id, choices, selected, onToggle }) {
   return (
@@ -68,9 +71,10 @@ function Filter({ id, choices, selected, onToggle }) {
 }
 
 /**
- * 
- * @param {*} param0 
- * @returns 
+ *  the salary side bar 
+ * @param {*} value 
+ * @param {*} onChange
+ * @returns  the salary slide bar html
  */
 function SalaryFilter({ value, onChange }) {
   return (

@@ -14,6 +14,7 @@ export default function SearchBar(setJobs) {
     { id: "recruiter", name: "Company" },
     { id: "description", name: "Description" },
     { id: "location", name: "Location" },
+    { id: "skill", name: "Skills" },
     ];
 
     const optionsTwo = [
