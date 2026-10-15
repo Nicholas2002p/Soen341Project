@@ -256,11 +256,45 @@ export async function GetProfileApi(token) {
     }
 }
 
-// Example using fetch
-export const JobFilter = async (filterField, sortBy, searchQuery, token) => {
-    return;
+/**
+ * 
+ * @param {*} filterField 
+ * @param {*} sortBy 
+ * @param {*} searchQuery 
+ * @param {*} token 
+ * @returns 
+ */
+export async function JobFilter (filterField, sortBy, searchQuery, token){
+    const _params = { filterField, sortBy, searchQuery, token };
+    return [];
+    // try {
+    //     const response = await fetch(
+    //         `http://localhost:3000/api/jobs?field=${filterField}&sort=${sortBy}&search=${encodeURIComponent(searchQuery)}`, 
+    //         {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${token}`
+    //             }
+    //         }
+    //     );
+
+    //     if (!response.ok) {
+    //         throw new Error('Network response was not ok');
+    //     }
+
+    //     const data = await response.json();
+    //     return data;
+    // } catch (error) {
+    //     console.error("Error filtering jobs:", error);
+    //     return [];
+    // }
 };
 
+/**
+ * 
+ * @returns 
+ */
 export async function GetJobsApi() {
     return;
 }

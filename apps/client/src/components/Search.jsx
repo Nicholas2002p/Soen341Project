@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { JobFilter } from "../utils/Api";
 import { useAuth } from '../utils/Auth';
 import './Search.scss';

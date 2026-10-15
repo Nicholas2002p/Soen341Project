@@ -1,5 +1,4 @@
 import "./Filters.scss";
-import { useState } from "react";
 /**
  * Filters
  * column that shows every filter option possible for the job board
