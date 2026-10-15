@@ -62,8 +62,59 @@ export class PrismaUserRepository implements IUserRepository {
 
     async delete(id: number): Promise<void> {
         await this.prisma.$transaction(async (transaction) => {
+            const [resumes, jobs] = await Promise.all([
+                transaction.resume.findMany({
+                    where: { userId: id },
+                    select: { resumeId: true },
+                }),
+                transaction.job.findMany({
+                    where: { recruiterId: id },
+                    select: { jobId: true },
+                }),
+            ]);
+
+            const resumeIds = resumes.map((resume) => resume.resumeId);
+            const jobIds = jobs.map((job) => job.jobId);
+            const applications = await transaction.application.findMany({
+                where: {
+                    OR: [
+                        { userId: id },
+                        ...(resumeIds.length > 0 ? [{ resumeId: { in: resumeIds } }] : []),
+                        ...(jobIds.length > 0 ? [{ jobId: { in: jobIds } }] : []),
+                    ],
+                },
+                select: { applicationId: true },
+            });
+            const applicationIds = applications.map((application) => application.applicationId);
+
+            if (applicationIds.length > 0) {
+                await transaction.applicationStatusHistory.deleteMany({
+                    where: { applicationId: { in: applicationIds } },
+                });
+                await transaction.application.deleteMany({
+                    where: { applicationId: { in: applicationIds } },
+                });
+            }
+
+            if (jobIds.length > 0) {
+                await transaction.savedJob.deleteMany({
+                    where: { jobId: { in: jobIds } },
+                });
+                await transaction.skillOnJob.deleteMany({
+                    where: { jobId: { in: jobIds } },
+                });
+                await transaction.job.deleteMany({
+                    where: { jobId: { in: jobIds } },
+                });
+            }
+
+            await transaction.savedJob.deleteMany({ where: { userId: id } });
+            await transaction.notification.deleteMany({ where: { userId: id } });
+            await transaction.skillOnProfile.deleteMany({ where: { userId: id } });
             await transaction.profile.deleteMany({ where: { userId: id } });
             await transaction.salt.deleteMany({ where: { userId: id } });
+            await transaction.resume.deleteMany({ where: { userId: id } });
+            await transaction.session.deleteMany({ where: { userId: id } });
             await transaction.user.delete({ where: { userId: id } });
         });
     }
