@@ -4,10 +4,28 @@ import { getSupabaseClient } from './SupabaseClient.js';
 
 const BUCKET_NAME = 'profile-images';
 
+export interface SupabaseProfileImageStorageClient {
+    storage: {
+        from(bucket: string): {
+            upload(
+                path: string,
+                content: Buffer,
+                options: { contentType: string; upsert: boolean },
+            ): Promise<{ error: Error | null }>;
+            getPublicUrl(path: string): { data: { publicUrl: string } };
+            remove(paths: string[]): Promise<{ error: Error | null }>;
+        };
+    };
+}
+
 export class SupabaseProfileImageStorage implements IProfileImageStorage {
+    constructor(
+        private readonly client: SupabaseProfileImageStorageClient = getSupabaseClient(),
+    ) {}
+
     async save(content: Buffer, contentType: string, extension: string): Promise<string> {
         const storageKey = `${randomUUID()}.${extension}`;
-        const { error } = await getSupabaseClient()
+        const { error } = await this.client
             .storage
             .from(BUCKET_NAME)
             .upload(storageKey, content, { contentType, upsert: false });
@@ -16,7 +34,7 @@ export class SupabaseProfileImageStorage implements IProfileImageStorage {
             throw error;
         }
 
-        return getSupabaseClient()
+        return this.client
             .storage
             .from(BUCKET_NAME)
             .getPublicUrl(storageKey).data.publicUrl;
@@ -31,7 +49,7 @@ export class SupabaseProfileImageStorage implements IProfileImageStorage {
         }
 
         const storageKey = decodeURIComponent(url.slice(markerIndex + marker.length));
-        const { error } = await getSupabaseClient()
+        const { error } = await this.client
             .storage
             .from(BUCKET_NAME)
             .remove([storageKey]);
