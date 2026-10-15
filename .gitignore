@@ -164,5 +164,6 @@ npm-debug.log*
 .windsurf/
 .vscode/
 
+.DS_Store
 # Certificates
 apps/server/certs/*.pem
