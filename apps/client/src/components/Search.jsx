@@ -8,12 +8,20 @@ export default function SearchBar(setJobs) {
     const [dropdownOne, setDropdownOne] = useState('');
     const [dropdownTwo, setDropdownTwo] = useState('');
     const [searchBar, setSearchBar] = useState('');
-    const [optionsOne, setOptionsOne] = useState([
-        { id: null, name: "Option 1" }
-    ]);
-    const [optionsTwo, setOptionsTwo] = useState([
-        { id: null, name: "Option 2" }
-    ]);
+    const optionsOne = [
+    { id: "all", name: "All fields" },
+    { id: "title", name: "Job title" },
+    { id: "recruiter", name: "Company" },
+    { id: "description", name: "Description" },
+    { id: "location", name: "Location" },
+    ];
+
+    const optionsTwo = [
+    { id: "recent", name: "Most recent" },
+    { id: "salaryDesc", name: "Salary: high to low" },
+    { id: "salaryAsc", name: "Salary: low to high" },
+    { id: "titleAsc", name: "Title A-Z" },
+    ];
     
     useEffect(() => {
         const getOptions = async () => {

@@ -1,4 +1,4 @@
-/**
+/**upload.single
  * Registers a user 
  * @param {*} fname 
  * @param {*} lname 

@@ -3,11 +3,11 @@ import JobSearch from '../components/JobSearch';
 
 import './JobPosting.scss';
 
-export default function JobPosting(jobs) {
+export default function JobPosting({jobs}) {
   return (
     <div className="job-posting">
       <Filters />
-      <JobSearch />
+      <JobSearch jobs={jobs} />
     </div>
   );
 }

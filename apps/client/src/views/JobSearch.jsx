@@ -2,10 +2,11 @@ import JobPosting from "./JobPosting";
 import Nav from '../components/Nav';
 import SearchBar from "../components/Search";
 import { useState, useEffect } from "react";
-import GetJobsApi from "../utils/Api";
-
+import {GetJobsApi} from "../utils/Api";
+//temp
+import {sampleRequirements} from '../utils/jobData';
 export default function JobSearch({ setView }) {
-  const [jobs, setJobs] = useState();
+  const [jobs, setJobs] = useState(sampleRequirements);
 
   useEffect(() => {
       const getOptions = async () => {
