@@ -144,6 +144,9 @@ vite.config.ts.timestamp-*
 .vite/
 apps/client/dist/
 
+# Local HTTPS development certificates
+apps/server/certs/
+
 # Build
 dist/
 build/
@@ -162,3 +165,5 @@ npm-debug.log*
 .vscode/
 
 .DS_Store
+# Certificates
+apps/server/certs/*.pem
