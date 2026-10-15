@@ -1,3 +1,5 @@
+import { getApiUrl } from "./apiConfig";
+
 /**
  * Registers a user 
  * @param {*} fname 
@@ -10,7 +12,7 @@
  */
 export async function RegisterApi(fname, lname, email, password, setErrorMessage, setToken, role, setUser) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/register", {
+        const response = await fetch(getApiUrl("/api/auth/register"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -43,7 +45,7 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
  */
 export async function LogInApi(email, password, setErrorMessage, setToken, setUser) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/login", {
+        const response = await fetch(getApiUrl("/api/auth/login"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -76,7 +78,7 @@ export async function LogInApi(email, password, setErrorMessage, setToken, setUs
  */
 export async function GoogleLogInApi(credential, setErrorMessage, setToken, setUser) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/google", {
+        const response = await fetch(getApiUrl("/api/auth/google"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -107,7 +109,7 @@ export async function GoogleLogInApi(credential, setErrorMessage, setToken, setU
  */
 export async function LogOutApi(token) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/logout", {
+        const response = await fetch(getApiUrl("/api/auth/logout"), {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -137,7 +139,7 @@ export async function LogOutApi(token) {
  */
 export async function CreateProfileApi(fname, lname, setErrorMessage, token) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/profile", {
+        const response = await fetch(getApiUrl("/api/auth/profile"), {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -175,7 +177,7 @@ export async function CreateProfileApi(fname, lname, setErrorMessage, token) {
  */
 export async function UpdateProfileApi(fname, lname, phone, bio, location, setErrorMessage, token) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/profile", {
+        const response = await fetch(getApiUrl("/api/auth/profile"), {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -207,7 +209,7 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
     formData.append('profilePicture', file);
 
     try {
-        const response = await fetch('http://localhost:3000/api/auth/profile/picture', {
+        const response = await fetch(getApiUrl("/api/auth/profile/picture"), {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`
@@ -229,8 +231,6 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
     }
 }
 
-
-
 /**
  * gets data for profile
  * @param {*} token 
@@ -238,7 +238,7 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
  */
 export async function GetProfileApi(token) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/profile", {
+        const response = await fetch(getApiUrl("/api/auth/profile"), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -298,7 +298,7 @@ export async function UploadResumeApi(file, setErrorMessage, token) {
  */
 export async function GetResumesApi(setErrorMessage, token) {
     try {
-        const response = await fetch("http://localhost:3000/api/resumes", {
+        const response = await fetch(getApiUrl("/api/resumes"), {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -329,7 +329,7 @@ export async function GetResumesApi(setErrorMessage, token) {
  */
 export async function DownloadResumeApi(resume, setErrorMessage, token) {
     try {
-        const response = await fetch(`http://localhost:3000/api/resumes/${resume.id}/file`, {
+        const response = await fetch(getApiUrl(`/api/resumes/${resume.id}/file`), {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -367,7 +367,7 @@ export async function DownloadResumeApi(resume, setErrorMessage, token) {
  */
 export async function DeleteResumeApi(resumeId, setErrorMessage, token) {
     try {
-        const response = await fetch(`http://localhost:3000/api/resumes/${resumeId}`, {
+        const response = await fetch(getApiUrl(`/api/resumes/${resumeId}`), {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${token}`,

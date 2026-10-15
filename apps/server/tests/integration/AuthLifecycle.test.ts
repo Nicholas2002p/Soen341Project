@@ -147,3 +147,57 @@ test('authentication lifecycle works through the HTTP API and database', async (
         }
     }
 });
+
+test('account deletion removes the user profile salt and sessions', async () => {
+    const email = `delete-${Date.now()}@example.com`;
+    const password = 'CorrectHorseBatteryStaple1!';
+    let userId: number | undefined;
+
+    try {
+        // Register a new user and update their profile
+        const registerResponse = await request('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Forwarded-Proto': 'https' },
+            body: JSON.stringify({ email, password }),
+        });
+
+        // Ensure the registration was successful and extract the user ID
+        assert.equal(registerResponse.status, 201);
+        const registered = (await registerResponse.json()) as AuthResponse;
+        userId = registered.user.id;
+
+        // Update the user's profile to ensure a profile exists before deletion
+        const profileResponse = await request('/api/auth/profile', {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${registered.sessionToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ firstName: 'Delete', lastName: 'Me' }),
+        });
+        // Ensure the profile update was successful
+        assert.equal(profileResponse.status, 200);
+
+        // Delete the user account and verify that the user, profile, salt, and sessions are removed
+        const deleteResponse = await request('/api/auth/me', {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${registered.sessionToken}` },
+        });
+        // Ensure the deletion was successful
+        assert.equal(deleteResponse.status, 204);
+
+        // Verify that the user, profile, salt, and sessions are removed from the database
+        assert.equal(await prisma.user.findUnique({ where: { userId } }), null);
+        assert.equal(await prisma.profile.findUnique({ where: { userId } }), null);
+        assert.equal(await prisma.salt.findUnique({ where: { userId } }), null);
+        assert.equal(await prisma.session.count({ where: { userId } }), 0);
+    } finally {
+        if (userId !== undefined) {
+            // Clean up any remaining data in case of test failure
+            await prisma.profile.deleteMany({ where: { userId } });
+            await prisma.salt.deleteMany({ where: { userId } });
+            await prisma.session.deleteMany({ where: { userId } });
+            await prisma.user.deleteMany({ where: { userId } });
+        }
+    }
+});

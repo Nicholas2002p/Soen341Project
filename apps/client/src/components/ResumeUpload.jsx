@@ -20,7 +20,6 @@ export default function ResumeUpload() {
 
   // Load the user's resumes when the component is shown
   useEffect(() => {
-    if (!token) return;
     const loadResumes = async () => {
       setResumes(await GetResumesApi(setErrorMessage, token));
     };
@@ -53,7 +52,7 @@ export default function ResumeUpload() {
 
   return (
     <section className="resume-upload">
-      <h2> RESUME UPLOAD </h2>
+      <h2>Resume Upload</h2>
 
       <input
         key={inputKey}
