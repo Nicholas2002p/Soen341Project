@@ -266,6 +266,7 @@ export async function GetProfileApi(token) {
  */
 export async function JobFilter (filterField, sortBy, searchQuery, token){
     const _params = { filterField, sortBy, searchQuery, token };
+    void _params;
     return [];
     // try {
     //     const response = await fetch(
