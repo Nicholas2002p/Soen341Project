@@ -257,12 +257,12 @@ export async function GetProfileApi(token) {
 }
 
 /**
- * 
+ * gets jobs base on filter options
  * @param {*} filterField 
  * @param {*} sortBy 
  * @param {*} searchQuery 
  * @param {*} token 
- * @returns 
+ * @returns all jobs that match filter and are not past deadline
  */
 export async function JobFilter (filterField, sortBy, searchQuery, token){
     const _params = { filterField, sortBy, searchQuery, token };
@@ -281,7 +281,6 @@ export async function JobFilter (filterField, sortBy, searchQuery, token){
     //     );
 
     //     if (!response.ok) {
-    //         throw new Error('Network response was not ok');
     //     }
 
     //     const data = await response.json();
@@ -293,8 +292,8 @@ export async function JobFilter (filterField, sortBy, searchQuery, token){
 };
 
 /**
- * 
- * @returns 
+ *  gets all jobs 
+ * @returns all jobs that are not past deadline
  */
 export async function GetJobsApi() {
     return;
