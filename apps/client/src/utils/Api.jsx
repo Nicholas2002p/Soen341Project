@@ -268,7 +268,7 @@ export async function UploadResumeApi(file, setErrorMessage, token) {
     formData.append("resume", file);
 
     try {
-        const response = await fetch("http://localhost:3000/api/resumes", {
+               const response = await fetch(getApiUrl("/api/resumes"), {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
