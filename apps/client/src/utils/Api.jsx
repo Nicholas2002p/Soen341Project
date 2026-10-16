@@ -231,12 +231,6 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
     }
 }
 
-export async function UploadResumeApi() {
-    throw new Error("UploadResumeApi is not implemented yet.");
-}
-
-
-
 /**
  * gets data for profile
  * @param {*} token 
@@ -303,4 +297,134 @@ export async function JobFilter (filterField, sortBy, searchQuery, token){
  */
 export async function GetJobsApi() {
     return;
+}
+ * uploads a resume file (pdf, doc or docx, 5 MB max)
+ * @param {*} file
+ * @param {*} setErrorMessage
+ * @param {*} token
+ * @returns the uploaded resume, or null if it failed
+ */
+export async function UploadResumeApi(file, setErrorMessage, token) {
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    try {
+               const response = await fetch(getApiUrl("/api/resumes"), {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            setErrorMessage(data.message ?? "Unable to upload resume.");
+            return null;
+        }
+
+        return data.resume;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Unable to upload resume.");
+        return null;
+    }
+}
+
+/**
+ * gets all the resumes of the logged in user
+ * @param {*} setErrorMessage
+ * @param {*} token
+ * @returns a list of resumes (empty list if it failed)
+ */
+export async function GetResumesApi(setErrorMessage, token) {
+    try {
+        const response = await fetch(getApiUrl("/api/resumes"), {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            setErrorMessage(data.message ?? "Unable to load resumes.");
+            return [];
+        }
+
+        return data.resumes;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Unable to load resumes.");
+        return [];
+    }
+}
+
+/**
+ * downloads a resume file
+ * a simple link can't send the Authorization header, so the file is fetched first
+ * @param {*} resume
+ * @param {*} setErrorMessage
+ * @param {*} token
+ * @returns true if the download started
+ */
+export async function DownloadResumeApi(resume, setErrorMessage, token) {
+    try {
+        const response = await fetch(getApiUrl(`/api/resumes/${resume.id}/file`), {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            setErrorMessage(data.message ?? "Unable to download resume.");
+            return false;
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = resume.fileName;
+        link.click();
+        URL.revokeObjectURL(url);
+
+        return true;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Unable to download resume.");
+        return false;
+    }
+}
+
+/**
+ * deletes a resume
+ * @param {*} resumeId
+ * @param {*} setErrorMessage
+ * @param {*} token
+ * @returns true if the resume was deleted
+ */
+export async function DeleteResumeApi(resumeId, setErrorMessage, token) {
+    try {
+        const response = await fetch(getApiUrl(`/api/resumes/${resumeId}`), {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            setErrorMessage(data.message ?? "Unable to delete resume.");
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Unable to delete resume.");
+        return false;
+    }
 }
