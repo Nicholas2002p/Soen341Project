@@ -1,16 +1,37 @@
 import "./JobSearch.scss";
-
+const ITEMS_PER_PAGE = 10;
+import { useState } from 'react';
+import { Stack, Pagination } from '@mui/material';
 /**
  * Job Search
  * 
  * @returns the job search component
  */
-export default function JobSearch() {
+export default function JobSearch({ jobs }) {
+  const [page, setPage] = useState(1);
+  const handleChange = (e, value) => {
+    setPage(value);
+  };
+  const startIndex = (page - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentJobs = jobs.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(jobs.length / ITEMS_PER_PAGE);
+
   return (
     <section className="job-search">
       <h2> Job Search </h2>
 
-      <JobBoard jobs={sampleRequirements} />  
+      <JobBoard jobs={currentJobs} /> 
+      <Stack className="stack">
+        <Pagination 
+          count={totalPages} 
+          page={page} 
+          onChange={handleChange} 
+          color="primary" 
+          variant="outlined" 
+          shape="rounded"
+        />
+      </Stack> 
     </section>
   );
 }
@@ -24,20 +45,32 @@ export default function JobSearch() {
  * @returns the job board component
  */
 function JobBoard({ jobs }) {
-  const displayJobs = jobs.map((job) => 
-    <a href="" key={job.id} className="job">
-      <div className="pin"> </div>
-      <p className="job-title"> {job.title} </p>
-      <p className="job-recruiter"> {job.recruiter} </p>
-      <p className="job-description"> {job.description} </p>
-      <Requirements requirements={job.requirements} />
-    </a>
-  );
+  const displayJobs = jobs.map((job) => {
+    const recruiterName = job.recruiter?.profile
+      ? `${job.recruiter.profile.firstName} ${job.recruiter.profile.lastName}`
+      : "";
+    const deadlineDate = new Date(job.deadline).toLocaleDateString();
+
+    return (
+      <a href={`/jobs/${job.jobId}`} key={job.jobId} className="job">
+        <div className="pin"></div>
+        <p className="job-title">{job.title}</p>
+        <p className="job-company">{job.company?.name}</p>
+        <p className="job-recruiter">Posted by {recruiterName}</p>
+        <div className="job-meta">
+          <div className="job-location">{job.location}</div>
+          <span className="job-salary">${job.salary.toLocaleString()} </span>
+          <span className="job-type">{job.employmentType}</span>
+          <div className="job-deadline">Deadline: {deadlineDate}</div>
+        </div>
+        <p className="job-description">{job.description}</p>
+        <Requirements requirements={job.skills} />
+      </a>
+    );
+  });
 
   return (
-    <section className="job-board">
-      { displayJobs } 
-    </section>
+    <div className="job-board">{displayJobs}</div>
   );
 }
 
@@ -50,7 +83,7 @@ function JobBoard({ jobs }) {
  */
 function Requirements({ requirements }) {
   const displayReq =  requirements.map( (req) =>
-    <li> {req} </li>
+    <li key={req.skillId}> {req.skill} </li>
   );
     
   return (
@@ -59,43 +92,3 @@ function Requirements({ requirements }) {
     </ul>
   );
 }
-
-// ============================= SAMPLE DATA ==================================
-
-const sampleRequirements = [
-  {
-    id: 1,
-    title: 'Job Title',
-    recruiter: 'Recruiter',
-    description: 'sadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoi',
-    requirements: ['requirement 1', 'requirement 2', 'requirement 3']
-  }, 
-  {
-    id: 2,
-    title: 'Job Title',
-    recruiter: 'Recruiter',
-    description: 'sadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoi',
-    requirements: ['requirement 1', 'requirement 2', 'requirement 3']
-  }, 
-  {
-    id: 3,
-    title: 'Job Title',
-    recruiter: 'Recruiter',
-    description: 'sadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoi',
-    requirements: ['requirement 1', 'requirement 2', 'requirement 3']
-  },
-  {
-    id: 4,
-    title: 'Job Title',
-    recruiter: 'Recruiter',
-    description: 'sadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoi',
-    requirements: ['requirement 1', 'requirement 2', 'requirement 3']
-  },
-  {
-    id: 5,
-    title: 'Job Title',
-    recruiter: 'Recruiter',
-    description: 'sadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoisadfiosahjfiohwefoiwehfiosdhfiodshfiosdhfiohewoi',
-    requirements: ['requirement 1', 'requirement 2', 'requirement 3']
-  },
-];

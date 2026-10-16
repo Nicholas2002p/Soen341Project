@@ -32,7 +32,7 @@ function NavItems({ setView }) {
   return (
     <ul className="nav-list-items">
       <a onClick={() => { setView("home")}}> Home </a>
-      <a> Jobs </a>
+      <a onClick={() => { setView("job-search") }}> Jobs </a>
       <a onClick={() => { 
         if (token) {
           setView("profile");
