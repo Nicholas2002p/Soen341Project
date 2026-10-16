@@ -146,7 +146,7 @@ model Job {
   description    String?        @db.Text
   salary         Int
   employmentType EmploymentType @map("employment_type")
-  deadline       DateTime?
+  deadline       DateTime
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime?       @default(now()) @map("updated_at")
 
