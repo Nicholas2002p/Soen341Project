@@ -298,6 +298,7 @@ export async function JobFilter (filterField, sortBy, searchQuery, token){
 export async function GetJobsApi() {
     return;
 }
+/**
  * uploads a resume file (pdf, doc or docx, 5 MB max)
  * @param {*} file
  * @param {*} setErrorMessage
