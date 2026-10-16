@@ -1,6 +1,5 @@
 import type { Company } from './Company.js';
-
-export type EmploymentType = 'on_site' | 'hybrid' | 'remote';
+import type { EmploymentType } from './EmploymentType.js';
 
 export interface JobSummary {
     jobId: number;

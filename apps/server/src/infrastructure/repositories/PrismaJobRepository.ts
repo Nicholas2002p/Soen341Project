@@ -1,6 +1,7 @@
 import type { PrismaClient } from '../../generated/prisma/client.js';
 import type { IJobRepository, JobSearchFilters } from '../../application/interfaces/repositories/IJobRepository.js';
 import type { JobDetails, JobSummary } from '../../domain/entities/Job.js';
+import type { EmploymentType } from '../../domain/entities/EmploymentType.js';
 
 export class PrismaJobRepository implements IJobRepository {
     constructor(private readonly prisma: PrismaClient) {}
@@ -82,7 +83,7 @@ export class PrismaJobRepository implements IJobRepository {
             category: job.category,
             location: job.location,
             salary: job.salary,
-            employmentType: job.employmentType,
+            employmentType: job.employmentType as EmploymentType,
             deadline: job.deadline,
             createdAt: job.createdAt,
             company: {
@@ -124,7 +125,7 @@ export class PrismaJobRepository implements IJobRepository {
             location: job.location,
             description: job.description,
             salary: job.salary,
-            employmentType: job.employmentType,
+            employmentType: job.employmentType as EmploymentType,
             deadline: job.deadline,
             createdAt: job.createdAt,
             updatedAt: job.updatedAt,
