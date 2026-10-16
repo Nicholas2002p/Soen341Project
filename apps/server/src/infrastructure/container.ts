@@ -5,7 +5,6 @@ import { PrismaResumeRepository } from './repositories/PrismaResumeRepository.js
 import { PrismaApplicationRepository } from './repositories/PrismaApplicationRepository.js';
 import { BcryptPasswordHasher } from './security/BcryptPasswordHasher.js';
 import { SessionTokenGenerator } from '../infrastructure/security/SessionTokenGenerator.js';
-import { LocalFileStorage } from './storage/LocalFileStorage.js';
 import { UserService } from '../application/services/UserService.js';
 import { AuthService } from '../application/services/AuthService.js';
 import { PrismaProfileRepository } from './repositories/PrismaProfileRepository.js';
@@ -16,6 +15,11 @@ import { ApplicationService } from '../application/services/ApplicationService.j
 import { PrismaCompanyRepository } from './repositories/PrismaCompanyRepository.js';
 import { CompanyService } from '../application/services/CompanyService.js';
 import { GoogleTokenVerifier } from './security/GoogleTokenVerifier.js';
+import { LocalFileStorage } from './storage/LocalFileStorage.js';
+import { SupabaseFileStorage } from './storage/SupabaseFileStorage.js';
+import { LocalProfileImageStorage } from './storage/LocalProfileImageStorage.js';
+import { SupabaseProfileImageStorage } from './storage/SupabaseProfileImageStorage.js';
+import path from 'node:path';
 
 // Initialize repositories, services, and other dependencies
 const userRepository = new PrismaUserRepository(prisma);
@@ -24,7 +28,13 @@ const passwordHasher = new BcryptPasswordHasher();
 const sessionTokenGenerator = new SessionTokenGenerator();
 const saltRepository = new PrismaSaltRepository(prisma);
 const resumeRepository = new PrismaResumeRepository(prisma);
-const resumeStorage = new LocalFileStorage(process.env.RESUME_UPLOAD_DIR ?? 'uploads/resumes');
+const localStorage = process.env.NODE_ENV === 'test';
+const resumeStorage = localStorage
+  ? new LocalFileStorage(process.env.RESUME_UPLOAD_DIR ?? 'uploads/resumes')
+  : new SupabaseFileStorage('resumes');
+const profileImageStorage = localStorage
+  ? new LocalProfileImageStorage(path.resolve(process.cwd(), 'uploads', 'profile-pictures'))
+  : new SupabaseProfileImageStorage();
 const companyRepository = new PrismaCompanyRepository(prisma);
 const companyService = new CompanyService(companyRepository);
 const googleTokenVerifier = new GoogleTokenVerifier(process.env.GOOGLE_CLIENT_ID ?? '');
@@ -46,4 +56,12 @@ const resumeService = new ResumeService(resumeRepository, resumeStorage);
 const applicationService = new ApplicationService(applicationRepository, resumeRepository);
 
 // Export the initialized services for use in other parts of the application
-export { userService, authService, profileService, resumeService, companyService, applicationService };
+export {
+  userService,
+  authService,
+  profileService,
+  resumeService,
+  companyService,
+  applicationService,
+  profileImageStorage,
+};
