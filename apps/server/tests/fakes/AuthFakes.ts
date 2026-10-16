@@ -51,6 +51,14 @@ export class FakeUserRepository implements IUserRepository {
         this.users.set(updatedUser.email, updatedUser);
         return updatedUser;
     }
+
+    async delete(id: number): Promise<void> {
+        // Remove the user from the in-memory store by ID. If the user exists, delete them from the map.
+        const storedUser = await this.getById(id);
+        if (storedUser) {
+            this.users.delete(storedUser.email);
+        }
+    }
 }
 
 // In-memory session repository used to verify token and expiration behavior.
@@ -84,15 +92,9 @@ export class FakePasswordHasher implements IPasswordHasher {
     hashedPasswords: string[] = [];
     generatedSalts: string[] = [];
 
-    async hash(password: string, salt?: string): Promise<string> {
+    async hash(password: string, saltRounds?: number): Promise<string> {
         this.hashedPasswords.push(password);
-        return salt ? `hashed:${password}:${salt}` : `hashed:${password}`;
-    }
-
-    async generateSalt(): Promise<string> {
-        const salt = 'salt:10';
-        this.generatedSalts.push(salt);
-        return salt;
+        return saltRounds ? `hashed:${password}:rounds:${saltRounds}` : `hashed:${password}`;
     }
 
     getDefaultSaltRounds(): number {
@@ -107,15 +109,14 @@ export class FakePasswordHasher implements IPasswordHasher {
 }
 
 export class FakeSaltRepository implements ISaltRepository {
-    salts = new Map<number, string>();
+    salts = new Map<number, number>();
 
-    async save(userId: number, salt: string): Promise<void> {
-        this.salts.set(userId, salt);
+    async save(userId: number, saltRounds: number): Promise<void> {
+        this.salts.set(userId, saltRounds);
     }
 
     async getSaltRounds(userId: number): Promise<number | null> {
-        const salt = this.salts.get(userId);
-        return salt ? Number(salt.split(':')[1]) : null;
+        return this.salts.get(userId) ?? null;
     }
 }
 

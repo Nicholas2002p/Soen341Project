@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import type { ProfileData } from '../../application/interfaces/repositories/IProfileRepository.js';
 import { profileImageStorage, profileService } from '../../infrastructure/container.js';
+import { UnauthorizedUserActionError } from '../../domain/errors/UnauthorizedUserActionError.js';
 
 const defaultProfileURL = process.env.DEFAULT_PROFILE_IMAGE_URL
     ?? '/uploads/profile-pictures/profile_default.jpg';
@@ -79,6 +80,20 @@ export class ProfileController {
 
     // Upsert the profile for the authenticated user
     async upsert(req: Request, res: Response): Promise<void> {
+        const authenticatedUser = res.locals.user as { id: number; role: string };
+        const requestedUserId = req.params.userId ? Number(req.params.userId) : authenticatedUser.id;
+
+        if (!Number.isInteger(requestedUserId) || requestedUserId <= 0) {
+            res.status(400).json({ message: 'A valid user id is required.' });
+            return;
+        }
+
+        if (requestedUserId !== authenticatedUser.id && authenticatedUser.role !== 'admin') {
+            const error = new UnauthorizedUserActionError('You can only update your own account.');
+            res.status(403).json({ message: error.message });
+            return;
+        }
+
         // validate the request body and convert it to ProfileData
         const data = profileData(req.body);
 
@@ -92,7 +107,7 @@ export class ProfileController {
 
 
         // upsert the profile for the authenticated user
-        const profile = await profileService.upsert(getAuthenticatedUserId(res), data);
+        const profile = await profileService.upsert(requestedUserId, data);
 
         // if the profile was not found, return a 404 Not Found response
         if (!profile) {
