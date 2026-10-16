@@ -56,8 +56,8 @@ test('register normalizes the email, hashes the password, and creates a session'
     // Check that the password has been hashed
     assert.deepEqual(passwordHasher.hashedPasswords, ['secret-password']);
     // Check that the session token is generated and stored in the session repository
-    assert.equal(userRepository.createdData?.passwordHash, 'hashed:secret-password:salt:10');
-    assert.equal(saltRepository.salts.get(result.user.id), 'salt:10');
+    assert.equal(userRepository.createdData?.passwordHash, 'hashed:secret-password:rounds:10');
+    assert.equal(saltRepository.salts.get(result.user.id), 10);
     // Check that the session repository has a session for the user with the hashed token
     assert.ok(sessionRepository.sessions.has('hashed-token:plain-session-token'));
 });
@@ -93,16 +93,27 @@ test('login rejects an invalid email format as invalid credentials', async () =>
     );
 });
 
+test('deleteUser removes the account from the user repository', async () => {
+    // Create an AuthService instance with a FakeUserRepository containing a test user
+    const { service, userRepository } = createService([user]);
+
+    // Call the deleteUser method to remove the user
+    await service.deleteUser(user.id);
+
+    // Check that the user has been removed from the repository
+    assert.equal(await userRepository.getById(user.id), null);
+});
+
 test('login upgrades a password hash below the current salt rounds', async () => {
     const lowRoundUser = { ...user, passwordHash: 'low-rounds-hash' };
     const { service, userRepository, saltRepository } = createService([lowRoundUser]);
-    saltRepository.salts.set(lowRoundUser.id, 'salt:8');
+    saltRepository.salts.set(lowRoundUser.id, 8);
 
     const result = await service.login(lowRoundUser.email, 'secret-password');
     const updatedUser = await userRepository.getByEmail(lowRoundUser.email);
 
-    assert.equal(updatedUser?.passwordHash, 'hashed:secret-password:salt:10');
-    assert.equal(saltRepository.salts.get(lowRoundUser.id), 'salt:10');
+    assert.equal(updatedUser?.passwordHash, 'hashed:secret-password:rounds:10');
+    assert.equal(saltRepository.salts.get(lowRoundUser.id), 10);
     assert.equal(result.user.id, lowRoundUser.id);
 });
 

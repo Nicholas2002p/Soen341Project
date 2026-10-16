@@ -21,7 +21,7 @@ export default function ProfileEdit({ fname, lname, desc, old_profile, setFName,
 
   const [phone, setPhone] = useState(null);
   const [location, setLocation] = useState(null);
-  const [, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [file, setFile] = useState(null);
 
   return (
@@ -77,7 +77,7 @@ export default function ProfileEdit({ fname, lname, desc, old_profile, setFName,
         />
       </label>
 
-      {/* <span> Error: {errorMessage} </span> */}
+          {errorMessage && <span className="error-text">{errorMessage}</span>}
 
       <button className='profile-edit-button' button="type" 
         onClick={() => { Save(fname, lname, phone, desc, location, file, setProfileURL, setErrorMessage, token, old_profile) }}

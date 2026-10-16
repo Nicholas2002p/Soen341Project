@@ -34,6 +34,8 @@ jobs:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/careerconnect_test
       NODE_ENV: test
       GOOGLE_CLIENT_ID: ci-placeholder
+      TLS_KEY_PATH: certs/localhost-key.pem
+      TLS_CERT_PATH: certs/localhost.pem
 
     steps:
       - name: Checkout
@@ -47,6 +49,16 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Generate temporary HTTPS certificates
+        run: |
+          mkdir -p apps/server/certs
+          openssl req -x509 -newkey rsa:2048 -nodes \
+            -keyout apps/server/certs/localhost-key.pem \
+            -out apps/server/certs/localhost.pem \
+            -days 1 \
+            -subj "/CN=localhost" \
+            -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
 
       - name: Generate Prisma client
         run: npm run prisma:generate --workspace=apps/server

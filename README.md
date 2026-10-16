@@ -79,6 +79,16 @@ in root of the project
    npm run dev
 ```
 
+### Client Environment Setup
+Create `apps/client/.env.local` from `apps/client/.env.example` and set the API target:
+
+```env
+VITE_API_URL=https://localhost:3000
+VITE_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+```
+
+The client uses `VITE_API_URL` for all server requests. Restart the Vite client after changing environment variables.
+
 ## Proposed Features
 - Post a job onto the job board
 - Look through jobs board
@@ -107,3 +117,44 @@ Google sign-in needs a Google OAuth Client ID on both the server and the client.
 - `apps/client/.env.local` → `VITE_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com`
 
 Restart both servers after editing the env files.
+7. make sure to keep postgreSQL open 
+
+## HTTPS Development Server
+
+The server runs over HTTPS when started with `npm run dev` or `npm start`. For local development, install [mkcert](https://github.com/FiloSottile/mkcert), then generate a trusted local certificate:
+
+```bash
+mkcert -install
+mkdir -p apps/server/certs
+mkcert -key-file apps/server/certs/localhost-key.pem -cert-file apps/server/certs/localhost.pem localhost 127.0.0.1 ::1
+```
+
+### Windows PowerShell
+
+Open PowerShell as Administrator when installing `mkcert` and its local certificate authority:
+
+```powershell
+winget install --id FiloSottile.mkcert -e
+mkcert -install
+New-Item -ItemType Directory -Force -Path .\apps\server\certs
+mkcert -key-file .\apps\server\certs\localhost-key.pem -cert-file .\apps\server\certs\localhost.pem localhost 127.0.0.1 ::1
+```
+
+If `winget` is unavailable, install `mkcert` with Chocolatey instead:
+
+```powershell
+choco install mkcert
+mkcert -install
+```
+
+Add these values to `apps/server/.env`:
+
+```env
+PORT=3000
+TLS_KEY_PATH=certs/localhost-key.pem
+TLS_CERT_PATH=certs/localhost.pem
+HTTP_REDIRECT_PORT=3001
+```
+
+The certificate and private key are local development files and must not be committed. Open the API at `https://localhost:3000`.
+

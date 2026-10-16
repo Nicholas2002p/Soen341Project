@@ -2,6 +2,7 @@ import { prisma } from './prisma/prisma.js';
 import { PrismaUserRepository } from './repositories/PrismaUserRepository.js';
 import { PrismaSessionRepository } from './repositories/PrismaSessionRepository.js';
 import { PrismaResumeRepository } from './repositories/PrismaResumeRepository.js';
+import { PrismaApplicationRepository } from './repositories/PrismaApplicationRepository.js';
 import { BcryptPasswordHasher } from './security/BcryptPasswordHasher.js';
 import { SessionTokenGenerator } from '../infrastructure/security/SessionTokenGenerator.js';
 import { UserService } from '../application/services/UserService.js';
@@ -10,6 +11,7 @@ import { PrismaProfileRepository } from './repositories/PrismaProfileRepository.
 import { PrismaSaltRepository } from './repositories/PrismaSaltRepository.js';
 import { ProfileService } from '../application/services/ProfileService.js';
 import { ResumeService } from '../application/services/ResumeService.js';
+import { ApplicationService } from '../application/services/ApplicationService.js';
 import { PrismaCompanyRepository } from './repositories/PrismaCompanyRepository.js';
 import { CompanyService } from '../application/services/CompanyService.js';
 import { GoogleTokenVerifier } from './security/GoogleTokenVerifier.js';
@@ -37,6 +39,7 @@ const companyRepository = new PrismaCompanyRepository(prisma);
 const companyService = new CompanyService(companyRepository);
 const googleTokenVerifier = new GoogleTokenVerifier(process.env.GOOGLE_CLIENT_ID ?? '');
 const profileRepository = new PrismaProfileRepository(prisma);
+const applicationRepository = new PrismaApplicationRepository(prisma);
 
 const userService = new UserService(userRepository);
 const authService = new AuthService(
@@ -50,6 +53,15 @@ const authService = new AuthService(
 );
 const profileService = new ProfileService(profileRepository, userRepository);
 const resumeService = new ResumeService(resumeRepository, resumeStorage);
+const applicationService = new ApplicationService(applicationRepository, resumeRepository);
 
 // Export the initialized services for use in other parts of the application
-export { userService, authService, profileService, resumeService, companyService, profileImageStorage };
+export {
+  userService,
+  authService,
+  profileService,
+  resumeService,
+  companyService,
+  applicationService,
+  profileImageStorage,
+};
