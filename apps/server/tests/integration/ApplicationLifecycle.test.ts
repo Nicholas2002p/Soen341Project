@@ -74,7 +74,17 @@ test('application lifecycle works through the HTTP API and database', async () =
         const company = await prisma.company.create({ data: { name: `Test Company ${suffix}` } });
         companyId = company.companyId;
         const job = await prisma.job.create({
-            data: { companyId, recruiterId: recruiter.id, title: 'Junior Developer', salary: 60000, employmentType: 'hybrid', location: 'Montreal, QC' },
+            data: {
+                companyId,
+                recruiterId: recruiter.id,
+                title: 'Junior Developer',
+                category: 'Software Development',
+                location: 'Montreal, QC',
+                description: 'Junior software developer position used for application integration testing.',
+                salary: 60000,
+                employmentType: "hybrid",
+                deadline: new Date('2030-12-31T23:59:59Z'),
+            },
         });
         const resume = await prisma.resume.create({
             data: { userId: seeker.id, fileName: 'cv.pdf', fileURL: `integration-${suffix}.pdf` },
