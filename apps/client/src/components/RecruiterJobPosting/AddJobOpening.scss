@@ -31,8 +31,7 @@ $off-white: #FAF9F6;
 }
 
 @mixin input-css() {
-  @include width-height(60%, none);
-  width: 60%;
+  @include width-height(60%, 25px);
   border: $black-border;
   border-bottom: 3px solid rgb(173, 192, 206);
   border-top-left-radius: 10px;
@@ -79,6 +78,34 @@ $off-white: #FAF9F6;
   border-radius: 10px;
   gap: 10px;
   padding: 20px;
+
+  button {
+    margin-top: auto;
+    @include width-height(200px, 50px);
+    font-size: 20px;
+    align-self: center;
+    position: relative;
+    cursor: pointer;
+
+    border: 3px solid black;
+    border-radius: 10px;
+    background-color: rgb(120, 151, 228);
+  }
+
+  button:hover {
+    background-color: rgb(95, 124, 196);
+  }
+
+  button::before {
+    position: absolute;
+    content: "";
+    border-radius: 10px;
+    @include width-height(200px, 50px);
+    border-bottom: 3px solid black;
+    border-left: 3px solid black;
+    right: 1px;
+    top: 0;
+  }
 }
 
 .add-job-page-header {
@@ -104,42 +131,8 @@ $off-white: #FAF9F6;
   font-size: 25px;
   margin-bottom: 1em;
   gap: 10px;
+
+  input, select {
+    @include input-css();
+  }
 }
-
-.add-job-inputs input {
-  @include input-css();
-}
-
-.add-job-inputs select {
-  @include input-css();
-}
-
-.add-job-opening-content button {
-  margin-top: auto;
-  @include width-height(200px, 50px);
-  font-size: 20px;
-  align-self: center;
-  position: relative;
-  cursor: pointer;
-
-  border: 3px solid black;
-  border-radius: 10px;
-  background-color: rgb(120, 151, 228);
-}
-
-.add-job-opening-content button:hover {
-  background-color: rgb(95, 124, 196);
-}
-
-.add-job-opening-content button::before {
-  position: absolute;
-  content: "";
-  border-radius: 10px;
-  @include width-height(200px, 50px);
-  border-bottom: 3px solid black;
-  border-left: 3px solid black;
-  right: 1px;
-  top: 0;
-}
-
-
