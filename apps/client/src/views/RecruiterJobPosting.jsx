@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import Folder from "../components/Folder";
-import { AddJobOpeningPage } from "../components/AddJobOpening";
+import Folder from "../components/RecruiterJobPosting/Folder";
+import { AddJobOpeningPage } from "../components/RecruiterJobPosting/AddJobOpening";
 import './RecruiterJobPosting.scss';
 
 export default function RecruiterJobPosting({}) {

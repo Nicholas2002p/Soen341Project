@@ -1,5 +1,10 @@
+// inspiration for checkered pattern, slightly modified code 
+// https://codepen.io/yochans/pen/QWpbyVB 
 .recruiter-job-posting {
-  background-color: pink;
+  background-color: #f9f9fa;
+  background-image:
+		repeating-linear-gradient(0deg, rgba(13, 72, 161, 0.254) 7px 8px, transparent 8px 40px),
+		repeating-linear-gradient(90deg, rgba(13, 72, 161, 0.218) 7px 8px,	transparent 8px 40px);
   height: 100vh;
   width: 100%;
   

@@ -8,7 +8,7 @@ export default function Folder({ setIsAdding }) {
   
   return (
     <section className="folder">
-      <FolderTabs setFolderView={setFolderView} />
+      <FolderTabs folderView={folderView} setFolderView={setFolderView} />
 
       <section className="folder-content">
         <DisplayJobOpenings folderView={folderView} setIsAdding={setIsAdding} />
@@ -18,13 +18,13 @@ export default function Folder({ setIsAdding }) {
   );
 }
 
-function FolderTabs({ setFolderView }) {
+function FolderTabs({ folderView, setFolderView }) {
   return (
     <ul className="folder-tabs"> 
-      <li onClick={() => { setFolderView("all"); }}> All </li>
-      <li onClick={() => { setFolderView("open"); }}> Open </li>
-      <li onClick={() => { setFolderView("applicants"); }}> Applicants </li>
-      <li onClick={() => { setFolderView("closed"); }}> Closed </li>
+      <li id={folderView == "all" ? "folder-tabs-selected" : " "} onClick={() => { setFolderView("all"); }}> All </li>
+      <li id={folderView == "open" ? "folder-tabs-selected" : " "} onClick={() => { setFolderView("open"); }}> Open </li>
+      <li id={folderView == "applicants" ? "folder-tabs-selected" : " "} onClick={() => { setFolderView("applicants"); }}> Applicants </li>
+      <li id={folderView == "closed" ? "folder-tabs-selected" : " "} onClick={() => { setFolderView("closed"); }}> Closed </li>
     </ul>
   );
 }
