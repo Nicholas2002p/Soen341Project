@@ -34,9 +34,7 @@ function NavItems({ setView }) {
       <a onClick={() => { setView("home")}}> Home </a>
       <a> Jobs </a>
       <a onClick={() => { if (token) setView("profile");}}> Profile </a>
-      
-      
-      <a onClick={() => { setView("recruiter-job-posting") }}> Post a Job </a>
+      <a onClick={() => { if (token) setView("recruiter-job-posting") }}> Post a Job </a>
 
     </ul>
   );
