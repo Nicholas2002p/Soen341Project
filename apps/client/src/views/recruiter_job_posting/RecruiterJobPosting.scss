@@ -1,22 +1,38 @@
+// =========================== VARIABLES ==============================
+$black-border: 1px solid black;
+$off-white: #FAF9F6;
+
+// ============================= MIXINS ===============================
+
+@mixin flex-dir-justify($direction, $justify) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+}
+
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+// =========================== RECRUITER JOB POSTING ===========================
+
 // inspiration for checkered pattern, slightly modified code 
 // https://codepen.io/yochans/pen/QWpbyVB 
 .recruiter-job-posting {
-  background-color: #f9f9fa;
+  @include width-height(100%, 100vh);
+  @include flex-dir-justify(column, center);
+  background-color: $off-white;
   background-image:
 		repeating-linear-gradient(0deg, rgba(13, 72, 161, 0.254) 7px 8px, transparent 8px 40px),
 		repeating-linear-gradient(90deg, rgba(13, 72, 161, 0.218) 7px 8px,	transparent 8px 40px);
-  height: 100vh;
-  width: 100%;
-  
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .recruiter-job-posting h2 {
-  margin: 0;
+  font-size: 30px;
   justify-self: start;
+  
   margin-left: 20px;
   margin-bottom: 20px;
-  font-size: 30px;
+  margin: 0;
 }
