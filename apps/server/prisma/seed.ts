@@ -427,6 +427,8 @@ async function main() {
     data: {
       companyId: techCorp.companyId,
       recruiterId: emily.userId,
+      title: "Junior Backend Developer",
+      category: "Software Development",
       location: "Montreal, QC",
       description:
         "Junior backend developer working with Node.js, TypeScript and PostgreSQL.",
@@ -441,6 +443,8 @@ async function main() {
     data: {
       companyId: techCorp.companyId,
       recruiterId: emily.userId,
+      title: "Frontend Developer",
+      category: "Software Development",
       location: "Montreal, QC",
       description:
         "Frontend developer responsible for building React and Next.js applications.",
@@ -455,6 +459,8 @@ async function main() {
     data: {
       companyId: northernData.companyId,
       recruiterId: david.userId,
+      title: "Junior Data Analyst",
+      category: "Data Analytics",
       location: "Toronto, ON",
       description:
         "Junior data analyst working with Python, SQL and analytics tools.",
@@ -469,6 +475,8 @@ async function main() {
     data: {
       companyId: northernData.companyId,
       recruiterId: david.userId,
+      title: "Machine Learning Intern",
+      category: "Artificial Intelligence",
       location: "Toronto, ON",
       description:
         "Machine learning intern helping develop predictive models.",
@@ -483,6 +491,8 @@ async function main() {
     data: {
       companyId: mapleFinance.companyId,
       recruiterId: david.userId,
+      title: "Financial Software Developer",
+      category: "Software Development",
       location: "Montreal, QC",
       description:
         "Software developer working on financial services APIs.",
@@ -497,6 +507,8 @@ async function main() {
     data: {
       companyId: pixelWorks.companyId,
       recruiterId: emily.userId,
+      title: "Full-Stack Developer Intern",
+      category: "Software Development",
       location: "Montreal, QC",
       description:
         "Full-stack intern working with React, Node.js and PostgreSQL.",
@@ -667,7 +679,7 @@ async function main() {
       userId: alice.userId,
       jobId: backendJob.jobId,
       resumeId: aliceBackendResume.resumeId,
-      status: ApplicationStatus.onhold,
+      status: ApplicationStatus.Under_Review,
       appliedAt: new Date("2026-09-18T10:20:00"),
     },
   });
@@ -677,7 +689,7 @@ async function main() {
       userId: alice.userId,
       jobId: fullStackInternJob.jobId,
       resumeId: aliceGeneralResume.resumeId,
-      status: ApplicationStatus.accepted,
+      status: ApplicationStatus.Offered,
       appliedAt: new Date("2026-09-19T13:45:00"),
     },
   });
@@ -687,7 +699,7 @@ async function main() {
       userId: marc.userId,
       jobId: frontendJob.jobId,
       resumeId: marcResume.resumeId,
-      status: ApplicationStatus.onhold,
+      status: ApplicationStatus.Under_Review,
       appliedAt: new Date("2026-09-20T09:30:00"),
     },
   });
@@ -697,7 +709,7 @@ async function main() {
       userId: marc.userId,
       jobId: fullStackInternJob.jobId,
       resumeId: marcResume.resumeId,
-      status: ApplicationStatus.rejected,
+      status: ApplicationStatus.Rejected,
       appliedAt: new Date("2026-09-21T15:00:00"),
     },
   });
@@ -707,7 +719,7 @@ async function main() {
       userId: sophia.userId,
       jobId: dataAnalystJob.jobId,
       resumeId: sophiaDataResume.resumeId,
-      status: ApplicationStatus.accepted,
+      status: ApplicationStatus.Offered,
       appliedAt: new Date("2026-09-18T11:10:00"),
     },
   });
@@ -717,7 +729,7 @@ async function main() {
       userId: sophia.userId,
       jobId: machineLearningJob.jobId,
       resumeId: sophiaMlResume.resumeId,
-      status: ApplicationStatus.onhold,
+      status: ApplicationStatus.Under_Review,
       appliedAt: new Date("2026-09-22T16:20:00"),
     },
   });
@@ -728,52 +740,52 @@ async function main() {
     data: [
       {
         applicationId: aliceBackendApplication.applicationId,
-        status: ApplicationStatus.onhold,
+        status: ApplicationStatus.Under_Review,
         createdAt: new Date("2026-09-18T10:20:00"),
       },
 
       {
         applicationId: aliceFullStackApplication.applicationId,
-        status: ApplicationStatus.onhold,
+        status: ApplicationStatus.Under_Review,
         createdAt: new Date("2026-09-19T13:45:00"),
       },
       {
         applicationId: aliceFullStackApplication.applicationId,
-        status: ApplicationStatus.accepted,
+        status: ApplicationStatus.Offered,
         createdAt: new Date("2026-09-24T09:00:00"),
       },
 
       {
         applicationId: marcFrontendApplication.applicationId,
-        status: ApplicationStatus.onhold,
+        status: ApplicationStatus.Under_Review,
         createdAt: new Date("2026-09-20T09:30:00"),
       },
 
       {
         applicationId: marcFullStackApplication.applicationId,
-        status: ApplicationStatus.onhold,
+        status: ApplicationStatus.Under_Review,
         createdAt: new Date("2026-09-21T15:00:00"),
       },
       {
         applicationId: marcFullStackApplication.applicationId,
-        status: ApplicationStatus.rejected,
+        status: ApplicationStatus.Rejected,
         createdAt: new Date("2026-09-23T14:30:00"),
       },
 
       {
         applicationId: sophiaDataApplication.applicationId,
-        status: ApplicationStatus.onhold,
+        status: ApplicationStatus.Under_Review,
         createdAt: new Date("2026-09-18T11:10:00"),
       },
       {
         applicationId: sophiaDataApplication.applicationId,
-        status: ApplicationStatus.accepted,
+        status: ApplicationStatus.Offered,
         createdAt: new Date("2026-09-25T10:15:00"),
       },
 
       {
         applicationId: sophiaMlApplication.applicationId,
-        status: ApplicationStatus.onhold,
+        status: ApplicationStatus.Under_Review,
         createdAt: new Date("2026-09-22T16:20:00"),
       },
     ],

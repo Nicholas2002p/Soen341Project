@@ -5,6 +5,7 @@ import { profileRoutes, publicProfileRoutes } from './presentation/routes/Profil
 import { resumeRoutes } from './presentation/routes/ResumeRoutes.js';
 import { applicationRoutes } from './presentation/routes/ApplicationRoutes.js';
 import { companyRoutes } from './presentation/routes/CompanyRoutes.js';
+import { jobRoutes } from './presentation/routes/JobRoutes.js';
 import cors from 'cors';
 
 export const app: Express = express();
@@ -40,6 +41,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/resumes', resumeRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/companies', companyRoutes);
+app.use('/api/jobs', jobRoutes);
 
 //-----------------------------------------------------------------------------------------------------------
 // ------------------------------------------ Profile routes ------------------------------------------------
