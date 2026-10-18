@@ -4,22 +4,20 @@ import JobSearch from '../components/JobSearch';
 
 import './JobPosting.scss';
 
-/**
- * 
- * @param {object} jobs 
- * @returns 
- */
-export default function JobPosting({ jobs }) {
-   const [filters, setFilters] = useState({
+export default function JobPosting({ jobs = [] }) {
+  const [filters, setFilters] = useState({
     employmentTypes: [],
     minSalary: 0,
   });
 
-  const filteredJobs = jobs.filter(( job ) => {
-    // if no options are selected  or if the job matches at least 1 of the selected options
-    const matchesType = filters.employmentTypes.length === 0 || 
-          filters.employmentTypes.includes(job.employmentType);
+  console.log('jobs prop:', jobs, typeof jobs); // temporary
 
+  const list = Array.isArray(jobs) ? jobs : [];
+
+  const filteredJobs = list.filter((job) => {
+    const matchesType =
+      filters.employmentTypes.length === 0 ||
+      filters.employmentTypes.includes(job.employmentType);
     const matchesSalary = job.salary >= filters.minSalary;
     return matchesType && matchesSalary;
   });

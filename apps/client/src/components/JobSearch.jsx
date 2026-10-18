@@ -86,6 +86,7 @@ function makeJob(job) {
           <div className="job-location">{job.location}</div>
           <span className="job-salary">${job.salary} </span>
           <span className="job-type">{job.employmentType}</span>
+          <div className="job-type">Category: {job.category}</div>
           <div className="job-deadline">Deadline: {deadlineDate}</div>
         </div>
         <p className="job-description">{job.description}</p>

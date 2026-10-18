@@ -264,31 +264,30 @@ export async function GetProfileApi(token) {
  * @param {*} token 
  * @returns all jobs that match filter and are not past deadline
  */
-export async function JobFilter (filterField, sortBy, searchQuery, token){
-    const _params = { filterField, sortBy, searchQuery, token };
-    void _params;
-    return [];
-    // try {
-    //     const response = await fetch(
-    //         `http://localhost:3000/api/jobs?field=${filterField}&sort=${sortBy}&search=${encodeURIComponent(searchQuery)}`, 
-    //         {
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${token}`
-    //             }
-    //         }
-    //     );
+export async function JobFilter (filterField, sortBy, searchQuery){
 
-    //     if (!response.ok) {
-    //     }
+    try {
+        console.log(filterField);
+        const response = await fetch(
+            getApiUrl(`/api/jobs?${filterField}=${encodeURIComponent(searchQuery)}`), 
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
 
-    //     const data = await response.json();
-    //     return data;
-    // } catch (error) {
-    //     console.error("Error filtering jobs:", error);
-    //     return [];
-    // }
+        if (!response.ok) {
+        }
+        const data = await response.json();
+        console.log("data after search");
+        console.log(data);
+        return data.jobs;
+    } catch (error) {
+        console.error("Error filtering jobs:", error);
+        return [];
+    }
 };
 
 /**

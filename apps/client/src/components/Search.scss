@@ -1,25 +1,19 @@
 #job-search-form {
     display: flex;
     align-items: center;
-    width: 100%;
-    max-width: 700px;
-    margin: 0 auto;
-    box-sizing: border-box;
-    border: 2px solid #bee3fb;
-    border-radius: 999px;       
-    padding: 4px 12px;
     background: #fff;
-    overflow: hidden;
+    justify-content: center;
+    height: 100px;
 }
 
 .dropdown,
-#searchBar,
-.formBtn {
-    border: none;
-    outline: none;
-    background: transparent;
-    font: inherit;
-}
+    #searchBar,
+    .formBtn {
+        border: none;
+        outline: none;
+        background: transparent;
+        font: inherit;
+    }
 
 .dropdown {
     padding: 8px 10px;
@@ -38,4 +32,18 @@
 .formBtn {
     padding: 8px 12px;
     cursor: pointer;
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+    background-color: #bee3fb;
+}
+
+.formBtn:hover {
+    background-color: #80bee7;
+}
+
+.inside {
+    width: 70%;
+    border: 2px solid #bee3fb;
+    border-radius: 999px;
+    display: flex;
 }

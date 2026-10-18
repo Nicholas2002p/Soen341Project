@@ -3,8 +3,6 @@ import Nav from '../components/Nav';
 import { useState, useEffect } from "react";
 import './Home.scss';
 import { GetJobsApi } from '../utils/Api';
-// sampleRequirements is temp
-import {sampleRequirements} from '../utils/jobData';
 
 /**
  * Home
@@ -14,7 +12,7 @@ import {sampleRequirements} from '../utils/jobData';
  * @returns the home page
  */
 export default function Home({ setView }) {
-  const [jobs, setJobs] = useState(sampleRequirements);
+  const [jobs, setJobs] = useState([]);
   
   useEffect(() => {
       const getOptions = async () => {

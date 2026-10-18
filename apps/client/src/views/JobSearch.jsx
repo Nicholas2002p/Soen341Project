@@ -3,10 +3,9 @@ import Nav from '../components/Nav';
 import SearchBar from "../components/Search";
 import { useState, useEffect } from "react";
 import {GetJobsApi} from "../utils/Api";
-//temp
-import {sampleRequirements} from '../utils/jobData';
+import './JobSearch.scss';
 export default function JobSearch({ setView }) {
-  const [jobs, setJobs] = useState(sampleRequirements);
+  const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
       const getOptions = async () => {
@@ -19,10 +18,10 @@ export default function JobSearch({ setView }) {
   }, []);
 
   return (
-    <section className="homepage">
+    <section>
       <Nav setView={setView} />      
  
-      <main className="home">
+      <main className="search-job">
         <SearchBar setJobs={setJobs}/>
         <JobPosting jobs={jobs} />
       </main>
