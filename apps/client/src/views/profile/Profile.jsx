@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../utils/Auth';
 import { GetProfileApi }from '../../utils/Api';
 
-import ProfileCard from '../components/ProfileCard';
-import ProfileEdit from '../components/ProfileEdit';
-import ResumeUpload from '../components/ResumeUpload';
+import ProfileCard from '../../components/Profile/ProfileCard';
+import ProfileEdit from '../../components/Profile/ProfileEdit';
+import ResumeUpload from '../../components/Profile/ResumeUpload';
 import Nav from '../../components/Navigation/Nav';
 
 import './Profile.scss';
