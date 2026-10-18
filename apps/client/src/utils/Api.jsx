@@ -296,7 +296,26 @@ export async function JobFilter (filterField, sortBy, searchQuery, token){
  * @returns all jobs that are not past deadline
  */
 export async function GetJobsApi() {
-    return;
+        try {
+        const response = await fetch(
+            getApiUrl("/api/jobs"), 
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+
+        if (!response.ok) {
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error filtering jobs:", error);
+        return [];
+    }
 }
 /**
  * uploads a resume file (pdf, doc or docx, 5 MB max)

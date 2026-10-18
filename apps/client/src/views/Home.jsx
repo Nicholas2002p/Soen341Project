@@ -3,7 +3,7 @@ import Nav from '../components/Nav';
 import { useState, useEffect } from "react";
 import './Home.scss';
 import { GetJobsApi } from '../utils/Api';
-//temp
+// sampleRequirements is temp
 import {sampleRequirements} from '../utils/jobData';
 
 /**

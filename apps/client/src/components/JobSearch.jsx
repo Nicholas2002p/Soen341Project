@@ -9,9 +9,6 @@ import { Stack, Pagination } from '@mui/material';
  */
 export default function JobSearch({ jobs }) {
   const [page, setPage] = useState(1);
-  const handleChange = (e, value) => {
-    setPage(value);
-  };
   const startIndex = (page - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentJobs = jobs.slice(startIndex, endIndex);
@@ -19,14 +16,12 @@ export default function JobSearch({ jobs }) {
 
   return (
     <section className="job-search">
-      <h2> Job Search </h2>
-
       <JobBoard jobs={currentJobs} /> 
       <Stack className="stack">
         <Pagination 
           count={totalPages} 
           page={page} 
-          onChange={handleChange} 
+          onChange={(value) => {setPage(value)}} 
           color="primary" 
           variant="outlined" 
           shape="rounded"
@@ -46,29 +41,9 @@ export default function JobSearch({ jobs }) {
  */
 function JobBoard({ jobs }) {
   const displayJobs = jobs.map((job) => {
-    const recruiterName = job.recruiter?.profile
-      ? `${job.recruiter.profile.firstName} ${job.recruiter.profile.lastName}`
-      : "";
-    const deadlineDate = new Date(job.deadline).toLocaleDateString();
+    return makeJob(job);
 
-    return (
-      <a href={`/jobs/${job.jobId}`} key={job.jobId} className="job">
-        <div className="pin"></div>
-        <p className="job-title">{job.title}</p>
-        <p className="job-company">{job.company?.name}</p>
-        <p className="job-recruiter">Posted by {recruiterName}</p>
-        <div className="job-meta">
-          <div className="job-location">{job.location}</div>
-          <span className="job-salary">${job.salary.toLocaleString()} </span>
-          <span className="job-type">{job.employmentType}</span>
-          <div className="job-deadline">Deadline: {deadlineDate}</div>
-        </div>
-        <p className="job-description">{job.description}</p>
-        <Requirements requirements={job.skills} />
-      </a>
-    );
   });
-
   return (
     <div className="job-board">{displayJobs}</div>
   );
@@ -91,4 +66,30 @@ function Requirements({ requirements }) {
       { displayReq }
     </ul>
   );
+}
+
+/**
+ * helper function for JobBoard
+ * sets the data 
+ * @param {object} job
+ * @returns html
+ */
+function makeJob(job) {
+    const deadlineDate = new Date(job.deadline).toLocaleDateString();
+
+    return (
+      <a href={`/jobs/${job.jobId}`} key={job.jobId} className="job">
+        <div className="pin"></div>
+        <p className="job-title">{job.title}</p>
+        <p className="job-company">{job.company?.name}</p>
+        <div>
+          <div className="job-location">{job.location}</div>
+          <span className="job-salary">${job.salary} </span>
+          <span className="job-type">{job.employmentType}</span>
+          <div className="job-deadline">Deadline: {deadlineDate}</div>
+        </div>
+        <p className="job-description">{job.description}</p>
+        <Requirements requirements={job.skills} />
+      </a>
+    );
 }

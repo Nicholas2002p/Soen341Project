@@ -3,10 +3,10 @@ import { JobFilter } from "../utils/Api";
 import { useAuth } from '../utils/Auth';
 import './Search.scss';
 
-export default function SearchBar(setJobs) { 
+export default function SearchBar({setJobs}) { 
     const {token} = useAuth();
-    const [dropdownOne, setDropdownOne] = useState('all');
-    const [dropdownTwo, setDropdownTwo] = useState('recent');
+    const [searchFor, setsearchFor] = useState('all');
+    const [sortBy, setsortBy] = useState('recent');
     const [searchBar, setSearchBar] = useState('');
     const optionsOne = [
     { id: "all", name: "All fields" },
@@ -28,7 +28,7 @@ export default function SearchBar(setJobs) {
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         try {
-            const results = await JobFilter(dropdownOne, dropdownTwo, searchBar, token);
+            const results = await JobFilter(searchFor, sortBy, searchBar, token);
             
             setJobs(results);
         } catch (error) {
@@ -37,11 +37,11 @@ export default function SearchBar(setJobs) {
     };
 
     return(
-        <form id="jobSearchForm" onSubmit={handleSearchSubmit}>
+        <form id="job-search-form" onSubmit={handleSearchSubmit}>
             <select
                 className="dropdown"
-                value={dropdownOne}
-                onChange={(e) => setDropdownOne(e.target.value)}
+                value={searchFor}
+                onChange={(e) => setsearchFor(e.target.value)}
             >
                 {optionsOne.map((item) => (
                     <option key={item.id} value={item.id}>
@@ -52,8 +52,8 @@ export default function SearchBar(setJobs) {
 
             <select
                 className="dropdown"
-                value={dropdownTwo}
-                onChange={(e) => setDropdownTwo(e.target.value)}
+                value={sortBy}
+                onChange={(e) => setsortBy(e.target.value)}
             >
                 {optionsTwo.map((item) => (
                     <option key={item.id} value={item.id}>

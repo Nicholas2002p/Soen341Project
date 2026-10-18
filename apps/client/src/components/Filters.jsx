@@ -7,6 +7,10 @@ import "./Filters.scss";
  */
 export default function Filters({ filters, setFilters }) {
 
+  /**
+   * takes in the the values from the filter and sets The filter
+   * @param {*} value 
+   */
   const toggleType = (value) => {
     const current = filters.employmentTypes;
 
@@ -81,15 +85,15 @@ function SalaryFilter({ value, onChange }) {
       <legend> Salary </legend>
 
       <label htmlFor="minSalary">
-        {value === 0 ? "Any Salary" : `$${value.toLocaleString()}+`}
+        {value === 0 ? "Any Salary" : `$${value}+`}
       </label>
       <input
         type="range"
         id="minSalary"
         name="minSalary"
         min={0}
-        max={400000}
-        step={5000}
+        max={200000}
+        step={1000}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
       />
