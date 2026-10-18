@@ -1,17 +1,52 @@
+// =========================== VARIABLES ==============================
+$black-border: 1px solid black;
+$off-white: #FAF9F6;
+$folder-color: #9ecfef;
+
+// ============================= MIXINS ===============================
+
+@mixin modified-a4-paper() {
+  height: 561.33px;
+  width: 396.67px;
+}
+
+@mixin no-margin-padding() {
+  margin: 0;
+  padding: 0;
+}
+
+@mixin flex-align-justify($align, $justify) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin flex-dir($direction) {
+  display: flex;
+  flex-direction: $direction;
+}
+
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+// =========================== FOLDER ===========================
+
 .folder-tabs {
   margin: 0;
   display: flex;
-}
 
-.folder-tabs li {
-  list-style-type: none;
-  background-color: #9ecfef;
-  padding: 10px;
-  width: 15%;
-  border-radius: 10px 10px 0 0;
-  border: solid 1px rgb(17, 13, 66);
-  border-bottom: none;
-  cursor: pointer;
+  li {
+    list-style-type: none;
+    @include width-height(15%, none);
+    background-color: $folder-color;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    border: solid 1px rgb(17, 13, 66);
+    border-bottom: none;
+    cursor: pointer;
+  }
 }
 
 #folder-tabs-selected {
@@ -21,78 +56,67 @@
 }
 
 .folder-content {
-  background-color: #9ecfef;
+  @include width-height(none, 85vh);
+  background-color: $folder-color;
+  border: $black-border;
+
   display: flex;
   gap: 10px;
   margin-left: 20px;
   margin-right: 20px;
   border-radius: 10px;
-  height: 85vh;
   overflow-y: auto;
   box-sizing: border-box;
-  border: 1px solid black;
 }
 
 .folder-job-openings {
-  display: flex;
-  justify-content: center;
+  @include flex-align-justify(none, center);
+  width: 100%;
+  min-height: 100%;
+  
   flex-wrap: wrap;
   gap: 20px;
   margin: 20px;
-  width: 100%;
-  min-height: 100%;
 }
 
 .folder-job-openings::after {
   content: "";
-  display: block;
-  width: 100%;
-  height: 15px;
+  @include width-height(100%, 15px);
 }
 
 .job-paper {
-  border: 1px solid black;
-  background-color: #f9f9fa;
-  height: 561.33px;
-  width: 396.67px;
+  border: $black-border;
+  background-color: $off-white;
+  @include modified-a4-paper();
   padding: 10px;
 }
 
 .job-paper-header {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
+  @include flex-align-justify(end, space-between);
 }
 
 .job-paper-title {
   font-size: 20px;
   font-weight: 600;
-  padding: 10px;
   margin: 0;
   padding: 5px;
 }
 
-.job-paper-createdAt {
-  margin: 0;
-}
-
-.job-paper hr {
+.job-paper-createdAt, .job-paper hr {
   margin: 0;
 }
 
 .job-paper-recruiter {
-  display: flex;
-  align-items: center;
+  @include flex-align-justify(center, none);
   gap: 10px;
-}
 
-.job-paper-recruiter img {
-  height: 30px;
+  img {
+    @include width-height(none, 30px);
+  }
 }
 
 .job-paper-details {
-  display: flex;
-  flex-direction: column;
+  @include flex-dir(column);
 }
 
 .job-paper-description {
