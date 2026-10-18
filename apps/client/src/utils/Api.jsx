@@ -311,7 +311,7 @@ export async function GetJobsApi() {
         }
 
         const data = await response.json();
-        return data;
+        return data.jobs;
     } catch (error) {
         console.error("Error filtering jobs:", error);
         return [];

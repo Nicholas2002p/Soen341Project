@@ -20,6 +20,7 @@ export default function Home({ setView }) {
       const getOptions = async () => {
         const data = await GetJobsApi();
         if (!data) return;
+        console.log(data);
         setJobs(data);
       };
       getOptions();

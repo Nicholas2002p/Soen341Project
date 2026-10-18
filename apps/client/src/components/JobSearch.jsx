@@ -58,7 +58,7 @@ function JobBoard({ jobs }) {
  */
 function Requirements({ requirements }) {
   const displayReq =  requirements.map( (req) =>
-    <li key={req.skillId}> {req.skill} </li>
+    <li key={req}> {req} </li>
   );
     
   return (
