@@ -27,7 +27,7 @@ export default function Nav({ setView, profileURL }) {
  * @returns the nav item component
  */
 function NavItems({ setView }) {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
 
   return (
     <ul className="nav-list-items">
@@ -40,4 +40,4 @@ function NavItems({ setView }) {
   );
 }
 
-// if user is a recruiter and the token is valid
+// NOTE: if user is a recruiter and the token is valid for next PR change

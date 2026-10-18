@@ -58,7 +58,7 @@ function FolderTabs({ folderView, setFolderView }) {
  * @returns Display Job Openings
  */
 function DisplayJobOpenings({ setIsAdding }) {
-  const [jobs, setJobs] = useState(jobList);
+  const [jobs] = useState(jobList);
 
   return (
     <section className="folder-job-openings">
@@ -76,10 +76,10 @@ function DisplayJobOpenings({ setIsAdding }) {
  * single sheet of paper (A4 Paper measurements divided by 1.5) - this is where the sizing in the css is inspired by
  * Displays the information for each paper job
  * 
- * @param {Object} job 
+ * @param {Object} job - for next PR
  * @returns Job Component
  */
-function Job({ job }) {
+function Job() {
   return (
     <section className="job-paper">
       <div className="job-paper-header">
