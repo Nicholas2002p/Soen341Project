@@ -13,6 +13,10 @@ export interface IApplicationService {
     //list the applications of a job seeker, other roles get ApplicationNotAllowedError
     listMine(user: PublicUser): Promise<ApplicationWithJob[]>;
 
+    //list the applications of a job seeker with their status history, optionally only those with one of the given statuses.
+    //Other roles get ApplicationNotAllowedError.
+    listHistory(user: PublicUser, statuses?: ApplicationStatus[]): Promise<ApplicationDetails[]>;
+
     //get one application with its status history, for the applicant or the recruiter of the job
     getById(user: PublicUser, applicationId: number): Promise<ApplicationDetails>;
 
