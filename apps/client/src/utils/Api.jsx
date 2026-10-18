@@ -1,3 +1,5 @@
+import { getApiUrl } from "./apiConfig";
+
 /**
  * Registers a user 
  * @param {*} fname 
@@ -10,7 +12,7 @@
  */
 export async function RegisterApi(fname, lname, email, password, setErrorMessage, setToken, role, setUser) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/register", {
+        const response = await fetch(getApiUrl("/api/auth/register"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -43,7 +45,7 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
  */
 export async function LogInApi(email, password, setErrorMessage, setToken, setUser) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/login", {
+        const response = await fetch(getApiUrl("/api/auth/login"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -76,7 +78,7 @@ export async function LogInApi(email, password, setErrorMessage, setToken, setUs
  */
 export async function GoogleLogInApi(credential, setErrorMessage, setToken, setUser) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/google", {
+        const response = await fetch(getApiUrl("/api/auth/google"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -107,7 +109,7 @@ export async function GoogleLogInApi(credential, setErrorMessage, setToken, setU
  */
 export async function LogOutApi(token) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/logout", {
+        const response = await fetch(getApiUrl("/api/auth/logout"), {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -137,7 +139,7 @@ export async function LogOutApi(token) {
  */
 export async function CreateProfileApi(fname, lname, setErrorMessage, token) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/profile", {
+        const response = await fetch(getApiUrl("/api/auth/profile"), {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -175,7 +177,7 @@ export async function CreateProfileApi(fname, lname, setErrorMessage, token) {
  */
 export async function UpdateProfileApi(fname, lname, phone, bio, location, setErrorMessage, token) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/profile", {
+        const response = await fetch(getApiUrl("/api/auth/profile"), {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -191,6 +193,7 @@ export async function UpdateProfileApi(fname, lname, phone, bio, location, setEr
             }),
         });
 
+        const data = await response.json();
         if (!response.ok) {
             setErrorMessage("Error Message:", data.message);
             return false;
@@ -206,7 +209,7 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
     formData.append('profilePicture', file);
 
     try {
-        const response = await fetch('http://localhost:3000/api/auth/profile/picture', {
+        const response = await fetch(getApiUrl("/api/auth/profile/picture"), {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`
@@ -228,8 +231,6 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
     }
 }
 
-
-
 /**
  * gets data for profile
  * @param {*} token 
@@ -237,7 +238,7 @@ export async function UpdateProfileImageApi(file, setErrorMessage, token) {
  */
 export async function GetProfileApi(token) {
     try {
-        const response = await fetch("http://localhost:3000/api/auth/profile", {
+        const response = await fetch(getApiUrl("/api/auth/profile"), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -252,5 +253,137 @@ export async function GetProfileApi(token) {
         return data;
     } catch (error) {
         console.error(error);
+    }
+}
+
+/**
+ * uploads a resume file (pdf, doc or docx, 5 MB max)
+ * @param {*} file
+ * @param {*} setErrorMessage
+ * @param {*} token
+ * @returns the uploaded resume, or null if it failed
+ */
+export async function UploadResumeApi(file, setErrorMessage, token) {
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    try {
+               const response = await fetch(getApiUrl("/api/resumes"), {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            setErrorMessage(data.message ?? "Unable to upload resume.");
+            return null;
+        }
+
+        return data.resume;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Unable to upload resume.");
+        return null;
+    }
+}
+
+/**
+ * gets all the resumes of the logged in user
+ * @param {*} setErrorMessage
+ * @param {*} token
+ * @returns a list of resumes (empty list if it failed)
+ */
+export async function GetResumesApi(setErrorMessage, token) {
+    try {
+        const response = await fetch(getApiUrl("/api/resumes"), {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            setErrorMessage(data.message ?? "Unable to load resumes.");
+            return [];
+        }
+
+        return data.resumes;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Unable to load resumes.");
+        return [];
+    }
+}
+
+/**
+ * downloads a resume file
+ * a simple link can't send the Authorization header, so the file is fetched first
+ * @param {*} resume
+ * @param {*} setErrorMessage
+ * @param {*} token
+ * @returns true if the download started
+ */
+export async function DownloadResumeApi(resume, setErrorMessage, token) {
+    try {
+        const response = await fetch(getApiUrl(`/api/resumes/${resume.id}/file`), {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            setErrorMessage(data.message ?? "Unable to download resume.");
+            return false;
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = resume.fileName;
+        link.click();
+        URL.revokeObjectURL(url);
+
+        return true;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Unable to download resume.");
+        return false;
+    }
+}
+
+/**
+ * deletes a resume
+ * @param {*} resumeId
+ * @param {*} setErrorMessage
+ * @param {*} token
+ * @returns true if the resume was deleted
+ */
+export async function DeleteResumeApi(resumeId, setErrorMessage, token) {
+    try {
+        const response = await fetch(getApiUrl(`/api/resumes/${resumeId}`), {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            setErrorMessage(data.message ?? "Unable to delete resume.");
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Unable to delete resume.");
+        return false;
     }
 }

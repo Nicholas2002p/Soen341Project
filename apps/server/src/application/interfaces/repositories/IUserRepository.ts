@@ -18,4 +18,7 @@ export interface IUserRepository {
 
     //update a user's password hash, returns the updated user or null if not found
     updatePassword(id: number, newPasswordHash: string): Promise<User | null>;
+
+    // Delete a user and their account-owned authentication/profile records.
+    delete(id: number): Promise<void>;
 }

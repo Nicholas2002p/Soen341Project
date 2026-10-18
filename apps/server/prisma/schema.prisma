@@ -73,11 +73,11 @@ model Session {
 
 ///To store salt for passwords
 model Salt {
-  SaltId Int    @id @default(autoincrement()) @map("SaltId")
-  userId Int    @unique @map("userId")
-  Salt   String @db.VarChar(60)
+  SaltId     Int @id @default(autoincrement()) @map("SaltId")
+  userId     Int @unique @map("userId")
+  saltRounds Int @map("saltRounds")
 
-  user User @relation(fields: [userId], references: [userId])
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@map("Salt")
 }
@@ -104,7 +104,7 @@ model Profile {
   profileURL String?  @db.VarChar(500)
 
 
-  user User @relation(fields: [userId], references: [userId])
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@map("Profile")
 }
@@ -140,12 +140,13 @@ model Job {
   jobId          Int            @id @default(autoincrement()) @map("jobId")
   companyId      Int            @map("companyId")
   recruiterId    Int            @map("recruitorId")
-  title          String         @db.VarChar(50)
+  category       String         @db.VarChar(80)
+  title          String         @db.VarChar(120)
   location       String?        @db.VarChar(100)
-  description    String?        @db.VarChar(250)
+  description    String?        @db.Text
   salary         Int
   employmentType EmploymentType @map("employment_type")
-  deadline       DateTime?
+  deadline       DateTime
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime?       @default(now()) @map("updated_at")
 

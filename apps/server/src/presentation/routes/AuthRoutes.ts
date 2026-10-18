@@ -1,33 +1,30 @@
-import { Router, type Request, type Response, type NextFunction } from 'express';
+import { Router } from 'express';
 import { authController } from '../controllers/AuthController.js';
 import { authMiddleware } from '../middleware/AuthMiddleware.js';
 
 export const authRoutes = Router();
 
-function requireHttps(req: Request, res: Response, next: NextFunction): void {
-	// Previous HTTPS-only behavior:
-	// if (!req.secure) {
-	// 	res.status(400).json({ message: 'HTTPS is required for authentication requests.' });
-	// 	return;
-	// }
-
-	next();
-}
 //-----------------------------------------------------------------------------------------------------------
 // ------------------------------------------ Auth routes ---------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
 
 // Register route
-authRoutes.post('/register', requireHttps, authController.register.bind(authController));
+authRoutes.post('/register', authController.register.bind(authController));
 
 // Login route
-authRoutes.post('/login', requireHttps, authController.login.bind(authController));
+authRoutes.post('/login', authController.login.bind(authController));
 
 // Google login route
-authRoutes.post('/google', requireHttps, authController.googleLogin.bind(authController));
+authRoutes.post('/google', authController.googleLogin.bind(authController));
 
 // Logout route
 authRoutes.post('/logout', authController.logout.bind(authController));
 
 // Get profile route
 authRoutes.get('/me', authMiddleware, authController.me.bind(authController));
+
+// Delete the authenticated user's account
+authRoutes.delete('/me', authMiddleware, authController.deleteUser.bind(authController));
+
+// Allow admins to delete another account, while the service enforces ownership.
+authRoutes.delete('/:userId', authMiddleware, authController.deleteUser.bind(authController));

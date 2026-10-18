@@ -44,12 +44,82 @@ $button-color: #b7fdf8;
 }
 
 .resume-upload-button {
-  @include width-height(150px, 30px);
+    @include width-height(auto, 36px);
+  padding: 0 16px;
+  white-space: nowrap;
   @include flex-align-justify(center, center);
   background-color: $button-color;
 
-  margin-top: auto;
   align-self: center;
   font-size: 20px;
+  cursor: pointer;
+}
+
+.resume-upload-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.resume-upload-input {
+  align-self: center;
+  font-size: 16px;
+}
+
+.resume-upload h3 {
+  margin: 0;
+  font-size: 20px;
+  border-bottom: $black-border;
+}
+
+.resume-error {
+  margin: 0;
+  color: red;
+  font-size: 16px;
+  text-align: center;
+}
+
+.resume-success {
+  margin: 0;
+  color: green;
+  font-size: 16px;
+  text-align: center;
+}
+
+.resume-empty {
+  margin: 0;
+  font-size: 16px;
+  font-style: italic;
+}
+
+.resume-list {
+  @include flex-dir(column);
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resume-item {
+  @include flex-align-justify(center, flex-start);
+  gap: 10px;
+  padding: 6px;
+  border: $black-border;
+  font-size: 16px;
+}
+
+.resume-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resume-date {
+  color: gray;
+  font-size: 14px;
+}
+
+.resume-item button {
+  background-color: $button-color;
   cursor: pointer;
 }
