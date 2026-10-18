@@ -3,6 +3,14 @@ import { AddJobOpening } from "./AddJobOpening";
 
 import './Folder.scss';
 
+/**
+ * Folder
+ * Folder component that has tabs where it filters the different job postings
+ * it contains all of the job postings that were added by the specific recruiter
+ * 
+ * @param {Function} setIsAdding 
+ * @returns the Folder Component
+ */
 export default function Folder({ setIsAdding }) {
   const [folderView, setFolderView] = useState("all");
   
@@ -11,13 +19,25 @@ export default function Folder({ setIsAdding }) {
       <FolderTabs folderView={folderView} setFolderView={setFolderView} />
 
       <section className="folder-content">
-        <DisplayJobOpenings folderView={folderView} setIsAdding={setIsAdding} />
+        <DisplayJobOpenings setIsAdding={setIsAdding} />
       </section>    
 
     </section>
   );
 }
 
+/**
+ * Folder Tabs
+ * shows:
+ *      - all: every job posting available
+ *      - open: the ones posted for the public to see and apply
+ *      - applicants: the job postings who have applicants to them
+ *      - closed: job postings that are past their deadlines
+ * 
+ * @param {String} folderView
+ * @param {Function} setFolderView
+ * @returns Folder Tabs Component
+ */
 function FolderTabs({ folderView, setFolderView }) {
   return (
     <ul className="folder-tabs"> 
@@ -29,7 +49,15 @@ function FolderTabs({ folderView, setFolderView }) {
   );
 }
 
-function DisplayJobOpenings({ folderView, setIsAdding }) {
+/**
+ * Display Job Openings
+ * shows every job opening that the recruiter made
+ * 
+ * Note: to add folderView to the parameter to filter them when displaying
+ * @param {Function} setIsAdding 
+ * @returns Display Job Openings
+ */
+function DisplayJobOpenings({ setIsAdding }) {
   const [jobs, setJobs] = useState(jobList);
 
   return (
@@ -43,6 +71,14 @@ function DisplayJobOpenings({ folderView, setIsAdding }) {
   );
 }
 
+/**
+ * Job
+ * single sheet of paper (A4 Paper measurements divided by 1.5) - this is where the sizing in the css is inspired by
+ * Displays the information for each paper job
+ * 
+ * @param {Object} job 
+ * @returns Job Component
+ */
 function Job({ job }) {
   return (
     <section className="job-paper">

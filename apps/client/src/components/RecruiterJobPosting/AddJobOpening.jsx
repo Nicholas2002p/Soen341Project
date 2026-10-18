@@ -2,6 +2,14 @@ import { useState } from 'react';
 
 import './AddJobOpening.scss';
 
+/**
+ * Add Job Opening
+ * Page where it has a big + in the middle and when clicking on it,
+ * opens the AddJobOpeningPage so you can't post a new job
+ * 
+ * @param {Function} setIsAdding 
+ * @returns Add Job Opening component
+ */
 export function AddJobOpening({ setIsAdding }) {
   return (
     <section onClick={() => { setIsAdding(true); }} className="add-job-button">
@@ -10,6 +18,13 @@ export function AddJobOpening({ setIsAdding }) {
   );
 }
 
+/**
+ * Add Job Opening Page
+ * the page prompts you to enter the information needed to make a job posting
+ * 
+ * @param {Function} setIsAdding 
+ * @returns Add Job Opening Page
+ */
 export function AddJobOpeningPage({ setIsAdding }) {
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");
@@ -88,6 +103,7 @@ export function AddJobOpeningPage({ setIsAdding }) {
   );
 }
 
+// Post Job is a function that will call the api to post the job after clicking on the Post button
 function postJob(title, company, location, description, salary, deadline, type, setIsAdding) {
   // call api to post the job
 

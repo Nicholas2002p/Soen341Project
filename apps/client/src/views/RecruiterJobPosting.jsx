@@ -1,10 +1,17 @@
 import { useState } from "react";
 
-import Nav from "../components/Nav";
+import Nav from "../components/Navigation/Nav";
 import Folder from "../components/RecruiterJobPosting/Folder";
 import { AddJobOpeningPage } from "../components/RecruiterJobPosting/AddJobOpening";
 import './RecruiterJobPosting.scss';
 
+/**
+ * Recruiter Job Posting
+ * main page to see the recruiter job posting
+ * 
+ * @param {Function} setView 
+ * @returns Recruiter Job Posting Component
+ */
 export default function RecruiterJobPosting({ setView }) {
   const [isAdding, setIsAdding] = useState(false);
   

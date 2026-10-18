@@ -1,5 +1,5 @@
 import JobPosting from "./JobPosting";
-import Nav from '../components/Nav';
+import Nav from '../components/Navigation/Nav';
 
 import './Home.scss';
 

@@ -5,7 +5,7 @@ import { GetProfileApi }from '../utils/Api';
 import ProfileCard from '../components/ProfileCard';
 import ProfileEdit from '../components/ProfileEdit';
 import ResumeUpload from '../components/ResumeUpload';
-import Nav from '../components/Nav';
+import Nav from '../components/Navigation/Nav';
 
 import './Profile.scss';
 

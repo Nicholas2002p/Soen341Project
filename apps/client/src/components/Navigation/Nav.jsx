@@ -1,4 +1,4 @@
-import { useAuth } from "../utils/Auth";
+import { useAuth } from "../../utils/Auth";
 import Account from "./Account";
 
 import "./Nav.scss";
