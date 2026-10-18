@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import './App.css';
-// import Home from './views/Home';
-// import Profile from './views/Profile';
-// import Registration from './views/Registration';
-// import Login from './views/Login';
+import Home from './views/Home';
+import Profile from './views/Profile';
+import Registration from './views/Registration';
+import Login from './views/Login';
 
 import RecruiterJobPosting from './views/RecruiterJobPosting';
 
@@ -17,12 +17,11 @@ function Main() {
   return (
     <AuthContext.Provider value={{ token, setToken, user, setUser }}>
       <div id="app">
-        {/* {view === "home" && <Home setView={setView} /> }
+        {view === "home" && <Home setView={setView} /> }
         {view === "profile" && <Profile setView={setView} />}
         {view === "registration" && <Registration setView={setView} />} 
-        {view === "sign-in" && <Login setView={setView} />}  */}
-
-        <RecruiterJobPosting />
+        {view === "sign-in" && <Login setView={setView} />} 
+        {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} /> }
       </div>
     </AuthContext.Provider>
   );

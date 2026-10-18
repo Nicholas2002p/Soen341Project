@@ -27,19 +27,19 @@ export default function Nav({ setView, profileURL }) {
  * @returns the nav item component
  */
 function NavItems({ setView }) {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
 
   return (
     <ul className="nav-list-items">
       <a onClick={() => { setView("home")}}> Home </a>
       <a> Jobs </a>
-      <a onClick={() => { 
-        if (token) {
-          setView("profile");
-        }
-      }}>
-        Profile 
-      </a>
+      <a onClick={() => { if (token) setView("profile");}}> Profile </a>
+      
+      
+      <a onClick={() => { setView("recruiter-job-posting") }}> Post a Job </a>
+
     </ul>
   );
 }
+
+// if user is a recruiter and the token is valid
