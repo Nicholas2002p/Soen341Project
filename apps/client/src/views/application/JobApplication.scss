@@ -1,0 +1,58 @@
+.job-application {
+  background-color: lightgoldenrodyellow;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.exit-main-job-application {
+  margin: 0;
+  position: absolute;
+  cursor: pointer;
+  font-size: 30px;
+  top: 10px;
+  right: 10px;
+}
+
+.main-job-application {
+  position: relative;
+  background-color: aliceblue;
+  height: 95%;
+  width: 95%;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  border: 1px solid black;
+}
+
+.resume-application {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 1em;
+}
+
+.resume-application h2 {
+  background-color: blueviolet;
+  border: 1px solid black;
+  text-align: center;
+  font-size: 35px;
+  margin-top: 20px;
+}
+
+.job-display {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 1px solid black;
+}
+
+.job-display-paper {
+  border: 1px solid black;
+  background-color: #FAF9F6;
+  padding: 10px;
+  height: 90%;
+  width: 80%;
+}
