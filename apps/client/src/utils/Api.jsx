@@ -265,7 +265,8 @@ export async function GetProfileApi(token) {
  * @returns all jobs that match filter and are not past deadline
  */
 export async function JobFilter (filterField, sortBy, searchQuery){
-
+    //to avoid lint error and to be added later in query
+    void sortBy;
     try {
         console.log(filterField);
         const response = await fetch(
@@ -279,10 +280,9 @@ export async function JobFilter (filterField, sortBy, searchQuery){
         );
 
         if (!response.ok) {
+            return [];
         }
         const data = await response.json();
-        console.log("data after search");
-        console.log(data);
         return data.jobs;
     } catch (error) {
         console.error("Error filtering jobs:", error);
@@ -307,6 +307,7 @@ export async function GetJobsApi() {
         );
 
         if (!response.ok) {
+            return [];
         }
 
         const data = await response.json();
