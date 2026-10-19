@@ -39,10 +39,6 @@ function jobData(body: unknown): JobRequestData | null {
     const value = body as Record<string, unknown>;
 
     //NOTE - basically checking if every value is the of correct type
-    if (!Number.isInteger(value.companyId) || (value.companyId as number) <= 0) {
-        return null;
-    }
-
     if (typeof value.title !== 'string' || !value.title.trim()) {
         return null;
     }
