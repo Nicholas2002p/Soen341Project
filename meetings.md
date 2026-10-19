@@ -60,7 +60,7 @@ No issues so far
 | 2026-09-28 | 4 pm | In Person| Michelle, Nicholas, Chen, Abdulla, Tyler, Magley| Nicholas   |
 
 ### What was done
-- Michelle : profile fully conected to backed
+- Michelle : profile fully conected to backend
 - Nicholas : sign in and register and documentation
 - Chen :  seeding the db
 - Abdulla : finish resume api
@@ -74,6 +74,31 @@ No issues so far
 - Abdulla :  application backed delete, create and update, get
 - Tyler : CI/CD, Sent photos and files to https, take in role on registration
 - Magley : Makes the api logic on frontend for resume taking in and displaying.
+
+### Issues
+No issues so far
+
+## Meeting #4
+
+| Date       | Time | Type     | Attendees                                       | Note Taker |
+|------------|------|----------|-------------------------------------------------|------------|
+| 2026-09-28 | 4 pm | In Person| Michelle, Nicholas, Chen, Abdulla, Tyler, Magley| Nicholas   |
+
+### What was done
+- Michelle : skeleton of recruiter page, job posting ui, code refactoring
+- Nicholas :  search and filter of jobs
+- Chen :  job api
+- Abdulla : made aplication and aplication history api
+- Tyler : hptts, cdn, CI tests
+- Magley : connected resume api to frontend
+
+### Future tasks
+- Michelle :  
+- Nicholas : connect frontend with backend job posting 
+- Chen : finish job api
+- Abdulla :  
+- Tyler : add role field in sign-up
+- Magley : 
 
 ### Issues
 No issues so far
