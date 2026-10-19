@@ -20,6 +20,8 @@ import { SupabaseFileStorage } from './storage/SupabaseFileStorage.js';
 import { LocalProfileImageStorage } from './storage/LocalProfileImageStorage.js';
 import { SupabaseProfileImageStorage } from './storage/SupabaseProfileImageStorage.js';
 import path from 'node:path';
+import { PrismaJobRepository } from './repositories/PrismaJobRepository.js';
+import { JobService } from '../application/services/JobService.js';
 
 // Initialize repositories, services, and other dependencies
 const userRepository = new PrismaUserRepository(prisma);
@@ -39,6 +41,8 @@ const companyRepository = new PrismaCompanyRepository(prisma);
 const companyService = new CompanyService(companyRepository);
 const googleTokenVerifier = new GoogleTokenVerifier(process.env.GOOGLE_CLIENT_ID ?? '');
 const profileRepository = new PrismaProfileRepository(prisma);
+const jobRepository = new PrismaJobRepository(prisma);
+const jobService = new JobService(jobRepository);
 const applicationRepository = new PrismaApplicationRepository(prisma);
 
 const userService = new UserService(userRepository);
@@ -64,4 +68,5 @@ export {
   companyService,
   applicationService,
   profileImageStorage,
+  jobService,
 };

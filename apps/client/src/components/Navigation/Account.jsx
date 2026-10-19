@@ -1,6 +1,6 @@
-import { useAuth } from "../utils/Auth";
+import { useAuth } from "../../utils/Auth";
 import { googleLogout } from "@react-oauth/google";
-import { LogOutApi } from "../utils/Api";
+import { LogOutApi } from "../../utils/Api";
 
 /**
  * Account

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
-import { GoogleLogInApi } from "../utils/Api";
+import { GoogleLogInApi } from "../../utils/Api";
 
 export default function GoogleSignIn({ setToken, setUser, setView }) {
   const [error, setError] = useState(null);
