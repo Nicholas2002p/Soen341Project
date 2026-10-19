@@ -82,7 +82,7 @@ No issues so far
 
 | Date       | Time | Type     | Attendees                                       | Note Taker |
 |------------|------|----------|-------------------------------------------------|------------|
-| 2026-09-28 | 4 pm | In Person| Michelle, Nicholas, Chen, Abdulla, Tyler, Magley| Nicholas   |
+| 2026-09-28 | 4 pm | In Person| Michelle, Nicholas, Chen,  Tyler, Magley| Nicholas   |
 
 ### What was done
 - Michelle : skeleton of recruiter page, job posting ui, code refactoring
@@ -93,12 +93,12 @@ No issues so far
 - Magley : connected resume api to frontend
 
 ### Future tasks
-- Michelle :  
-- Nicholas : connect frontend with backend job posting 
+- Michelle :  fix the design for job aplications and history
+- Nicholas : connect frontend with backend, job posting job aplications and history
 - Chen : finish job api
 - Abdulla :  
 - Tyler : add role field in sign-up
-- Magley : 
+- Magley : make it so in the profile in resume you can toggle to see ur resume on the website 
 
 ### Issues
 No issues so far
