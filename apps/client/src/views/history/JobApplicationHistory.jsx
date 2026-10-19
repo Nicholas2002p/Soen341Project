@@ -26,27 +26,27 @@ function HistoryFilters({}) {
       
       <label htmlFor="">
         <input type="checkbox" value="applied" id="applied" name="applied" checked />
-        Applied
+        Applied (gray)
       </label>
 
       <label htmlFor="">
         <input type="checkbox" value="offered" id="offered" name="offered" checked />
-        Accepted
+        Accepted (green)
       </label>
 
       <label htmlFor="">
         <input type="checkbox" value="interview" id="interview" name="interview" checked />
-        Interview
+        Interview (blue)
       </label>
 
       <label htmlFor="">
         <input type="checkbox" value="under_review" id="under_review" name="under_review" checked />
-        Pending
+        Pending (yellow)
       </label>
 
       <label htmlFor="">
         <input type="checkbox" value="rejected" id="rejected" name="rejected" checked />
-        Rejected        
+        Rejected (red)       
       </label>
     </fieldset>
   );
