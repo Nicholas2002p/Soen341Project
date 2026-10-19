@@ -1,0 +1,99 @@
+.history-job-application {
+  height: 100%;
+  width: 100%;
+}
+
+.history {
+  height: 90vh;
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+}
+
+.history-filters {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  align-self: center;
+  gap: 20px;
+  font-size: 22px;
+  height: 300px;
+  padding-top: 20px;
+  border: 1px solid black;
+}
+
+.history-filters legend {
+  font-size: 25px;
+}
+
+.history-filters label {
+  display: flex;
+  gap: 10px;
+}
+
+.history-applications {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2em;
+  gap: 1em;
+  overflow-y: scroll;
+}
+
+.history-applications h2 {
+  font-size: 40px;
+}
+
+.history-application {
+  width: 60%;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-application-header {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: chartreuse;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 20px;
+  padding-right: 20px;
+  align-items: center;
+}
+
+.history-application-title {
+  font-size: 25px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.status-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.status {
+  height: 15px;
+  width: 15px;
+  background-color: red;
+  border: 1px solid black;
+  border-radius: 50px;
+}
+
+.display-none {
+  display: none;
+}
+
+.history-application-info {
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: burlywood;
+  height: 100%;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}

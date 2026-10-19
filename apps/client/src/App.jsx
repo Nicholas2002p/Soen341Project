@@ -7,7 +7,9 @@ import './App.css';
 // import Login from './views/authentication/Login';
 // import RecruiterJobPosting from './views/recruiter_job_posting/RecruiterJobPosting';
 
-import JobApplication from './views/application/JobApplication';
+// import JobApplication from './views/application/JobApplication';
+
+import JobApplicationHistory from './views/history/JobApplicationHistory';
 
 import { AuthContext } from './utils/Auth';
 
@@ -25,7 +27,7 @@ function Main() {
         {view === "sign-in" && <Login setView={setView} />} 
         {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} /> } */}
 
-        <JobApplication setView={setView} />
+        <JobApplicationHistory setView={setView}/>
       </div>
     </AuthContext.Provider>
   );
