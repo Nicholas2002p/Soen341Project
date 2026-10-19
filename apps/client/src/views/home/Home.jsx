@@ -1,6 +1,6 @@
-import JobPosting from "./JobPosting";
-import Nav from '../components/Nav';
-import { useState, useEffect } from "react";
+import JobPosting from "../JobPosting";
+import Nav from '../../components/Navigation/Nav';
+
 import './Home.scss';
 import { GetJobsApi } from '../utils/Api';
 

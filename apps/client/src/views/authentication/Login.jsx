@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import "./Registration.scss";
-import Password from '../components/Password';
-import { useAuth } from '../utils/Auth'
-import { LogInApi } from '../utils/Api';
-import GoogleSignIn from '../components/google';
+import Password from '../../components/Registration/Password';
+import { useAuth } from '../../utils/Auth'
+import { LogInApi } from '../../utils/Api';
+import GoogleSignIn from '../../components/Registration/google';
 
 /**
  * Displays the sign in for users

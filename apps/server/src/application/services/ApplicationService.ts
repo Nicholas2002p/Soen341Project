@@ -77,6 +77,18 @@ export class ApplicationService implements IApplicationService {
         return this.applicationRepository.listByUserId(user.id);
     }
 
+    //list the applications of a job seeker with their status history, optionally only those with one of the given statuses.
+    //Only job seekers apply to jobs, so other roles get a clear error instead of an empty list (same as listMine).
+    async listHistory(user: PublicUser, statuses?: ApplicationStatus[]): Promise<ApplicationDetails[]> {
+        if (user.role !== UserRole.JobSeeker) {
+            throw new ApplicationNotAllowedError('Only job seekers have an application history.');
+        }
+
+        // An empty filter would match nothing, so it is treated the same as no filter
+        const filter = statuses && statuses.length > 0 ? statuses : undefined;
+        return this.applicationRepository.listHistoryByUserId(user.id, filter);
+    }
+
     //get one application with its status history, for the applicant or the recruiter of the job.
     //Anyone else gets ApplicationNotFoundError so the API does not reveal which application ids exist.
     async getById(user: PublicUser, applicationId: number): Promise<ApplicationDetails> {
