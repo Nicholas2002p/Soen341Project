@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
-import { useAuth } from '../utils/Auth';
-import { UpdateProfileApi, UpdateProfileImageApi } from '../utils/Api';
+import { useAuth } from '../../utils/Auth';
+import { UpdateProfileApi, UpdateProfileImageApi } from '../../utils/Api';
+
 import './ProfileEdit.scss';
 
 /**
