@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Filters from '../components/Filters';
-import JobSearch from '../components/JobSearch';
+import Filters from '../../components/job_search_views/Filters';
+import JobSearch from '../../components/job_search_views/JobSearch';
 
 import './JobPosting.scss';
 

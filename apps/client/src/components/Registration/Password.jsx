@@ -20,7 +20,7 @@ export default function Password({labelName, passwordType, passwordType2, setPas
         <div className='password'>
             <label htmlFor="password"> {labelName} </label>
             <div className="password-display">
-                <input className='registration-input' type={password_type ? "password": "text" } name="password" maxlength="50" onChange={(e) => { set_password(e.target.value) }} />
+                <input className='registration-input' type={password_type ? "password": "text" } name="password" maxLength="50" onChange={(e) => { set_password(e.target.value) }} />
                 <button className="eye" onClick={() => { set_password_type(!password_type)}}>p</button>
             </div>
         </div>

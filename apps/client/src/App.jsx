@@ -5,6 +5,7 @@ import Home from './views/home/Home';
 import Profile from './views/profile/Profile';
 import Registration from './views/authentication/Registration';
 import Login from './views/authentication/Login';
+import JobSearch from './views/job_search/JobSearch'
 import RecruiterJobPosting from './views/recruiter_job_posting/RecruiterJobPosting';
 
 import { AuthContext } from './utils/Auth';

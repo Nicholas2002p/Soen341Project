@@ -1,5 +1,5 @@
 import { useState} from "react";
-import { JobFilter } from "../utils/Api";
+import { JobFilter } from "../../utils/Api";
 import './Search.scss';
 
 export default function SearchBar({setJobs}) { 
