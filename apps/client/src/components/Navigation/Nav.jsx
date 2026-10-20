@@ -1,4 +1,4 @@
-import { useAuth } from "../utils/Auth";
+import { useAuth } from "../../utils/Auth";
 import Account from "./Account";
 
 import "./Nav.scss";
@@ -33,13 +33,11 @@ function NavItems({ setView }) {
     <ul className="nav-list-items">
       <a onClick={() => { setView("home")}}> Home </a>
       <a> Jobs </a>
-      <a onClick={() => { 
-        if (token) {
-          setView("profile");
-        }
-      }}>
-        Profile 
-      </a>
+      <a onClick={() => { if (token) setView("profile");}}> Profile </a>
+      <a onClick={() => { if (token) setView("recruiter-job-posting"); }}> Post a Job </a>
+
     </ul>
   );
 }
+
+// NOTE: if user is a recruiter and the token is valid for next PR change

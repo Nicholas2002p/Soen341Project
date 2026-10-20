@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../utils/Auth';
-import { UploadResumeApi, GetResumesApi, DownloadResumeApi, DeleteResumeApi } from '../utils/Api';
+
+import { useAuth } from '../../utils/Auth';
+import { UploadResumeApi, GetResumesApi, DownloadResumeApi, DeleteResumeApi } from '../../utils/Api';
+
 import './ResumeUpload.scss';
 
 /**

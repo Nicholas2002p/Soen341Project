@@ -4,7 +4,8 @@ import type { IProfileService } from '../interfaces/services/IProfileService.js'
 import type { Profile, PublicProfile } from '../../domain/entities/Profile.js';
 
 // Define a default profile picture URL to be used when a profile does not have a custom picture.
-const defaultProfileURL = '/uploads/profile-pictures/profile_default.jpg';
+const defaultProfileURL = process.env.DEFAULT_PROFILE_IMAGE_URL
+    ?? '/uploads/profile-pictures/profile_default.jpg';
 
 export class ProfileService implements IProfileService {
     constructor(

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import Password from '../components/Password';
-import { useAuth } from '../utils/Auth';
-import { RegisterApi } from '../utils/Api';
+import Password from '../../components/Registration/Password';
+import { useAuth } from '../../utils/Auth';
+import { RegisterApi } from '../../utils/Api';
 
 import "./Registration.scss";
 
