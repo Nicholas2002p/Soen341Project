@@ -11,7 +11,7 @@ import { GetJobsApi } from '../../utils/Api';
  * &#x25BC; reference from https://stackoverflow.com/questions/2701192/what-characters-can-be-used-for-up-down-triangle-arrow-without-stem-for-displa 
  * @returns the home page
  */
-export default function Home({ setView }) {
+export default function Home({ setView, setSelectedJob  }) {
   const [jobs, setJobs] = useState([]);
   
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function Home({ setView }) {
 
       <main className="home">
         <GetStarted />
-        <JobPosting jobs={jobs} />
+        <JobPosting jobs={jobs} setView={setView} setSelectedJob={setSelectedJob} />
       </main>
     </section>
   );

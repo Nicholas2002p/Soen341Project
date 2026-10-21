@@ -21,19 +21,18 @@ function Main() {
  const [view, setView] = useState("home");
  const [user, setUser] = useState(null);
  const [token, setToken] = useState(null);
+ const [selectedJob, setSelectedJob] = useState(null);
 
   return (
     <AuthContext.Provider value={{ token, setToken, user, setUser }}>
       <div id="app">
-        {/* {view === "home" && <Home setView={setView} /> }
+        {view === "home" && <Home setView={setView} setSelectedJob={setSelectedJob}/> }
         {view === "profile" && <Profile setView={setView} />}
         {view === "registration" && <Registration setView={setView} />} 
-        {view === "sign-in" && <Login setView={setView} />}  */}
-
-        <JobApplication setView={setView} />
-        {view === "job-search" && <JobSearch setView={setView} />} 
-
+        {view === "sign-in" && <Login setView={setView} />} 
+        {view === "job-search" && <JobSearch setView={setView} setSelectedJob={setSelectedJob} />} 
         {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} /> }
+        {view === "job-application" && <JobApplication setView={setView} job={selectedJob}/> }
       </div>
     </AuthContext.Provider>
   );
