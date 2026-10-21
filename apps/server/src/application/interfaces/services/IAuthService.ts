@@ -4,6 +4,13 @@ import type { UserRole } from '../../../domain/entities/User.js';
 export interface RegisterData {
     email: string;
     password: string;
+    role?: UserRole;
+}
+
+export interface UpdateUserData {
+    email?: string;
+    password?: string;
+    role?: UserRole;
 }
 
 export interface AuthenticationResult {
@@ -14,6 +21,14 @@ export interface AuthenticationResult {
 export interface IAuthService {
     //register a new user, returns the created user and a session token
     register(data: RegisterData): Promise<AuthenticationResult>;
+
+    updateUser(
+        userId: number,
+        data: UpdateUserData,
+        requestingUserId: number,
+        requestingUserRole: UserRole,
+        currentPassword?: string,
+    ): Promise<PublicUser>;
 
     //login a user, returns the user and a session token
     login(email: string, password: string): Promise<AuthenticationResult>;

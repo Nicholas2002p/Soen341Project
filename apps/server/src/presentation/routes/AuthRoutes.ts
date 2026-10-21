@@ -11,6 +11,12 @@ export const authRoutes = Router();
 // Register route
 authRoutes.post('/register', authController.register.bind(authController));
 
+// Update the authenticated user's account
+authRoutes.put('/register', authMiddleware, authController.updateUser.bind(authController));
+
+// Allow admins to update any account, including assigning the admin role
+authRoutes.put('/register/:userId', authMiddleware, authController.updateUser.bind(authController));
+
 // Login route
 authRoutes.post('/login', authController.login.bind(authController));
 
