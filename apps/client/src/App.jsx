@@ -5,6 +5,7 @@ import Home from './views/home/Home';
 import Profile from './views/profile/Profile';
 import Registration from './views/authentication/Registration';
 import Login from './views/authentication/Login';
+import JobSearch from './views/job_search/JobSearch'
 import RecruiterJobPosting from './views/recruiter_job_posting/RecruiterJobPosting';
 
 import { AuthContext } from './utils/Auth';
@@ -21,6 +22,8 @@ function Main() {
         {view === "profile" && <Profile setView={setView} />}
         {view === "registration" && <Registration setView={setView} />} 
         {view === "sign-in" && <Login setView={setView} />} 
+        {view === "job-search" && <JobSearch setView={setView} />} 
+
         {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} /> }
       </div>
     </AuthContext.Provider>
@@ -28,3 +31,5 @@ function Main() {
 };
 
 export default Main;
+
+

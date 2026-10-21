@@ -257,6 +257,67 @@ export async function GetProfileApi(token) {
 }
 
 /**
+ * gets jobs base on filter options
+ * @param {*} filterField 
+ * @param {*} sortBy 
+ * @param {*} searchQuery 
+ * @param {*} token 
+ * @returns all jobs that match filter and are not past deadline
+ */
+export async function JobFilter (filterField, sortBy, searchQuery){
+    //to avoid lint error and to be added later in query
+    void sortBy;
+    try {
+        console.log(filterField);
+        const response = await fetch(
+            getApiUrl(`/api/jobs?${filterField}=${encodeURIComponent(searchQuery)}`), 
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+
+        if (!response.ok) {
+            return [];
+        }
+        const data = await response.json();
+        return data.jobs;
+    } catch (error) {
+        console.error("Error filtering jobs:", error);
+        return [];
+    }
+};
+
+/**
+ *  gets all jobs 
+ * @returns all jobs that are not past deadline
+ */
+export async function GetJobsApi() {
+        try {
+        const response = await fetch(
+            getApiUrl("/api/jobs"), 
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+        return data.jobs;
+    } catch (error) {
+        console.error("Error filtering jobs:", error);
+        return [];
+    }
+}
+/**
  * uploads a resume file (pdf, doc or docx, 5 MB max)
  * @param {*} file
  * @param {*} setErrorMessage

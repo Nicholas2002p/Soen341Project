@@ -32,14 +32,14 @@ const passwordHasher = new BcryptPasswordHasher();
 const SEED_PASSWORD = "Password123!";
 
 async function createPasswordCredentials(password: string): Promise<{
-  salt: string;
+  saltRounds: number;
   hash: string;
 }> {
-  const salt = await passwordHasher.generateSalt();
-  const hash = await passwordHasher.hash(password, salt);
+  const saltRounds = passwordHasher.getDefaultSaltRounds();
+  const hash = await passwordHasher.hash(password, saltRounds);
 
   return {
-    salt,
+    saltRounds,
     hash,
   };
 }
@@ -192,34 +192,16 @@ async function main() {
     ],
   });
 
-  //NOTE - Password Salts
+  //NOTE - Password Salts (bcrypt embeds the real salt in the hash; we store the cost)
 
   await prisma.salt.createMany({
     data: [
-      {
-        userId: alice.userId,
-        Salt: aliceCredentials.salt,
-      },
-      {
-        userId: marc.userId,
-        Salt: marcCredentials.salt,
-      },
-      {
-        userId: sophia.userId,
-        Salt: sophiaCredentials.salt,
-      },
-      {
-        userId: emily.userId,
-        Salt: emilyCredentials.salt,
-      },
-      {
-        userId: david.userId,
-        Salt: davidCredentials.salt,
-      },
-      {
-        userId: admin.userId,
-        Salt: adminCredentials.salt,
-      },
+      { userId: alice.userId, saltRounds: aliceCredentials.saltRounds },
+      { userId: marc.userId, saltRounds: marcCredentials.saltRounds },
+      { userId: sophia.userId, saltRounds: sophiaCredentials.saltRounds },
+      { userId: emily.userId, saltRounds: emilyCredentials.saltRounds },
+      { userId: david.userId, saltRounds: davidCredentials.saltRounds },
+      { userId: admin.userId, saltRounds: adminCredentials.saltRounds },
     ],
   });
 

@@ -45,7 +45,7 @@ export default function ProfileEdit({ fname, lname, desc, old_profile, setFName,
 
       {/* <label htmlFor="">
         Password:
-        <input className='profile-edit-input' type="password" maxlength="50" 
+        <input className='profile-edit-input' type="password" maxLength="50" 
           onChange={(e) => { setPassword(e.target.value) }} 
         />
       </label> */}
