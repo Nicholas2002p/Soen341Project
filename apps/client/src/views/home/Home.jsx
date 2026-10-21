@@ -1,7 +1,8 @@
-import JobPosting from "../JobPosting";
+import JobPosting from "../job_search/JobPosting";
 import Nav from '../../components/Navigation/Nav';
-
+import {useState, useEffect} from 'react';
 import './Home.scss';
+import { GetJobsApi } from '../../utils/Api';
 
 /**
  * Home
@@ -11,13 +12,25 @@ import './Home.scss';
  * @returns the home page
  */
 export default function Home({ setView }) {
+  const [jobs, setJobs] = useState([]);
+  
+  useEffect(() => {
+      const getOptions = async () => {
+        const data = await GetJobsApi();
+        if (!data) return;
+        console.log(data);
+        setJobs(data);
+      };
+      getOptions();
+  }, []);
+
   return (
     <section className="homepage">
       <Nav setView={setView} />      
 
       <main className="home">
         <GetStarted />
-        <JobPosting />
+        <JobPosting jobs={jobs} />
       </main>
     </section>
   );
@@ -34,7 +47,6 @@ function GetStarted() {
       <section className="get-started-text">
         <h2 className="welcome"> Welcome to Career Connect! </h2>
         <h2 className="get-started-welcome"> let's get you started </h2>
-
         <button className="get-started-button"> Get Started </button>
       </section>
 

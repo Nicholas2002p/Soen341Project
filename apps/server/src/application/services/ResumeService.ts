@@ -85,7 +85,6 @@ export class ResumeService implements IResumeService {
         try {
             content = await this.fileStorage.read(resume.storageKey);
         } catch (error) {
-            // The database record exists but the file is gone from storage
             if (isFileNotFound(error)) {
                 throw new ResumeFileMissingError(undefined, { cause: error });
             }

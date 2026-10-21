@@ -16,15 +16,20 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Profile pictures are public; resume files must remain behind the authenticated download route.
+const uploadsDirectory = path.resolve(process.cwd(), 'uploads');
 const profilePicturesDirectory = path.resolve(process.cwd(), 'uploads', 'profile-pictures');
+
+if (process.env.NODE_ENV === 'test') {
+  app.use('/uploads', express.static(uploadsDirectory));
+}
+
+// Profile pictures are public; resume files must remain behind the authenticated download route.
 app.use('/uploads/profile-pictures', express.static(profilePicturesDirectory));
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
   next();
 });
-
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'This the API BACKEND' });

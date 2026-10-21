@@ -110,7 +110,7 @@ export class AuthController {
 
       // Return a 200 OK response indicating successful logout
       res.status(200).json({ message: 'Logged out successfully' });
-    } catch (error: unknown) {
+    } catch {
       // Return a 500 Internal Server Error response if logout fails
       res.status(500).json({ message: 'Logout failed.' });
     }
