@@ -13,20 +13,8 @@ import { GetJobsApi } from "../../utils/Api";
  * @param {Function} setView 
  * @returns Recruiter Job Posting Component
  */
-export default function RecruiterJobPosting({ setView }) {
-  const [jobs, setJobs] = useState({});
+export default function RecruiterJobPosting({ setView, jobs }) {
   const [isAdding, setIsAdding] = useState(false);
-  
-  useEffect(() => {
-    const getOptions = async () => {
-      console.log("here");
-      const data = await GetJobsApi();
-      if (!data) return;
-      console.log('data ' + data);
-      setJobs(data);
-    };
-    getOptions();
-  }, []);
 
   console.log('stuff ' + jobs);
 

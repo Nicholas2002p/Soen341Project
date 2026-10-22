@@ -1,35 +1,4 @@
-// =========================== VARIABLES ==============================
-$black-border: 1px solid black;
-$off-white: #FAF9F6;
-$folder-color: #9ecfef;
-
-// ============================= MIXINS ===============================
-
-@mixin modified-a4-paper() {
-  height: 561.33px;
-  width: 396.67px;
-}
-
-@mixin no-margin-padding() {
-  margin: 0;
-  padding: 0;
-}
-
-@mixin flex-align-justify($align, $justify) {
-  display: flex;
-  justify-content: $justify;
-  align-items: $align;
-}
-
-@mixin flex-dir($direction) {
-  display: flex;
-  flex-direction: $direction;
-}
-
-@mixin width-height($width, $height) {
-  width: $width;
-  height: $height;
-}
+@import "../../utils/style";
 
 // =========================== JOB ===========================
 
