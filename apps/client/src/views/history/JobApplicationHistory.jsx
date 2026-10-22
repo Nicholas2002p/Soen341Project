@@ -6,6 +6,8 @@ import Nav from '../../components/Navigation/Nav';
 import './JobApplicationHistory.scss';
 
 export default function JobApplicationHistory({ setView }) {
+  
+
   return (
     <section className='history-job-application'>
       <Nav setView={setView} />
