@@ -1,0 +1,21 @@
+.history-filters {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  align-self: center;
+  gap: 20px;
+  font-size: 22px;
+  height: 300px;
+  padding-top: 20px;
+  border: 1px solid black;
+}
+
+.history-filters legend {
+  font-size: 25px;
+}
+
+.history-filters label {
+  display: flex;
+  gap: 10px;
+}
