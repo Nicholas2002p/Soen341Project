@@ -3,6 +3,14 @@ import { useState } from 'react';
 import './HistoryInfo.scss';
 import './HistoryFilters.scss';
 
+/**
+ * History Job Application
+ * represents a single box that displays the details of the job application
+ * 
+ * @param {Object} application - the details of the job application
+ * feel free to change the name of the param  
+ * @returns History Job Application component
+ */
 export default function HistoryJobApplication({}) {
   const [arrow, setArrow] = useState(true);
 

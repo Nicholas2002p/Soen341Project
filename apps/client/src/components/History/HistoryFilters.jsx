@@ -1,5 +1,17 @@
 import './HistoryFilters.scss';
 
+/**
+ * History Filters
+ * allows the user to filter their application history by 
+ * - applied: application wasn't review yet at all
+ * - offered: job offer (accepted)
+ * - interview: received interview for the job
+ * - under_review: the job application is pending
+ * - rejected: the application was rejected
+ * 
+ * @param {*} param0 
+ * @returns History Filter Component
+ */
 export default function HistoryFilters({}) {
   return (
     <fieldset className='history-filters'>
