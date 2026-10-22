@@ -32,7 +32,7 @@ $post-it-colors: #FFEBA1, #69C7B5, #9FC7E4, #F4C4D6, #c9c9ff, #e1f7d5;
   
   padding-left: 10px;
   padding-right: 10px;
-  
+  padding-top: 30px;
   border-top: $black-border;
   
   h2 {
@@ -125,5 +125,14 @@ $post-it-colors: #FFEBA1, #69C7B5, #9FC7E4, #F4C4D6, #c9c9ff, #e1f7d5;
     border: $black-border;
     padding: 5px;
     border-radius: 20px;
+  }
+}
+.job-search {
+  .stack {
+    @include flex-align-justify(center, none);
+    flex-direction: column; 
+    margin-top: 32px;
+    margin-bottom: 32px;
+    gap: 16px;
   }
 }
