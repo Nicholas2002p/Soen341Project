@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { AddJobOpening } from "./AddJobOpening";
-import Job from "./Job";
+import Job from "../Job/Job";
 
 import './Folder.scss';
 
@@ -13,7 +13,7 @@ import './Folder.scss';
  * @param {Function} setIsAdding 
  * @returns the Folder Component
  */
-export default function Folder({ setIsAdding }) {
+export default function Folder({ setIsAdding, jobs }) {
   const [folderView, setFolderView] = useState("all");
   
   return (
@@ -21,7 +21,7 @@ export default function Folder({ setIsAdding }) {
       <FolderTabs folderView={folderView} setFolderView={setFolderView} />
 
       <section className="folder-content">
-        <DisplayJobOpenings setIsAdding={setIsAdding} />
+        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={jobs} />
       </section>    
 
     </section>
@@ -59,8 +59,8 @@ function FolderTabs({ folderView, setFolderView }) {
  * @param {Function} setIsAdding 
  * @returns Display Job Openings
  */
-function DisplayJobOpenings({ setIsAdding }) {
-  const [jobs] = useState(jobList);
+function DisplayJobOpenings({ setIsAdding, jobs }) {
+  console.log(jobs);
 
   return (
     <section className="folder-job-openings">
@@ -72,9 +72,3 @@ function DisplayJobOpenings({ setIsAdding }) {
     </section>
   );
 }
-
-// =========================================== SAMPLE DATA ===========================================
-
-const jobList = [
-  {}, {}, {}, {}, {}
-]

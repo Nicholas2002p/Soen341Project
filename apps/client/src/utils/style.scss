@@ -1,0 +1,68 @@
+// =========================== VARIABLES ==============================
+
+$main-blue: #bee3fb;
+$folder-color: #9ecfef;
+$button-color: #b7fdf8;
+$off-white: #FAF9F6;
+$black-border: 1px solid black;
+$job-board-color: #A5846A;
+$post-it-colors: #FFEBA1, #69C7B5, #9FC7E4, #F4C4D6, #c9c9ff, #e1f7d5;
+
+// ============================= MIXINS ===============================
+
+@mixin flex-align-justify($align, $justify) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin flex-dir-justify($direction, $justify) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+}
+
+@mixin flex-dir-align($direction, $align) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align;
+}
+
+@mixin flex-dir-align-justify($direction, $align, $justify) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+
+@mixin flex-dir($direction) {
+  display: flex;
+  flex-direction: $direction;
+}
+
+
+@mixin modified-a4-paper() {
+  height: 561.33px;
+  width: 396.67px;
+}
+
+@mixin no-margin-padding() {
+  margin: 0;
+  padding: 0;
+}
+
+@mixin input-css() {
+  @include width-height(60%, 25px);
+  border: $black-border;
+  border-bottom: 3px solid rgb(173, 192, 206);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: rgba(240, 235, 235, 0.928);
+  padding-left: 5px;
+}

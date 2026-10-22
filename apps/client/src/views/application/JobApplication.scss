@@ -1,9 +1,10 @@
+@import "../../utils/style";
+
 .job-application {
-  background-color: lightgoldenrodyellow;
+  @include flex-align-justify(center, center);
+  @include width-height(none, 100%);
+  background-color: $off-white;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .exit-main-job-application {
@@ -16,43 +17,30 @@
 }
 
 .main-job-application {
+  @include width-height(95%, 95%);
+  @include flex-dir(row);
   position: relative;
-  background-color: aliceblue;
-  height: 95%;
-  width: 95%;
-  display: flex;
-  flex-direction: row;
+  background-color: rgb(241, 244, 246);
   gap: 10px;
-  border: 1px solid black;
+  border: $black-border;
 }
 
 .resume-application {
+  @include flex-dir(column);
   flex: 1;
-  display: flex;
-  flex-direction: column;
   margin: 1em;
 }
 
 .resume-application h2 {
-  background-color: blueviolet;
-  border: 1px solid black;
+  background-color: $main-blue;
+  border: $black-border;
   text-align: center;
   font-size: 35px;
   margin-top: 20px;
 }
 
 .job-display {
+  @include flex-align-justify(center, center);
   flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-left: 1px solid black;
-}
-
-.job-display-paper {
-  border: 1px solid black;
-  background-color: #FAF9F6;
-  padding: 10px;
-  height: 90%;
-  width: 80%;
+  border-left: $black-border;
 }

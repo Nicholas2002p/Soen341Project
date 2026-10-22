@@ -1,17 +1,4 @@
-// =========================== VARIABLES ==============================
-$black-border: 1px solid black;
-
-// ============================= MIXINS ===============================
-
-@mixin flex-dir($direction) {
-  display: flex;
-  flex-direction: $direction;
-}
-
-@mixin width-height($width, $height) {
-  width: $width;
-  height: $height;
-}
+@import "../../utils/style";
 
 // ============================= FILTERS ===============================
 

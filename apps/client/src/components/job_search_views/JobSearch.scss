@@ -1,27 +1,5 @@
 @use "sass:list";
-
-// =========================== VARIABLES ==============================
-$black-border: 1px solid black;
-$job-board-color: #A5846A;
-$post-it-colors: #FFEBA1, #69C7B5, #9FC7E4, #F4C4D6, #c9c9ff, #e1f7d5;
-
-// ============================= MIXINS ===============================
-
-@mixin flex-align-justify($align, $justify) {
-  display: flex;
-  justify-content: $justify;
-  align-items: $align;
-}
-
-@mixin flex-dir($direction) {
-  display: flex;
-  flex-direction: $direction;
-}
-
-@mixin width-height($width, $height) {
-  width: $width;
-  height: $height;
-}
+@import "../../utils/style";
 
 // =========================== JOB SEARCH ===========================
 

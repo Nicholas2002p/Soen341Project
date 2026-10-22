@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Nav from "../../components/Navigation/Nav";
 import Folder from "../../components/RecruiterJobPosting/Folder";
 import { AddJobOpeningPage } from "../../components/RecruiterJobPosting/AddJobOpening";
 import './RecruiterJobPosting.scss';
+import { GetJobsApi } from "../../utils/Api";
 
 /**
  * Recruiter Job Posting
@@ -12,16 +13,18 @@ import './RecruiterJobPosting.scss';
  * @param {Function} setView 
  * @returns Recruiter Job Posting Component
  */
-export default function RecruiterJobPosting({ setView }) {
+export default function RecruiterJobPosting({ setView, jobs }) {
   const [isAdding, setIsAdding] = useState(false);
-  
+
+  console.log('stuff ' + jobs);
+
   return (
     <section>
       <Nav setView={setView} /> 
 
       <main className="recruiter-job-posting">
         <h2> Job Posting </h2>
-        <Folder setIsAdding={setIsAdding} />
+        <Folder setIsAdding={setIsAdding} jobs={jobs} />
         { isAdding && <AddJobOpeningPage setIsAdding={setIsAdding} /> }
       </main>
     </section>
