@@ -1,6 +1,6 @@
 import type { PrismaClient } from '../../generated/prisma/client.js';
 import type { User as PrismaUser } from '../../generated/prisma/client.js';
-import type { IUserRepository, CreateUserData } from '../../application/interfaces/repositories/IUserRepository.js';
+import type { IUserRepository, CreateUserData, UpdateUserData } from '../../application/interfaces/repositories/IUserRepository.js';
 import type { User} from '../../domain/entities/User.js';
 import { UserRole } from '../../domain/entities/User.js';
 
@@ -51,10 +51,15 @@ export class PrismaUserRepository implements IUserRepository {
     }
 
     // Update a user's password hash, returns the updated user or null if not found
-    async updatePassword(id: number, newPasswordHash: string): Promise<User | null> {
+    // Update a user's email, password hash, or role, returns the updated user or null if not found
+    async update(id: number, data: UpdateUserData): Promise<User | null> {
         const updatedUser = await this.prisma.user.update({
             where: { userId: id },
-            data: { password: newPasswordHash },
+            data: {
+                ...(data.email !== undefined ? { email: data.email } : {}),
+                ...(data.passwordHash !== undefined ? { password: data.passwordHash } : {}),
+                ...(data.role !== undefined ? { role: data.role } : {}),
+            },
         });
 
         return this.toDomainUser(updatedUser);

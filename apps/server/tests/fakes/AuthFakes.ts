@@ -2,10 +2,11 @@ import type { IPasswordHasher } from '../../src/application/interfaces/infrastru
 import type { ISessionTokenGenerator } from '../../src/application/interfaces/infrastructure/ISessionTokenGenerator.js';
 import type { ISaltRepository } from '../../src/application/interfaces/repositories/ISaltRepository.js';
 import type { ISessionRepository, session } from '../../src/application/interfaces/repositories/ISessionRepository.js';
-import type { CreateUserData, IUserRepository } from '../../src/application/interfaces/repositories/IUserRepository.js';
+import type { CreateUserData, IUserRepository, UpdateUserData } from '../../src/application/interfaces/repositories/IUserRepository.js';
 import type { User } from '../../src/domain/entities/User.js';
 import { UserRole } from '../../src/domain/entities/User.js';
 import type { GoogleProfile, IGoogleTokenVerifier } from '../../src/application/interfaces/infrastructure/IGoogleTokenVerifier.js';
+import { InvalidGoogleTokenError } from '../../src/domain/errors/InvalidGoogleTokenError.js';
 export const user: User = {
     id: 1,
     email: 'person@example.com',
@@ -36,18 +37,29 @@ export class FakeUserRepository implements IUserRepository {
 
     async create(data: CreateUserData): Promise<User> {
         this.createdData = data;
-        const createdUser = { ...user, email: data.email, passwordHash: data.passwordHash };
+        const createdUser = {
+            ...user,
+            email: data.email,
+            passwordHash: data.passwordHash,
+            role: data.role ?? UserRole.JobSeeker,
+        };
         this.users.set(createdUser.email, createdUser);
         return createdUser;
     }
 
-    async updatePassword(id: number, newPasswordHash: string): Promise<User | null> {
+    async update(id: number, data: UpdateUserData): Promise<User | null> {
         const storedUser = await this.getById(id);
         if (!storedUser) {
             return null;
         }
 
-        const updatedUser = { ...storedUser, passwordHash: newPasswordHash };
+        const updatedUser = {
+            ...storedUser,
+            ...(data.email !== undefined ? { email: data.email } : {}),
+            ...(data.passwordHash !== undefined ? { passwordHash: data.passwordHash } : {}),
+            ...(data.role !== undefined ? { role: data.role } : {}),
+        };
+        this.users.delete(storedUser.email);
         this.users.set(updatedUser.email, updatedUser);
         return updatedUser;
     }
@@ -136,9 +148,7 @@ export class FakeGoogleTokenVerifier implements IGoogleTokenVerifier {
     async verify(idToken: string): Promise<GoogleProfile> {
         const profile = this.profilesByToken[idToken];
         if (!profile) {
-            const error = new Error('Invalid Google token');
-            error.name = 'InvalidGoogleTokenError';
-            throw error;
+            throw new InvalidGoogleTokenError();
         }
         return profile;
     }

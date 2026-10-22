@@ -1,5 +1,6 @@
 import { OAuth2Client } from 'google-auth-library';
 import type { GoogleProfile, IGoogleTokenVerifier } from '../../application/interfaces/infrastructure/IGoogleTokenVerifier.js';
+import { InvalidGoogleTokenError } from '../../domain/errors/InvalidGoogleTokenError.js';
 
 export class GoogleTokenVerifier implements IGoogleTokenVerifier {
   private readonly client: OAuth2Client;
@@ -23,9 +24,7 @@ export class GoogleTokenVerifier implements IGoogleTokenVerifier {
         lastName: payload.family_name ?? '',
       };
     } catch {
-      const error = new Error('Invalid Google token');
-      error.name = 'InvalidGoogleTokenError';
-      throw error;
+      throw new InvalidGoogleTokenError();
     }
   }
 }

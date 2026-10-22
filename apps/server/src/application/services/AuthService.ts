@@ -1,5 +1,5 @@
-import type { IAuthService, RegisterData, AuthenticationResult } from '../interfaces/services/IAuthService.js';
-import type { IUserRepository } from '../interfaces/repositories/IUserRepository.js';
+import type { IAuthService, RegisterData, UpdateUserData, AuthenticationResult } from '../interfaces/services/IAuthService.js';
+import type { IUserRepository, UpdateUserData as RepositoryUpdateUserData } from '../interfaces/repositories/IUserRepository.js';
 import type { ISessionRepository } from '../interfaces/repositories/ISessionRepository.js';
 import type { ISessionTokenGenerator } from '../interfaces/infrastructure/ISessionTokenGenerator.js';
 import type { IPasswordHasher } from '../interfaces/infrastructure/IPasswordHasher.js';
@@ -52,9 +52,14 @@ export class AuthService implements IAuthService {
         const hashedPassword = await this.passwordHasher.hash(data.password, saltRounds);
 
         // Create a new user in the repository with the hashed password
+        if (data.role === UserRole.Admin) {
+            throw new UnauthorizedUserActionError('New accounts cannot be created with the admin role.');
+        }
+
         const newUser = await this.userRepository.create({
             email,
             passwordHash: hashedPassword,
+            role: data.role ?? UserRole.JobSeeker,
         });
         await this.saltRepository.save(newUser.id, saltRounds);
 
@@ -68,6 +73,76 @@ export class AuthService implements IAuthService {
             user: this.toPublicUser(newUser),
             sessionToken,
         };
+    }
+
+    async updateUser(
+        userId: number,
+        data: UpdateUserData,
+        requestingUserId: number,
+        requestingUserRole: UserRole,
+        currentPassword?: string,
+    ): Promise<PublicUser> {
+        // Validate the user exists
+        const user = await this.userRepository.getById(userId);
+        if (!user) {
+            // user not found, throw an error
+            throw new UserNotFoundError();
+        }
+
+        // Check if the requesting user is authorized to update the user
+        const isSelfUpdate = userId === requestingUserId;
+        // If the requesting user is not the same as the user being updated and is not an admin, throw an error
+        if (!isSelfUpdate && requestingUserRole !== UserRole.Admin) {
+            throw new UnauthorizedUserActionError('You can only update your own account.');
+        }
+        // If the requesting user is updating their own account and is not an admin, verify the current password
+        if (isSelfUpdate && requestingUserRole !== UserRole.Admin) {
+            if (!currentPassword || !(await this.passwordHasher.verify(currentPassword, user.passwordHash))) {
+                // If the current password is not provided or does not match the stored password hash, throw an error
+                throw new InvalidAuthCredentialsError();
+            }
+            if (data.role === UserRole.Admin) {
+                // If the user is trying to assign themselves the admin role, throw an error
+                throw new UnauthorizedUserActionError('Only an admin can assign the admin role.');
+            }
+        }
+
+        // Normalize and validate the email if it is provided in the update data
+        const normalizedEmail = data.email === undefined ? undefined : normalizeEmail(data.email);
+        if (normalizedEmail !== undefined) {
+            // Validate the email format
+            if (!isValidEmail(normalizedEmail)) {
+                // If the email is not valid, throw an error
+                throw new InvalidEmailError();
+            }
+            // Check if another user already exists with the same email
+            const existingUser = await this.userRepository.getByEmail(normalizedEmail);
+            if (existingUser && existingUser.id !== userId) {
+                // If another user with the same email exists, throw an error
+                throw new UserAlreadyExistsError();
+            }
+        }
+
+        // Prepare the update data for the user, including the normalized email and role if provided
+        const updateData: RepositoryUpdateUserData = {
+            ...(normalizedEmail !== undefined ? { email: normalizedEmail } : {}),
+            ...(data.role !== undefined ? { role: data.role } : {}),
+        };
+        // If a new password is provided, hash it and save the salt rounds
+        if (data.password !== undefined) {
+            const saltRounds = this.passwordHasher.getDefaultSaltRounds();
+            updateData.passwordHash = await this.passwordHasher.hash(data.password, saltRounds);
+            await this.saltRepository.save(userId, saltRounds);
+        }
+
+        // Update the user in the repository with the prepared update data
+        const updatedUser = await this.userRepository.update(userId, updateData);
+        if (!updatedUser) {
+            // If the update fails and the user is not found, throw an error
+            throw new UserNotFoundError();
+        }
+        // Return the updated user as a public user object, excluding sensitive information like the password hash
+        return this.toPublicUser(updatedUser);
     }
 
     async login(email: string, password: string): Promise<AuthenticationResult> {
@@ -99,7 +174,7 @@ export class AuthService implements IAuthService {
             const upgradedHash = await this.passwordHasher.hash(password, currentSaltRounds);
 
             // Update the user's password hash in the repository and retrieve the updated user.
-            const updatedUser = await this.userRepository.updatePassword(user.id, upgradedHash);
+            const updatedUser = await this.userRepository.update(user.id, { passwordHash: upgradedHash });
 
             // If the update was successful, use the updated user for authentication
             if (updatedUser) {

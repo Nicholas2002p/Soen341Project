@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { AuthService } from '../../src/application/services/AuthService.js';
 import type { User } from '../../src/domain/entities/User.js';
+import { UserRole } from '../../src/domain/entities/User.js';
 import { InvalidAuthCredentialsError } from '../../src/domain/errors/InvalidAuthCredentialsError.js';
 import { InvalidEmailError } from '../../src/domain/errors/InvalidEmailError.js';
 import {
@@ -70,6 +71,67 @@ test('register rejects an invalid email format', async () => {
         service.register({ email: 'not-an-email', password: 'secret-password' }),
         InvalidEmailError,
     );
+});
+
+test('register defaults to jobseeker and accepts recruiter role', async () => {
+    const defaultRegistration = createService();
+    const defaultResult = await defaultRegistration.service.register({
+        email: 'default@example.com',
+        password: 'secret-password',
+    });
+    assert.equal(defaultResult.user.role, UserRole.JobSeeker);
+
+    const recruiterRegistration = createService();
+    const recruiterResult = await recruiterRegistration.service.register({
+        email: 'recruiter@example.com',
+        password: 'secret-password',
+        role: UserRole.Recruiter,
+    });
+    assert.equal(recruiterResult.user.role, UserRole.Recruiter);
+});
+
+test('self updates require the current password and cannot assign admin', async () => {
+    const selfUser = { ...user, passwordHash: 'hashed:secret-password' };
+    const { service } = createService([selfUser]);
+
+    await assert.rejects(
+        service.updateUser(selfUser.id, { email: 'updated@example.com' }, selfUser.id, selfUser.role),
+        InvalidAuthCredentialsError,
+    );
+    await assert.rejects(
+        service.updateUser(
+            selfUser.id,
+            { role: UserRole.Admin },
+            selfUser.id,
+            selfUser.role,
+            'secret-password',
+        ),
+        { name: 'UnauthorizedUserActionError' },
+    );
+
+    const result = await service.updateUser(
+        selfUser.id,
+        { email: 'updated@example.com', password: 'new-password', role: UserRole.Recruiter },
+        selfUser.id,
+        selfUser.role,
+        'secret-password',
+    );
+    assert.equal(result.email, 'updated@example.com');
+    assert.equal(result.role, UserRole.Recruiter);
+});
+
+test('admins can update another user and assign admin', async () => {
+    const admin = { ...user, id: 1, role: UserRole.Admin };
+    const target = { ...user, id: 2, email: 'target@example.com' };
+    const { service } = createService([admin, target]);
+
+    const result = await service.updateUser(
+        target.id,
+        { role: UserRole.Admin },
+        admin.id,
+        admin.role,
+    );
+    assert.equal(result.role, UserRole.Admin);
 });
 
 test('login rejects an incorrect password', async () => {

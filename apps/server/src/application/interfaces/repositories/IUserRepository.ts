@@ -6,6 +6,12 @@ export interface CreateUserData {
     role?: UserRole; // User role, can be either 'admin', 'recruiter', or 'jobseeker'
 }
 
+export interface UpdateUserData {
+    email?: string;
+    passwordHash?: string;
+    role?: UserRole;
+}
+
 export interface IUserRepository {
     //find a user by their id, returns null if not found
     getById(id: number): Promise<User | null>;
@@ -16,8 +22,8 @@ export interface IUserRepository {
     //create a new user, returns the created user
     create(data: CreateUserData): Promise<User>;
 
-    //update a user's password hash, returns the updated user or null if not found
-    updatePassword(id: number, newPasswordHash: string): Promise<User | null>;
+    // Update the supplied account fields, returning the updated user or null if not found.
+    update(id: number, data: UpdateUserData): Promise<User | null>;
 
     // Delete a user and their account-owned authentication/profile records.
     delete(id: number): Promise<void>;
