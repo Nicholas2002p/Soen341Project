@@ -1,6 +1,5 @@
-
+@import "../../utils/style";
 
 .search-job {
-    display:flex;
-    flex-direction: column;
+    @include flex-dir(column);
 }

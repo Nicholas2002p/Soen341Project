@@ -1,2 +1,44 @@
-$nav-color: #bee3fb;
+// =========================== VARIABLES ==============================
+
+$main-blue: #bee3fb;
 $button-color: #b7fdf8;
+$off-white: #FAF9F6;
+$black-border: 1px solid black;
+
+// ============================= MIXINS ===============================
+
+@mixin flex-align-justify($align, $justify) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin flex-dir-justify($direction, $justify) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+}
+
+@mixin flex-dir-align($direction, $align) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align;
+}
+
+@mixin flex-dir-align-justify($direction, $align, $justify) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+@mixin width-height($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+
+@mixin flex-dir($direction) {
+  display: flex;
+  flex-direction: $direction;
+}

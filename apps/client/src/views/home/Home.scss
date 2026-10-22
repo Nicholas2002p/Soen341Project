@@ -1,24 +1,4 @@
-// =========================== VARIABLES ==============================
-$black-border: 1px solid black;
-$off-white: #FAF9F6;
-
-// ============================= MIXINS ===============================
-
-@mixin flex-align-justify($align, $justify) {
-  display: flex;
-  justify-content: $justify;
-  align-items: $align;
-}
-
-@mixin flex-dir($direction) {
-  display: flex;
-  flex-direction: $direction;
-}
-
-@mixin width-height($width, $height) {
-  width: $width;
-  height: $height;
-}
+@import "../../utils/style";
 
 // =========================== HOME ===========================
 
