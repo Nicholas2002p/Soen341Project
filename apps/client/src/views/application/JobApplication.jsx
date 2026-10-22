@@ -1,4 +1,4 @@
-import Job from '../../components/RecruiterJobPosting/Job';
+import Job from '../../components/Job/Job';
 import Application from '../../components/JobApplication/Application';
 
 import './JobApplication.scss';

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { AddJobOpening } from "./AddJobOpening";
-import Job from "./Job";
+import Job from "../Job/Job";
 
 import './Folder.scss';
 
