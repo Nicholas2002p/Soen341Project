@@ -6,17 +6,14 @@
 }
 
 .history {
+  @include flex-dir(row);
   height: 90vh;
-  display: flex;
-  flex-direction: row;
   padding: 10px;
 }
 
 .history-applications {
+  @include flex-dir-align(column, center);
   flex: 4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding-top: 2em;
   gap: 1em;
   overflow-y: scroll;
