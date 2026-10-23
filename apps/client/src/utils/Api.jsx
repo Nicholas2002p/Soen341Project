@@ -290,13 +290,13 @@ export async function JobFilter (filterField, sortBy, searchQuery){
 };
 
 /**
- *  gets all jobs 
+ *  gets all jobs that are available
  * @returns all jobs that are not past deadline
  */
 export async function GetJobsApi() {
         try {
         const response = await fetch(
-            getApiUrl("/api/jobs"), 
+            getApiUrl("/api/jobs/available"), 
             {
                 method: 'GET',
                 headers: {
@@ -448,7 +448,13 @@ export async function DeleteResumeApi(resumeId, setErrorMessage, token) {
     }
 }
 
-
+/**
+ *  takes the jobid and resume id 
+ * @param {*} jobId 
+ * @param {*} resumeId 
+ * @param {*} token 
+ * @returns the application for the job
+ */
 export async function ApplyForJob(jobId, resumeId, token) {
     try {
         const response = await fetch(getApiUrl("/api/applications/"), {
@@ -475,6 +481,12 @@ export async function ApplyForJob(jobId, resumeId, token) {
     }
 }
 
+/**
+ * calles the server to get a specific job aplication history 
+ * @param {*} jobId 
+ * @param {*} token 
+ * @returns  the application for the job
+ */
 export async function GetSpecificJobHistory(jobId, token){
      try {
        

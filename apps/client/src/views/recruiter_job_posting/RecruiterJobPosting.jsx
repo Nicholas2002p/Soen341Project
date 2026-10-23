@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import Nav from "../../components/Navigation/Nav";
 import Folder from "../../components/RecruiterJobPosting/Folder";
 import { AddJobOpeningPage } from "../../components/RecruiterJobPosting/AddJobOpening";
 import './RecruiterJobPosting.scss';
-import { GetJobsApi } from "../../utils/Api";
 
 /**
  * Recruiter Job Posting
