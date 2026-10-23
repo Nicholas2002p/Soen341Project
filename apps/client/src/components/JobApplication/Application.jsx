@@ -17,7 +17,7 @@ export default function Application({ handleApply, selectedResumeId, setSelected
         setResumes(data);
       };
       getResumes();
-    }, []);
+    }, [alreadyApplied, setResumes, token]);
 
     
 
@@ -34,25 +34,7 @@ return (
           {resumes.length === 0 ? (
             <p className="application-empty">No resumes uploaded yet go to profile to upload one.</p>
           ) : (
-            <ul className="application-resume-list">
-              {resumes.map((resume) => (
-                <li key={resume.id}>
-                  <label>
-                    <input
-                      type="radio"
-                      name="resume"
-                      value={resume.id}
-                      checked={selectedResumeId === resume.id}
-                      onChange={() => setSelectedResumeId(resume.id)}
-                    />
-                    <span className="resume-name">{resume.fileName}</span>
-                    <span className="resume-date">
-                      {new Date(resume.createdAt).toLocaleDateString()}
-                    </span>
-                  </label>
-                </li>
-              ))}
-            </ul>
+              <DisplayResume resumes={resumes} selectedResumeId={selectedResumeId } setSelectedResumeId={setSelectedResumeId} />
           )}
 
           {errorMessage && <p className="resume-error">{errorMessage}</p>}
@@ -62,4 +44,33 @@ return (
       )}
     </div>
   );
+}
+
+/**
+ * takes in the resumes of the user and displays them in a list
+ * @param {*} resumes 
+ * @returns a list of resumes 
+ */
+function DisplayResume(resumes, selectedResumeId, setSelectedResumeId) {
+  return(
+  <ul className="application-resume-list">
+    {resumes.map((resume) => (
+      <li key={resume.id}>
+        <label>
+          <input
+            type="radio"
+            name="resume"
+            value={resume.id}
+            checked={selectedResumeId === resume.id}
+            onChange={() => setSelectedResumeId(resume.id)}
+          />
+          <span className="resume-name">{resume.fileName}</span>
+          <span className="resume-date">
+            {new Date(resume.createdAt).toLocaleDateString()}
+          </span>
+        </label>
+      </li>
+    ))}
+    </ul>
+  )
 }

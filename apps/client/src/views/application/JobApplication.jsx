@@ -17,8 +17,11 @@ export default function JobApplication({ setView, job }) {
       setAlreadyApplied(true);
     };
     SeeIfAlreadyApplied();
-  }, [])
+  }, [token, job])
 
+  /**
+   * on submition calls api to apply for job and sets boolean to true so they can not apply again if successful
+   */
   const handleApply = async () => {
       const success = await ApplyForJob(job.jobId, selectedResumeId, token);
 

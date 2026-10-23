@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 
 import { AddJobOpening } from "./AddJobOpening";
 import Job from "../Job/Job";
