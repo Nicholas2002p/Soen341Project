@@ -1,0 +1,46 @@
+@import "../../utils/style";
+
+.job-application {
+  @include flex-align-justify(center, center);
+  @include width-height(none, 100%);
+  background-color: $off-white;
+  height: 100%;
+}
+
+.exit-main-job-application {
+  margin: 0;
+  position: absolute;
+  cursor: pointer;
+  font-size: 30px;
+  top: 10px;
+  right: 10px;
+}
+
+.main-job-application {
+  @include width-height(95%, 95%);
+  @include flex-dir(row);
+  position: relative;
+  background-color: rgb(241, 244, 246);
+  gap: 10px;
+  border: $black-border;
+}
+
+.resume-application {
+  @include flex-dir(column);
+  flex: 1;
+  margin: 1em;
+}
+
+.resume-application h2 {
+  background-color: $main-blue;
+  border: $black-border;
+  text-align: center;
+  font-size: 35px;
+  margin-top: 20px;
+}
+
+.job-display {
+  @include flex-align-justify(center, center);
+  flex: 1;
+  border-left: $black-border;
+}

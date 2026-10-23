@@ -1,5 +1,3 @@
-import { getApiUrl } from '../../utils/apiConfig';
-
 import './ProfileCard.scss';
 
 /**
@@ -25,7 +23,7 @@ export default function ProfileCard({ profileURL, fname, lname, role, desc }) {
       <section className='profile-card-display'>
         <div className='card-hole'>  </div>
         <section className='profile-card-information'>
-          <img src={profileURL === null ? "random-pfp.PNG" : getApiUrl(profileURL)} alt="" />
+          <img src={profileURL !==null ?  profileURL: "random-pfp.PNG" } alt="" />
           <section className='profile-card-information-text'>
             <p className="card-name"> {lname}, {fname} </p>
             <p className="card-role"> {userRole} </p>

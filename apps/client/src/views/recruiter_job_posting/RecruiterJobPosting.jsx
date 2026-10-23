@@ -12,16 +12,16 @@ import './RecruiterJobPosting.scss';
  * @param {Function} setView 
  * @returns Recruiter Job Posting Component
  */
-export default function RecruiterJobPosting({ setView }) {
+export default function RecruiterJobPosting({ setView, jobs }) {
   const [isAdding, setIsAdding] = useState(false);
-  
+
   return (
     <section>
       <Nav setView={setView} /> 
 
       <main className="recruiter-job-posting">
         <h2> Job Posting </h2>
-        <Folder setIsAdding={setIsAdding} />
+        <Folder setIsAdding={setIsAdding} jobs={jobs} />
         { isAdding && <AddJobOpeningPage setIsAdding={setIsAdding} /> }
       </main>
     </section>

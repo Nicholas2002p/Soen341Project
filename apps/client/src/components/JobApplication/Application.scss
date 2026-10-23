@@ -1,0 +1,22 @@
+@import "../../utils/style";
+
+.application {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.application p {
+  font-size: 20px;
+}
+
+.application button {
+  background-color: $button-color;
+  margin-top: auto;
+  margin-bottom: 20px;
+  height: 40px;
+  width: 300px;
+  font-size: 25px;
+  align-self: center;
+}
