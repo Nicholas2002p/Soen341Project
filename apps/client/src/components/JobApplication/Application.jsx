@@ -51,7 +51,7 @@ return (
  * @param {*} resumes 
  * @returns a list of resumes 
  */
-function DisplayResume(resumes, selectedResumeId, setSelectedResumeId) {
+function DisplayResume({resumes, selectedResumeId, setSelectedResumeId}) {
   return(
   <ul className="application-resume-list">
     {resumes.map((resume) => (

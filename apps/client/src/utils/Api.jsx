@@ -502,12 +502,12 @@ export async function GetSpecificJobHistory(jobId, token){
         );
 
         if (!response.ok) {
-            return [];
+            return null;
         }
         const data = await response.json();
         return data.application;
     } catch (error) {
         console.error("Error filtering jobs:", error);
-        return [];
+        return null;
     }
 }
