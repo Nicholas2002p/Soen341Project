@@ -31,6 +31,9 @@ export interface IApplicationRepository {
     //When statuses is given, only applications whose current status is in the list are returned.
     listHistoryByUserId(userId: number, statuses?: ApplicationStatus[]): Promise<ApplicationDetails[]>;
 
+    //find the application of a user for a job with its job info and status history, returns null if they have not applied
+    getHistoryByUserAndJob(userId: number, jobId: number): Promise<ApplicationDetails | null>;
+
     //list all applications submitted to a job, newest first
     listByJobId(jobId: number): Promise<Application[]>;
 

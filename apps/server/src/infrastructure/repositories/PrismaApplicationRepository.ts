@@ -114,6 +114,19 @@ export class PrismaApplicationRepository implements IApplicationRepository {
         return applications.map((application) => this.toDomainApplicationWithJob(application));
     }
 
+    // Convert a Prisma Application record with its job and status history to a domain ApplicationDetails
+    private toDomainApplicationDetails(
+        record: PrismaApplicationWithJob & { statusHistory: { status: string; createdAt: Date }[] },
+    ): ApplicationDetails {
+        return {
+            ...this.toDomainApplicationWithJob(record),
+            statusHistory: record.statusHistory.map((entry) => ({
+                status: entry.status as ApplicationStatus,
+                changedAt: entry.createdAt,
+            })),
+        };
+    }
+
     // List the applications of a job seeker with their job and status history in one query, newest first
     async listHistoryByUserId(userId: number, statuses?: ApplicationStatus[]): Promise<ApplicationDetails[]> {
         const applications = await this.prisma.application.findMany({
@@ -125,13 +138,20 @@ export class PrismaApplicationRepository implements IApplicationRepository {
             orderBy: { appliedAt: 'desc' },
         });
 
-        return applications.map((application) => ({
-            ...this.toDomainApplicationWithJob(application),
-            statusHistory: application.statusHistory.map((entry) => ({
-                status: entry.status as ApplicationStatus,
-                changedAt: entry.createdAt,
-            })),
-        }));
+        return applications.map((application) => this.toDomainApplicationDetails(application));
+    }
+
+    // Find the application of a user for a job with its job and status history, returns null if they have not applied
+    async getHistoryByUserAndJob(userId: number, jobId: number): Promise<ApplicationDetails | null> {
+        const application = await this.prisma.application.findUnique({
+            where: { userId_jobId: { userId, jobId } },
+            include: {
+                job: { select: jobSummarySelect },
+                statusHistory: { orderBy: { createdAt: 'asc' } },
+            },
+        });
+
+        return application ? this.toDomainApplicationDetails(application) : null;
     }
 
     // List all applications submitted to a job, newest first
