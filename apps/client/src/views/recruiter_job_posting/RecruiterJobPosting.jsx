@@ -16,8 +16,6 @@ import { GetJobsApi } from "../../utils/Api";
 export default function RecruiterJobPosting({ setView, jobs }) {
   const [isAdding, setIsAdding] = useState(false);
 
-  console.log('stuff ' + jobs);
-
   return (
     <section>
       <Nav setView={setView} /> 

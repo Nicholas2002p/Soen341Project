@@ -268,7 +268,6 @@ export async function JobFilter (filterField, sortBy, searchQuery){
     //to avoid lint error and to be added later in query
     void sortBy;
     try {
-        console.log(filterField);
         const response = await fetch(
             getApiUrl(`/api/jobs?${filterField}=${encodeURIComponent(searchQuery)}`), 
             {
@@ -452,7 +451,7 @@ export async function DeleteResumeApi(resumeId, setErrorMessage, token) {
 
 export async function ApplyForJob(jobId, resumeId, token) {
     try {
-            const response = await fetch(getApiUrl("/api/applications/"), {
+        const response = await fetch(getApiUrl("/api/applications/"), {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -473,5 +472,30 @@ export async function ApplyForJob(jobId, resumeId, token) {
     } catch (error) {
         console.error(error);
         return null;
+    }
+}
+
+export async function GetSpecificJobHistory(jobId, token){
+     try {
+       
+        const response = await fetch(
+            getApiUrl(`/api/applications/history?jobId=${jobId}`), 
+            {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+
+        if (!response.ok) {
+            return [];
+        }
+        const data = await response.json();
+        return data.application;
+    } catch (error) {
+        console.error("Error filtering jobs:", error);
+        return [];
     }
 }

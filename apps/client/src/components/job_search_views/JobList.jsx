@@ -9,7 +9,7 @@ import { useAuth } from './../../utils/Auth';
  * @returns the job search component
  */
 export default function JobList({ jobs, setView, setSelectedJob }) {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [page, setPage] = useState(1);
   const startIndex = (page - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
@@ -17,7 +17,7 @@ export default function JobList({ jobs, setView, setSelectedJob }) {
   const totalPages = Math.ceil(jobs.length / ITEMS_PER_PAGE);
 
   const handleSelectJob = (job) => {
-    if (!token) return;
+    if (!token || user?.role === "recruiter") return;
     setSelectedJob(job);
     setView("job-application");
   };

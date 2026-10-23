@@ -34,8 +34,6 @@ function Main() {
     getOptions();
   }, []);
 
-  console.log("updated jobs" + jobs);
-
   return (
     <AuthContext.Provider value={{ token, setToken, user, setUser }}>
       <div id="app">

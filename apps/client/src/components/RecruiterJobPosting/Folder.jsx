@@ -60,7 +60,6 @@ function FolderTabs({ folderView, setFolderView }) {
  * @returns Display Job Openings
  */
 function DisplayJobOpenings({ setIsAdding, jobs }) {
-  console.log(jobs);
 
   return (
     <section className="folder-job-openings">
