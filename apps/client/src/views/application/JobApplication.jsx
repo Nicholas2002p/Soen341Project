@@ -1,9 +1,22 @@
 import Job from '../../components/Job/Job';
 import Application from '../../components/JobApplication/Application';
-
+import { ApplyForJob } from '../../utils/Api';
+import { useState } from 'react';
 import './JobApplication.scss';
+import { useAuth } from '../../utils/Auth';
 
 export default function JobApplication({ setView, job }) {
+  const [selectedResumeId, setSelectedResumeId] = useState(null);
+  const { token } = useAuth();
+
+  const handleApply = async () => {
+      const success = await ApplyForJob(job.jobId, selectedResumeId, token);
+
+      if (success) {
+        console.log("It worked!")
+      }
+  };
+
   return (
     <section className='job-application'>
       <main className='main-job-application'>
@@ -12,7 +25,7 @@ export default function JobApplication({ setView, job }) {
 
         <section className='resume-application'>
           <h2> Resume </h2>
-          <Application setView={setView} />
+          <Application handleApply={handleApply} selectedResumeId={selectedResumeId} setSelectedResumeId={setSelectedResumeId}/>
         </section>
 
         <section className='job-display'>
@@ -22,3 +35,5 @@ export default function JobApplication({ setView, job }) {
     </section>
   );
 }
+
+

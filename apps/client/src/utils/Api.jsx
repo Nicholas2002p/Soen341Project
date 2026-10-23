@@ -448,3 +448,30 @@ export async function DeleteResumeApi(resumeId, setErrorMessage, token) {
         return false;
     }
 }
+
+
+export async function ApplyForJob(jobId, resumeId, token) {
+    try {
+            const response = await fetch(getApiUrl("/api/applications/"), {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ 
+                jobId: Number(jobId), 
+                resumeId: Number(resumeId) 
+            }), 
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            return null;
+        }
+
+        return data.application;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
