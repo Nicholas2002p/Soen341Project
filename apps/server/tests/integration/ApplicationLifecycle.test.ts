@@ -199,6 +199,19 @@ test('application lifecycle works through the HTTP API and database', async () =
         const badFilterResponse = await request('/api/applications/history?status=Hired', { headers: auth(seeker.token) });
         assert.equal(badFilterResponse.status, 400);
 
+        // With ?jobId= only the application for that job is returned, as a single object with its history.
+        const jobHistoryResponse = await request(`/api/applications/history?jobId=${job.jobId}`, { headers: auth(seeker.token) });
+        assert.equal(jobHistoryResponse.status, 200);
+        const jobHistory = (await jobHistoryResponse.json()) as { application: ApplicationResponse };
+        assert.equal(jobHistory.application.id, application.id);
+        assert.deepEqual(jobHistory.application.statusHistory?.map((entry) => entry.status), ['Applied', 'Interview']);
+
+        // A job the user has not applied to returns 404, and an invalid id returns 400.
+        const notAppliedResponse = await request(`/api/applications/history?jobId=${job.jobId}`, { headers: auth(otherSeeker.token) });
+        assert.equal(notAppliedResponse.status, 404);
+        const badJobIdResponse = await request('/api/applications/history?jobId=abc', { headers: auth(seeker.token) });
+        assert.equal(badJobIdResponse.status, 400);
+
         // Recruiters have no application history of their own.
         const recruiterHistoryResponse = await request('/api/applications/history', { headers: auth(recruiter.token) });
         assert.equal(recruiterHistoryResponse.status, 403);

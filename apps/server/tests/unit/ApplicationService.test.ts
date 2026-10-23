@@ -105,6 +105,30 @@ test('listHistory only returns applications with one of the given statuses', asy
     assert.equal(all.length, 2);
 });
 
+test('getHistoryForJob returns the application for that job with its status history', async () => {
+    const otherJobApplication = { ...application, id: 2, jobId: 200 };
+    const { service } = createService(new FakeApplicationRepository([openJob], [application, otherJobApplication]));
+    await service.updateStatus(recruiter, application.id, ApplicationStatus.Interview);
+
+    const result = await service.getHistoryForJob(jobSeeker, openJob.id);
+
+    assert.equal(result.id, application.id); // Only the application for that job
+    assert.deepEqual(result.statusHistory.map((entry) => entry.status), [ApplicationStatus.Applied, ApplicationStatus.Interview]);
+});
+
+test('getHistoryForJob reports a job the user has not applied to as not found', async () => {
+    const { service } = createService(new FakeApplicationRepository([openJob], [application]));
+
+    // Another job seeker has not applied to this job
+    await assert.rejects(service.getHistoryForJob(otherJobSeeker, openJob.id), ApplicationNotFoundError);
+});
+
+test('getHistoryForJob refuses users who are not job seekers', async () => {
+    const { service } = createService(new FakeApplicationRepository([openJob], [application]));
+
+    await assert.rejects(service.getHistoryForJob(recruiter, openJob.id), ApplicationNotAllowedError);
+});
+
 test('listHistory refuses users who are not job seekers', async () => {
     const { service } = createService(new FakeApplicationRepository([openJob], [application]));
 
