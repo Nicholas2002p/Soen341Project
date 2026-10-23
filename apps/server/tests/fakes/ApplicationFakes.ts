@@ -92,6 +92,11 @@ export class FakeApplicationRepository implements IApplicationRepository {
             .map((stored) => ({ ...stored, statusHistory: this.statusHistory.get(stored.id) ?? [] }));
     }
 
+    async getHistoryByUserAndJob(userId: number, jobId: number): Promise<ApplicationDetails | null> {
+        const stored = await this.getByUserAndJob(userId, jobId);
+        return stored ? { ...this.withJob(stored), statusHistory: this.statusHistory.get(stored.id) ?? [] } : null;
+    }
+
     async listByJobId(jobId: number): Promise<Application[]> {
         return [...this.applications.values()].filter((stored) => stored.jobId === jobId);
     }

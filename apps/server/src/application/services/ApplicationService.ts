@@ -89,6 +89,22 @@ export class ApplicationService implements IApplicationService {
         return this.applicationRepository.listHistoryByUserId(user.id, filter);
     }
 
+    //get the job seeker's application for one job with its status history.
+    //Throws ApplicationNotFoundError if they have not applied to that job.
+    async getHistoryForJob(user: PublicUser, jobId: number): Promise<ApplicationDetails> {
+        if (user.role !== UserRole.JobSeeker) {
+            throw new ApplicationNotAllowedError('Only job seekers have an application history.');
+        }
+
+        const application = await this.applicationRepository.getHistoryByUserAndJob(user.id, jobId);
+
+        if (!application) {
+            throw new ApplicationNotFoundError('You have not applied to this job.');
+        }
+
+        return application;
+    }
+
     //get one application with its status history, for the applicant or the recruiter of the job.
     //Anyone else gets ApplicationNotFoundError so the API does not reveal which application ids exist.
     async getById(user: PublicUser, applicationId: number): Promise<ApplicationDetails> {
