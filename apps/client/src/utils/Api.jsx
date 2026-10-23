@@ -290,13 +290,13 @@ export async function JobFilter (filterField, sortBy, searchQuery){
 };
 
 /**
- *  gets all jobs 
+ *  gets all jobs that are available
  * @returns all jobs that are not past deadline
  */
 export async function GetJobsApi() {
         try {
         const response = await fetch(
-            getApiUrl("/api/jobs"), 
+            getApiUrl("/api/jobs/available"), 
             {
                 method: 'GET',
                 headers: {
