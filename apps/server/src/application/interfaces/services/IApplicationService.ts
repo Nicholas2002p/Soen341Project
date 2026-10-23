@@ -17,6 +17,9 @@ export interface IApplicationService {
     //Other roles get ApplicationNotAllowedError.
     listHistory(user: PublicUser, statuses?: ApplicationStatus[]): Promise<ApplicationDetails[]>;
 
+    //get the job seeker's application for one job with its status history, other roles get ApplicationNotAllowedError
+    getHistoryForJob(user: PublicUser, jobId: number): Promise<ApplicationDetails>;
+
     //get one application with its status history, for the applicant or the recruiter of the job
     getById(user: PublicUser, applicationId: number): Promise<ApplicationDetails>;
 
