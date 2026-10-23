@@ -154,7 +154,8 @@ PORT=3000
 TLS_KEY_PATH=certs/localhost-key.pem
 TLS_CERT_PATH=certs/localhost.pem
 HTTP_REDIRECT_PORT=3001
+PUBLIC_SERVER_URL=https://localhost:3000
 ```
 
 The certificate and private key are local development files and must not be committed. Open the API at `https://localhost:3000`.
-
+`PUBLIC_SERVER_URL` is used by the server when returning relative profile picture paths. Absolute profile picture URLs are returned unchanged.
