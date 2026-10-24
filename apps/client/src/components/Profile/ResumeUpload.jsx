@@ -19,6 +19,7 @@ export default function ResumeUpload() {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [inputKey, setInputKey] = useState(0);
+  const [showResumes, setShowResumes] = useState(false); // resume list hidden by default
 
   // Load the user's resumes when the component is shown
   useEffect(() => {
@@ -76,24 +77,35 @@ export default function ResumeUpload() {
       {errorMessage && <p className="resume-error">{errorMessage}</p>}
       {successMessage && <p className="resume-success">{successMessage}</p>}
 
-      <h3>My Resumes</h3>
-      {resumes.length === 0 ? (
-        <p className="resume-empty">No resume uploaded yet.</p>
-      ) : (
-        <ul className="resume-list">
-          {resumes.map((resume) => (
-            <li key={resume.id} className="resume-item">
-              <span className="resume-name">{resume.fileName}</span>
-              <span className="resume-date">{new Date(resume.createdAt).toLocaleDateString()}</span>
-              <button type="button" onClick={() => DownloadResumeApi(resume, setErrorMessage, token)}>
-                Download
-              </button>
-              <button type="button" onClick={() => handleDelete(resume.id)}>
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
+      <label className="resume-toggle">
+        <input
+          type="checkbox"
+          checked={showResumes}
+          onChange={() => setShowResumes((current) => !current)}
+        />
+        <span className="resume-toggle-slider" />
+        <span>Show my resumes ({resumes.length})</span>
+      </label>
+
+      {showResumes && (
+        resumes.length === 0 ? (
+          <p className="resume-empty">No resume uploaded yet.</p>
+        ) : (
+          <ul className="resume-list">
+            {resumes.map((resume) => (
+              <li key={resume.id} className="resume-item">
+                <span className="resume-name">{resume.fileName}</span>
+                <span className="resume-date">{new Date(resume.createdAt).toLocaleDateString()}</span>
+                <button type="button" onClick={() => DownloadResumeApi(resume, setErrorMessage, token)}>
+                  Download
+                </button>
+                <button type="button" onClick={() => handleDelete(resume.id)}>
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        )
       )}
     </section>
   );
