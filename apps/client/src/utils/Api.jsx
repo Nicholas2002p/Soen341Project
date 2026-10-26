@@ -514,7 +514,7 @@ export async function ApplyForJob(jobId, resumeId, token) {
  * @param {*} token 
  * @returns  the application for the job
  */
-export async function GetSpecificJobHistory(jobId, token){
+export async function GetSpecificJobHistory(jobId, token) {
      try {
        
         const response = await fetch(
@@ -539,7 +539,7 @@ export async function GetSpecificJobHistory(jobId, token){
     }
 }
 
-export async function GetJobHistory(token, setErrorMessage){
+export async function GetJobHistory(token) {
       try {
         const response = await fetch(getApiUrl(`/api/applications/history`), {
             method: "GET",
@@ -550,8 +550,6 @@ export async function GetJobHistory(token, setErrorMessage){
         });
 
         if (!response.ok) {
-            const data = await response.json().catch(() => ({}));
-            setErrorMessage(data.message ?? "Unable to download resume.");
             return null;
         }
 
@@ -559,7 +557,6 @@ export async function GetJobHistory(token, setErrorMessage){
         return data.applications;
     } catch (error) {
         console.error(error);
-        setErrorMessage("Unable to download resume.");
         return null;
     }
 }
