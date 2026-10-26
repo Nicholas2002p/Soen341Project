@@ -22,7 +22,6 @@ export default function JobApplicationHistory({ setView }) {
     const SeeHistory = async () => {
       const data = await GetJobHistory(token);
       if (!data) return;
-      console.log(data);
       setHistory(data);
       setFilterHistory(data);
     };

@@ -3,6 +3,8 @@ const ITEMS_PER_PAGE = 10;
 import { useState } from 'react';
 import { Stack, Pagination } from '@mui/material';
 import { useAuth } from './../../utils/Auth';
+import {  GetJobApi } from '../../utils/Api';
+
 /**
  * Job Search
  * 
@@ -16,9 +18,15 @@ export default function JobList({ jobs, setView, setSelectedJob }) {
   const currentJobs = jobs.slice(startIndex, endIndex);
   const totalPages = Math.ceil(jobs.length / ITEMS_PER_PAGE);
 
-  const handleSelectJob = (job) => {
+  /**
+   * handles the onclick befor going to job application screen and gets the job data 
+   * @param {*} job 
+   * @returns 
+   */
+  const handleSelectJob = async (job) => {
     if (!token || user?.role === "recruiter") return;
-    setSelectedJob(job);
+    const jobData = await GetJobApi(job.jobId);
+    setSelectedJob(jobData);
     setView("job-application");
   };
 
@@ -84,7 +92,6 @@ function Requirements({ requirements }) {
  */
 function makeJob(job, onSelectJob) {
     const deadlineDate = new Date(job.deadline).toLocaleDateString();
-
     return (
         <a href={`/jobs/${job.jobId}`} key={job.jobId} className="job"
         onClick={(e) => { e.preventDefault(); onSelectJob(job); }}>

@@ -316,6 +316,33 @@ export async function GetJobsApi() {
         return [];
     }
 }
+
+/**
+ *  gets  job base on id
+ * @returns job with that id
+ */
+export async function GetJobApi(jobId) {
+        try {
+        const response = await fetch(
+            getApiUrl(`/api/jobs/${jobId}`), 
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+        if (!response.ok) {
+            return [];
+        }
+        const data = await response.json();
+        return data.job;
+    } catch (error) {
+        console.error("Error filtering jobs:", error);
+        return [];
+    }
+}
+
 /**
  * uploads a resume file (pdf, doc or docx, 5 MB max)
  * @param {*} file
@@ -328,7 +355,7 @@ export async function UploadResumeApi(file, setErrorMessage, token) {
     formData.append("resume", file);
 
     try {
-               const response = await fetch(getApiUrl("/api/resumes"), {
+            const response = await fetch(getApiUrl("/api/resumes"), {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
