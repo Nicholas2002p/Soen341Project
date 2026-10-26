@@ -5,7 +5,7 @@
 }
 
 .history-application {
-  @include width-height(60%, 300px);
+  @include width-height(60%, auto);
   @include flex-dir(column);
 }
 
