@@ -7,7 +7,7 @@ a {
 }
 
 nav {
-  @include flex-align-justify(center, space-between);
+  @include style.flex-align-justify(center, space-between);
   background-color: style.$main-blue;
   font-size: 20px;
   padding-left: 20px;

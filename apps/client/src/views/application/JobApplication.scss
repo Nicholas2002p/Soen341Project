@@ -40,7 +40,7 @@
 }
 
 .job-display {
-  @include flex-align-justify(center, center);
+  @include style.flex-align-justify(center, center);
   flex: 1;
   border-left: style.$black-border;
 }
