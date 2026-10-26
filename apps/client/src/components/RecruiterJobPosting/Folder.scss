@@ -1,4 +1,4 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 // =========================== FOLDER ===========================
 
@@ -8,8 +8,8 @@
 
   li {
     list-style-type: none;
-    @include width-height(15%, none);
-    background-color: $folder-color;
+    @include style.width-height(15%, none);
+    background-color: style.$folder-color;
     padding: 10px;
     border-radius: 10px 10px 0 0;
     border: solid 1px rgb(17, 13, 66);
@@ -25,9 +25,9 @@
 }
 
 .folder-content {
-  @include width-height(none, 85vh);
-  background-color: $folder-color;
-  border: $black-border;
+  @include style.width-height(none, 85vh);
+  background-color: style.$folder-color;
+  border: style.$black-border;
 
   display: flex;
   gap: 10px;
@@ -39,7 +39,7 @@
 }
 
 .folder-job-openings {
-  @include flex-align-justify(none, center);
+  @include style.flex-align-justify(none, center);
   width: 100%;
   min-height: 100%;
   
@@ -50,5 +50,5 @@
 
 .folder-job-openings::after {
   content: "";
-  @include width-height(100%, 15px);
+  @include style.width-height(100%, 15px);
 }

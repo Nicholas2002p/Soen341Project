@@ -1,9 +1,9 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 // ============================= FILTERS ===============================
 
 .filters {
-  @include flex-dir(column);
+  @include style.flex-dir(column);
   flex: 1;
   gap: 20px;
   overflow-y: scroll;
@@ -12,8 +12,8 @@
   padding-left: 10px;
   padding-right: 20px;
 
-  border-top: $black-border;
-  border-right: $black-border;
+  border-top: style.$black-border;
+  border-right: style.$black-border;
 
   h2 {
     font-size: 35px;
@@ -23,7 +23,7 @@
 }
 
 .filter {
-  @include flex-dir(column);
+  @include style.flex-dir(column);
   font-size: 25px;
   box-shadow: 0px 5px 5px black;
 

@@ -1,5 +1,5 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 .search-job {
-    @include flex-dir(column);
+    @include style.flex-dir(column);
 }
