@@ -419,6 +419,38 @@ export async function DownloadResumeApi(resume, setErrorMessage, token) {
 }
 
 /**
+ * gets a resume file and returns a temporary URL to display it in the page
+ * the URL must be freed with URL.revokeObjectURL when it's not needed anymore
+ * @param {*} resumeId
+ * @param {*} setErrorMessage
+ * @param {*} token
+ * @returns a temporary URL for the file, or null if it failed
+ */
+export async function GetResumeFileUrlApi(resumeId, setErrorMessage, token) {
+    try {
+        const response = await fetch(getApiUrl(`/api/resumes/${resumeId}/file`), {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            setErrorMessage(data.message ?? "Unable to load resume.");
+            return null;
+        }
+
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Unable to load resume.");
+        return null;
+    }
+}
+
+/**
  * deletes a resume
  * @param {*} resumeId
  * @param {*} setErrorMessage

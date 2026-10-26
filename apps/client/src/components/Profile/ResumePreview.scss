@@ -1,0 +1,21 @@
+.resume-preview {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid black;
+}
+
+.resume-preview-frame {
+  height: 600px;
+  background-color: white;
+}
+
+.resume-preview-message {
+  margin: 0;
+  padding: 16px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.resume-preview-error {
+  color: red;
+}
