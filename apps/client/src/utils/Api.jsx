@@ -539,7 +539,7 @@ export async function GetSpecificJobHistory(jobId, token){
     }
 }
 
-export async function GetJobHistory(token){
+export async function GetJobHistory(token, setErrorMessage){
       try {
         const response = await fetch(getApiUrl(`/api/applications/history`), {
             method: "GET",

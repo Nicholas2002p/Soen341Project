@@ -14,19 +14,21 @@ import {GetJobHistory} from '../../utils/Api';
  * @returns Job Application History Component
  */
 export default function JobApplicationHistory({ setView }) {
+  const [errorMessage, setErrorMessage] = useState("");
   const [history, setHistory] = useState([]);
   const [filterHistory, setFilterHistory] = useState([]);
   const { token } = useAuth();
 
   useEffect(() => {
     const SeeHistory = async () => {
-      const data = await GetJobHistory(token);
+      const data = await GetJobHistory(token, setErrorMessage);
       if (!data) return;
       setHistory(data);
       setFilterHistory(data);
     };
     SeeHistory();
-  }, [token])
+  }, [token, errorMessage]);
+  
   return (
     <section className='history-job-application'>
       <Nav setView={setView} />
