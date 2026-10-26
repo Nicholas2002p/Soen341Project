@@ -1,4 +1,4 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 .password-display {
   position: relative;
@@ -22,31 +22,31 @@
 .registration {
   background: url("/registration-login.png");
   background-size: contain;
-  @include width-height(100%, 100%);
-  @include flex-dir-align-justify(column, center, center);
+  @include style.width-height(100%, 100%);
+  @include style.flex-dir-align-justify(column, center, center);
   text-align: center;
 }
 
 .password {
-  @include flex-dir-align(column, start);
+  @include style.flex-dir-align(column, start);
   flex: 1;
 }
 
 .loginbox {
-  @include flex-dir(column);
-  @include width-height(45%, 50%);
-  background-color: $main-blue;
+  @include style.flex-dir(column);
+  @include style.width-height(45%, 50%);
+  background-color: style.$main-blue;
   padding: 5px;
 }
 
 .reg-inside {
-  @include flex-dir(column);
-  @include width-height(none, 100%);
+  @include style.flex-dir(column);
+  @include style.width-height(none, 100%);
 }
 
 .register-btn {
   align-self: center;
-  @include width-height(100px, 30px);
+  @include style.width-height(100px, 30px);
   margin-top: 20px;
   margin-bottom: 10px;
 }
@@ -56,5 +56,5 @@
 }
 
 .recruiter {
-  @include flex-dir-justify(row, flex-start);
+  @include style.flex-dir-justify(row, flex-start);
 }

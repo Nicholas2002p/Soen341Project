@@ -1,12 +1,12 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 // =========================== ADD JOB OPENING ===========================
 
 .add-job-button {
-  @include modified-a4-paper();
-  @include flex-align-justify(center, center);
-  background-color: $off-white;
-  border: $black-border;
+  @include style.modified-a4-paper();
+  @include style.flex-align-justify(center, center);
+  background-color: style.$off-white;
+  border: style.$black-border;
   cursor: pointer;
   padding: 10px;
 }
@@ -16,32 +16,32 @@
 }
 
 .add-job {
-  @include flex-align-justify(center, center);
-  @include width-height(100px, 100px);
+  @include style.flex-align-justify(center, center);
+  @include style.width-height(100px, 100px);
   padding: 10px;
-  border: $black-border;
+  border: style.$black-border;
   font-size: 100px;
   border-radius: 100px;
 }
 
 .add-job-opening-page {
-  @include flex-align-justify(center, center);
-  @include width-height(100%, 100vh);
+  @include style.flex-align-justify(center, center);
+  @include style.width-height(100%, 100vh);
   position: absolute;
 }
 
 .add-job-opening-content {
   background-color: rgb(201, 218, 238);
-  border: $black-border;
-  @include width-height(60%, 60%);
-  @include flex-dir(column);
+  border: style.$black-border;
+  @include style.width-height(1000px, 700px);
+  @include style.flex-dir(column);
   border-radius: 10px;
   gap: 10px;
   padding: 20px;
 
   button {
     margin-top: auto;
-    @include width-height(200px, 50px);
+    @include style.width-height(200px, 50px);
     font-size: 20px;
     align-self: center;
     position: relative;
@@ -60,7 +60,7 @@
     position: absolute;
     content: "";
     border-radius: 10px;
-    @include width-height(200px, 50px);
+    @include style.width-height(200px, 50px);
     border-bottom: 3px solid black;
     border-left: 3px solid black;
     right: 1px;
@@ -69,7 +69,7 @@
 }
 
 .add-job-page-header {
-  @include flex-align-justify(center, center);
+  @include style.flex-align-justify(center, center);
   font-size: 20px;
   font-weight: 600;
   position: relative;
@@ -82,8 +82,8 @@
   text-align: center;
   right: 0;
   top: 5px;
-  @include width-height(30px, 30px);
-  @include no-margin-padding();
+  @include style.width-height(30px, 30px);
+  @include style.no-margin-padding();
 }
 
 .add-job-inputs {
@@ -93,6 +93,6 @@
   gap: 10px;
 
   input, select {
-    @include input-css();
+    @include style.input-css();
   }
 }

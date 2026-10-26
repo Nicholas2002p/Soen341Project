@@ -23,7 +23,8 @@ export default function ProfileCard({ profileURL, fname, lname, role, desc }) {
       <section className='profile-card-display'>
         <div className='card-hole'>  </div>
         <section className='profile-card-information'>
-          <img src={profileURL !==null ?  profileURL: "random-pfp.PNG" } alt="" />
+          {/* BAND AID FIX FOR THE NEXT SPRINT */}
+          <img src={profileURL === "/uploads/profile-pictures/profile_default.jpg" ? "https://localhost:3000/uploads/profile-pictures/profile_default.jpg" : profileURL} alt="" />
           <section className='profile-card-information-text'>
             <p className="card-name"> {lname}, {fname} </p>
             <p className="card-role"> {userRole} </p>

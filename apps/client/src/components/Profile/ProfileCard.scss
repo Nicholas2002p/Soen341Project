@@ -1,24 +1,24 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 // =========================== PROFILE CARD ===========================
 
 .profile-card {
   flex: 0.5;
-  @include flex-align-justify(center, center);
+  @include style.flex-align-justify(center, center);
 }
 
 .profile-card-display {
-  @include flex-dir(column);
+  @include style.flex-dir(column);
   
-  border: $black-border;
+  border: style.$black-border;
   border-radius: 20px;
   
   position: relative;
-  @include width-height(90%, 90%);
+  @include style.width-height(90%, 90%);
 }
 
 .card-hole {
-  border: $black-border;
+  border: style.$black-border;
   border-radius: 20px;
   background-color: white;
   
@@ -27,14 +27,14 @@
   left: 52%;
   transform: translateX(-51%);
 
-  @include width-height(10em, 1em);
+  @include style.width-height(10em, 1em);
 }
 
 .profile-card-information {
-  @include flex-dir(column);
-  @include width-height(none, 100%);
+  @include style.flex-dir(column);
+  @include style.width-height(none, 100%);
   border-radius: 20px;
-  background: radial-gradient($main-blue, #FFFFFF);
+  background: radial-gradient(style.$main-blue, #FFFFFF);
   padding-left: 2em;
   padding-right: 2em;
 }
@@ -47,10 +47,10 @@
 }
 
 .profile-card-information img {
-  @include width-height(100%, 350px);
+  @include style.width-height(100%, 350px);
   align-self: center;
   margin-top: 3em;
-  border: $black-border;
+  border: style.$black-border;
   object-fit: fill;
 }
 

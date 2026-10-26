@@ -1,8 +1,8 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 #job-search-form {
-    @include flex-align-justify(center, center);
-    background: $off-white;
+    @include style.flex-align-justify(center, center);
+    background: style.$off-white;
     height: 100px;
 }
 
@@ -18,7 +18,7 @@
 .dropdown {
     padding: 8px 10px;
     cursor: pointer;
-    border-right: 1px solid $main-blue;
+    border-right: 1px solid style.$main-blue;
     border-radius: 0;
     
 }
@@ -34,16 +34,16 @@
     cursor: pointer;
     border-top-right-radius: 999px;
     border-bottom-right-radius: 999px;
-    background-color: $main-blue;
+    background-color: style.$main-blue;
 }
 
 .formBtn:hover {
-    background-color: $main-blue;
+    background-color: style.$main-blue;
 }
 
 .inside {
     width: 70%;
-    border: 2px solid $main-blue;
+    border: 2px solid style.$main-blue;
     border-radius: 999px;
     display: flex;
 }

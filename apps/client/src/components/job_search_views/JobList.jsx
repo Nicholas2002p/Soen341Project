@@ -47,13 +47,20 @@ export default function JobList({ jobs, setView, setSelectedJob }) {
  * @param {Object} jobs - what the job entails
  * @returns the job board component
  */
-function JobBoard({ jobs,onSelectJob }) {
+function JobBoard({ jobs, onSelectJob }) {
   const displayJobs = jobs.map((job) => {
     return makeJob(job, onSelectJob);
-
   });
+
   return (
-    <div className="job-board">{displayJobs}</div>
+    <>
+      {
+        Object.keys(jobs).length === 0 ? 
+          <div className="empty-job-board"> There are no jobs available </div> 
+          : 
+          <div className="job-board">{displayJobs}</div>
+      }
+    </>
   );
 }
 
