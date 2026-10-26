@@ -7,12 +7,9 @@ import './App.css';
 // import Login from './views/authentication/Login';
 // import RecruiterJobPosting from './views/recruiter_job_posting/RecruiterJobPosting';
 
-<<<<<<< HEAD
 // import JobApplication from './views/application/JobApplication';
 
 import JobApplicationHistory from './views/history/JobApplicationHistory';
-=========
-=========
 import JobApplication from './views/application/JobApplication';
 import Home from './views/home/Home';
 import Profile from './views/profile/Profile';
@@ -20,7 +17,6 @@ import Registration from './views/authentication/Registration';
 import Login from './views/authentication/Login';
 import JobSearch from './views/job_search/JobSearch'
 import RecruiterJobPosting from './views/recruiter_job_posting/RecruiterJobPosting';
->>>>>>> a11e45a2c61a290e0493e2bd1b5e657ffcef79f1
 
 import { AuthContext } from './utils/Auth';
 import { GetJobsApi } from "./utils/Api";
@@ -48,15 +44,10 @@ function Main() {
         {view === "profile" && <Profile setView={setView} />}
         {view === "registration" && <Registration setView={setView} />} 
         {view === "sign-in" && <Login setView={setView} />} 
-<<<<<<< HEAD
-        {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} /> } */}
-
-        <JobApplicationHistory setView={setView}/>
-=======
+        {view === "history" && <JobApplicationHistory setView={setView}/>}
         {view === "job-search" && <JobSearch setView={setView} setSelectedJob={setSelectedJob} />} 
         {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} jobs={jobs} /> }
         {view === "job-application" && <JobApplication setView={setView} job={selectedJob}/> }
->>>>>>>>> Temporary merge branch 2
       </div>
     </AuthContext.Provider>
   );
