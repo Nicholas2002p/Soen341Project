@@ -51,7 +51,7 @@ export class UserService implements IUserService {
             throw new UnauthorizedUserActionError('You can only update your own account.');
         }
 
-        const user = await this.userRepository.updatePassword(id, newPasswordHash);
+        const user = await this.userRepository.update(id, { passwordHash: newPasswordHash });
 
         if (!user) {
             return null;

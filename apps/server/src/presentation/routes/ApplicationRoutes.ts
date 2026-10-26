@@ -17,6 +17,7 @@ applicationRoutes.post('/', applicationController.apply.bind(applicationControll
 applicationRoutes.get('/', applicationController.listMine.bind(applicationController));
 
 // List the logged in job seeker's applications with their full status history (optional ?status=Offered,Rejected).
+// With ?jobId=5 it returns only the application for that job, as a single object.
 // Declared before "/:id" so "history" is not read as an application id.
 applicationRoutes.get('/history', applicationController.listHistory.bind(applicationController));
 

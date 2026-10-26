@@ -257,6 +257,66 @@ export async function GetProfileApi(token) {
 }
 
 /**
+ * gets jobs base on filter options
+ * @param {*} filterField 
+ * @param {*} sortBy 
+ * @param {*} searchQuery 
+ * @param {*} token 
+ * @returns all jobs that match filter and are not past deadline
+ */
+export async function JobFilter (filterField, sortBy, searchQuery){
+    //to avoid lint error and to be added later in query
+    void sortBy;
+    try {
+        const response = await fetch(
+            getApiUrl(`/api/jobs?${filterField}=${encodeURIComponent(searchQuery)}`), 
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+
+        if (!response.ok) {
+            return [];
+        }
+        const data = await response.json();
+        return data.jobs;
+    } catch (error) {
+        console.error("Error filtering jobs:", error);
+        return [];
+    }
+};
+
+/**
+ *  gets all jobs that are available
+ * @returns all jobs that are not past deadline
+ */
+export async function GetJobsApi() {
+        try {
+        const response = await fetch(
+            getApiUrl("/api/jobs/available"), 
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+        return data.jobs;
+    } catch (error) {
+        console.error("Error filtering jobs:", error);
+        return [];
+    }
+}
+/**
  * uploads a resume file (pdf, doc or docx, 5 MB max)
  * @param {*} file
  * @param {*} setErrorMessage
@@ -385,5 +445,69 @@ export async function DeleteResumeApi(resumeId, setErrorMessage, token) {
         console.error(error);
         setErrorMessage("Unable to delete resume.");
         return false;
+    }
+}
+
+/**
+ *  takes the jobid and resume id 
+ * @param {*} jobId 
+ * @param {*} resumeId 
+ * @param {*} token 
+ * @returns the application for the job
+ */
+export async function ApplyForJob(jobId, resumeId, token) {
+    try {
+        const response = await fetch(getApiUrl("/api/applications/"), {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ 
+                jobId: Number(jobId), 
+                resumeId: Number(resumeId) 
+            }), 
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            return null;
+        }
+
+        return data.application;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+/**
+ * calles the server to get a specific job aplication history 
+ * @param {*} jobId 
+ * @param {*} token 
+ * @returns  the application for the job
+ */
+export async function GetSpecificJobHistory(jobId, token){
+     try {
+       
+        const response = await fetch(
+            getApiUrl(`/api/applications/history?jobId=${jobId}`), 
+            {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+
+        if (!response.ok) {
+            return null;
+        }
+        const data = await response.json();
+        return data.application;
+    } catch (error) {
+        console.error("Error filtering jobs:", error);
+        return null;
     }
 }

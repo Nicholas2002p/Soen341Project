@@ -25,7 +25,7 @@ export default function Login({ setView }) {
                 <section className='reg-inside'>
 
                     <div className='password'>
-                        <label htmlfor="email">Email:</label>
+                        <label htmlFor="email">Email:</label>
                         <input className='registration-input' type="text " name="email" maxLength="50" onChange={(e) => { setEmail(e.target.value) }} />
                     </div>
 

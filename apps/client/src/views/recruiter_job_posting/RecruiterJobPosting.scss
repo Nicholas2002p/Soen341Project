@@ -1,19 +1,4 @@
-// =========================== VARIABLES ==============================
-$black-border: 1px solid black;
-$off-white: #FAF9F6;
-
-// ============================= MIXINS ===============================
-
-@mixin flex-dir-justify($direction, $justify) {
-  display: flex;
-  flex-direction: $direction;
-  justify-content: $justify;
-}
-
-@mixin width-height($width, $height) {
-  width: $width;
-  height: $height;
-}
+@import "../../utils/style";
 
 // =========================== RECRUITER JOB POSTING ===========================
 

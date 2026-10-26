@@ -1,0 +1,49 @@
+@import "../../utils/style";
+
+#job-search-form {
+    @include flex-align-justify(center, center);
+    background: $off-white;
+    height: 100px;
+}
+
+.dropdown,
+    #searchBar,
+    .formBtn {
+        border: none;
+        outline: none;
+        background: transparent;
+        font: inherit;
+    }
+
+.dropdown {
+    padding: 8px 10px;
+    cursor: pointer;
+    border-right: 1px solid $main-blue;
+    border-radius: 0;
+    
+}
+
+#searchBar {
+    flex-grow: 1;
+    padding: 8px 12px;
+    min-width: 0;
+}
+
+.formBtn {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+    background-color: $main-blue;
+}
+
+.formBtn:hover {
+    background-color: $main-blue;
+}
+
+.inside {
+    width: 70%;
+    border: 2px solid $main-blue;
+    border-radius: 999px;
+    display: flex;
+}

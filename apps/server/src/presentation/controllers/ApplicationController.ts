@@ -107,6 +107,15 @@ export class ApplicationController {
     async listHistory(req: Request, res: Response): Promise<void> {
         try {
             const user = res.locals.user as PublicUser;
+
+            // With ?jobId= only the application for that job is returned, as a single object
+            if (req.query.jobId !== undefined) {
+              const jobId = parseId(req.query.jobId);
+              const application = await applicationService.getHistoryForJob(user, jobId);
+              res.status(200).json({ application });
+              return;
+            }
+
             const statuses = parseStatusFilter(req.query.status);
 
             // Return a 200 OK response with the applications and their status history

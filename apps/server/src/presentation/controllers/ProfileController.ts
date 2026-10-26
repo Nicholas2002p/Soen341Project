@@ -1,7 +1,10 @@
 import type { Request, Response } from 'express';
 import type { ProfileData } from '../../application/interfaces/repositories/IProfileRepository.js';
-import { profileService } from '../../infrastructure/container.js';
+import { profileImageStorage, profileService } from '../../infrastructure/container.js';
 import { UnauthorizedUserActionError } from '../../domain/errors/UnauthorizedUserActionError.js';
+
+const defaultProfileURL = process.env.DEFAULT_PROFILE_IMAGE_URL
+    ?? '/uploads/profile-pictures/profile_default.jpg';
 
 function getAuthenticatedUserId(res: Response): number {
     return (res.locals.user as { id: number }).id;
@@ -136,19 +139,68 @@ export class ProfileController {
             return;
         }
 
-        // Update the user's profile with the new profile picture URL and return the updated profile
-        const profile = await profileService.upsert(userId, {
-            firstName: existingProfile.firstName,
-            middleName: existingProfile.middleName,
-            lastName: existingProfile.lastName,
-            phone: existingProfile.phone,
-            bio: existingProfile.bio,
-            location: existingProfile.location,
-            profileURL: `/uploads/profile-pictures/${file.filename}`,
-        });
+        const previousProfileURL = existingProfile.profileURL;
+        const shouldDeletePreviousPicture = previousProfileURL !== null
+            && previousProfileURL !== defaultProfileURL;
+        let newProfileURL: string | undefined;
+        let profileUpdated = false;
 
-        // Return the updated profile in the response
-        res.status(200).json({ profile });
+        try {
+            newProfileURL = await profileImageStorage.save(
+                file.buffer,
+                file.mimetype,
+                file.mimetype === 'image/png' ? 'png' : 'jpg',
+            );
+
+            const profile = await profileService.upsert(userId, {
+                firstName: existingProfile.firstName,
+                middleName: existingProfile.middleName,
+                lastName: existingProfile.lastName,
+                phone: existingProfile.phone,
+                bio: existingProfile.bio,
+                location: existingProfile.location,
+                profileURL: newProfileURL,
+            });
+
+            if (!profile) {
+                throw new Error('Profile update failed.');
+            }
+
+            profileUpdated = true;
+
+            if (shouldDeletePreviousPicture && previousProfileURL) {
+                await profileImageStorage.delete(previousProfileURL);
+            }
+
+            // Return the updated profile in the response
+            res.status(200).json({ profile });
+        } catch (error: unknown) {
+            if (profileUpdated && shouldDeletePreviousPicture) {
+                try {
+                    await profileService.upsert(userId, {
+                        firstName: existingProfile.firstName,
+                        middleName: existingProfile.middleName,
+                        lastName: existingProfile.lastName,
+                        phone: existingProfile.phone,
+                        bio: existingProfile.bio,
+                        location: existingProfile.location,
+                        profileURL: previousProfileURL,
+                    });
+                } catch (rollbackError: unknown) {
+                    console.error('Could not restore the previous profile picture URL.', rollbackError);
+                }
+            }
+
+            if (newProfileURL) {
+                try {
+                    await profileImageStorage.delete(newProfileURL);
+                } catch (cleanupError: unknown) {
+                    console.error('Could not delete the new profile picture.', cleanupError);
+                }
+            }
+
+            throw error;
+        }
     }
 }
 
