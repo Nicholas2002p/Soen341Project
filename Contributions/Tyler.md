@@ -37,6 +37,5 @@ This document summarizes the development contributions completed, including API 
 |---|---:|
 | Resume and profile API cloud storage migration | 3 hours |
 | Server API HTTPS configuration | 8 hours |
-| Added Automated Tests to the CI Pipeline | 2 hours |
 | CI automated tests | 2 hours |
 | **Total** | **13 hours** |
