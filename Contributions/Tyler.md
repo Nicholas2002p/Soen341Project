@@ -30,6 +30,14 @@ This document summarizes the development contributions completed, including API 
   - Added automated tests to the Continuous Integration (CI) pipeline.
   - Configured the CI workflow to execute tests automatically during the development process.
   - Improved the reliability of code changes by enabling automated verification.
+ 
+[Issues](https://github.com/Nicholas2002p/Soen341Project/issues?q=is%3Aissue+assignee%3ACompletelySaneIndividual)
+
+[Pull Requests](https://github.com/Nicholas2002p/Soen341Project/pulls?q=is%3Apr+assignee%3ACompletelySaneIndividual)
+
+[Commits](https://github.com/Nicholas2002p/Soen341Project/commits/sprint-2/?author=CompletelySaneIndividual)
+
+
 
 ## Summary
 
