@@ -58,7 +58,11 @@ export class FakeApplicationRepository implements IApplicationRepository {
     }
 
     private withJob(stored: Application): ApplicationWithJob {
-        return { ...stored, job: { id: stored.jobId, title: 'Junior Developer', companyName: 'TechCorp', location: 'Montreal, QC', employmentType: EmploymentType.Hybrid } };
+        return {
+            ...stored,
+            job: { id: stored.jobId, title: 'Junior Developer', companyName: 'TechCorp', location: 'Montreal, QC', employmentType: EmploymentType.Hybrid },
+            resume: { id: stored.resumeId, fileName: 'resume.pdf', fileType: 'pdf' },
+        };
     }
 
     async create(data: CreateApplicationData): Promise<Application> {
