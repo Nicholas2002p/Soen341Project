@@ -1,0 +1,57 @@
+@import "../../utils/style";
+
+.history-applications h2 {
+  font-size: 40px;
+}
+
+.history-application {
+  @include width-height(60%, 300px);
+  @include flex-dir(column);
+}
+
+.history-application-header {
+  @include flex-align-justify(center, space-between);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  
+  background-color: $main-blue;
+  border: $black-border;
+  
+  padding-left: 20px;
+  padding-right: 20px;
+
+}
+
+.history-application-title {
+  font-size: 25px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.status-arrow {
+  @include flex-align-justify(center, center);
+  gap: 10px;
+}
+
+.status {
+  @include width-height(15px, 15px);
+  border: $black-border;
+  border-radius: 50px;
+}
+
+.display-none {
+  display: none;
+}
+
+.history-application-info {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  
+  padding-left: 10px;
+  padding-right: 10px;
+  
+  background-color: rgb(241, 238, 233);
+  height: 100%;
+  border: $black-border;
+  border-top: none;
+}

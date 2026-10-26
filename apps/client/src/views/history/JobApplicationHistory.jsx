@@ -1,7 +1,17 @@
 import { useState } from 'react';
+
+import HistoryFilters from '../../components/History/HistoryFilters';
+import HistoryJobApplication from '../../components/History/HistoryInfo';
 import Nav from '../../components/Navigation/Nav';
 import './JobApplicationHistory.scss';
 
+/**
+ * Job Application History
+ * main page that displays the job application history
+ * 
+ * @param {Function} setView - changes the view inside of the nav 
+ * @returns Job Application History Component
+ */
 export default function JobApplicationHistory({ setView }) {
   return (
     <section className='history-job-application'>
@@ -18,61 +28,6 @@ export default function JobApplicationHistory({ setView }) {
     </section>
   );
 }
-
-function HistoryFilters({}) {
-  return (
-    <fieldset className='history-filters'>
-      <legend> Application Filters </legend>
-      
-      <label htmlFor="">
-        <input type="checkbox" value="applied" id="applied" name="applied" checked />
-        Applied (gray)
-      </label>
-
-      <label htmlFor="">
-        <input type="checkbox" value="offered" id="offered" name="offered" checked />
-        Accepted (green)
-      </label>
-
-      <label htmlFor="">
-        <input type="checkbox" value="interview" id="interview" name="interview" checked />
-        Interview (blue)
-      </label>
-
-      <label htmlFor="">
-        <input type="checkbox" value="under_review" id="under_review" name="under_review" checked />
-        Pending (yellow)
-      </label>
-
-      <label htmlFor="">
-        <input type="checkbox" value="rejected" id="rejected" name="rejected" checked />
-        Rejected (red)       
-      </label>
-    </fieldset>
-  );
-}
-
-function HistoryJobApplication({}) {
-  const [arrow, setArrow] = useState(true);
-
-  return (
-    <section className='history-application'>
-      <div className='history-application-header'>
-        <p className='history-application-title'> Job Title </p>
-
-        <div className='status-arrow'>
-          <div className='status'></div>
-          <p onClick={() => { setArrow(!arrow) }} className='history-arrow'> { arrow ? <> &#x25BC; </> : <> &#x25B2; </> } </p>
-        </div>
-      </div>
-
-      <div className={arrow ? "display-none" : "history-application-info"}>
-        <p> Resume for now </p>
-      </div>
-    </section>
-  );
-}
-
 
 // =========================================== SAMPLE DATA ===========================================
 

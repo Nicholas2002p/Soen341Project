@@ -11,7 +11,8 @@ import './App.css';
 // import JobApplication from './views/application/JobApplication';
 
 import JobApplicationHistory from './views/history/JobApplicationHistory';
-=======
+=========
+=========
 import JobApplication from './views/application/JobApplication';
 import Home from './views/home/Home';
 import Profile from './views/profile/Profile';
@@ -55,7 +56,7 @@ function Main() {
         {view === "job-search" && <JobSearch setView={setView} setSelectedJob={setSelectedJob} />} 
         {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} jobs={jobs} /> }
         {view === "job-application" && <JobApplication setView={setView} job={selectedJob}/> }
->>>>>>> a11e45a2c61a290e0493e2bd1b5e657ffcef79f1
+>>>>>>>>> Temporary merge branch 2
       </div>
     </AuthContext.Provider>
   );
