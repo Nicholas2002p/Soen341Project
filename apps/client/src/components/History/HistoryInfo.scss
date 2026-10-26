@@ -1,21 +1,21 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 .history-applications h2 {
   font-size: 40px;
 }
 
 .history-application {
-  @include width-height(60%, auto);
-  @include flex-dir(column);
+  @include style.width-height(60%, auto);
+  @include style.flex-dir(column);
 }
 
 .history-application-header {
-  @include flex-align-justify(center, space-between);
+  @include style.flex-align-justify(center, space-between);
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   
-  background-color: $main-blue;
-  border: $black-border;
+  background-color: style.$main-blue;
+  border: style.$black-border;
   
   padding-left: 20px;
   padding-right: 20px;
@@ -29,13 +29,13 @@
 }
 
 .status-arrow {
-  @include flex-align-justify(center, center);
+  @include style.flex-align-justify(center, center);
   gap: 10px;
 }
 
 .status {
-  @include width-height(15px, 15px);
-  border: $black-border;
+  @include style.width-height(15px, 15px);
+  border: style.$black-border;
   border-radius: 50px;
 }
 
@@ -49,9 +49,21 @@
   
   padding-left: 10px;
   padding-right: 10px;
+  font-size: 20px;
   
   background-color: rgb(241, 238, 233);
   height: 100%;
-  border: $black-border;
+  border: style.$black-border;
   border-top: none;
+}
+
+.history-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+
+  p, strong {
+    @include style.no-margin-padding();
+  }
 }

@@ -26,7 +26,10 @@ export default function HistoryJobApplication({history}) {
       </div>
 
       <div className={arrow ? "display-none" : "history-application-info"}>
-        <p><strong>Status: </strong>{history.status}</p>
+        <div className='history-status'>
+          <strong>Status: </strong>
+          <p className={`${history.status.toLowerCase()}-text`}>{history.status}</p>
+        </div>
         <p><strong>Company: </strong>{history.job.companyName}</p>
         <p><strong>Applied: </strong>{new Date(history.appliedAt).toLocaleDateString()}</p>
         {/* make Resume the title/file name once its done on ui */}

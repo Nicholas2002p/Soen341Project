@@ -1,12 +1,12 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 .history-filters {
   flex: 1;
   height: 300px;
-  @include flex-dir-align-justify(column, center, center);
+  align-self: center;
+  @include style.flex-dir-align-justify(column, none, center);
   gap: 20px;
   font-size: 22px;
-  padding-top: 20px;
   border: 1px solid rgb(82, 82, 82);
 }
 
@@ -21,6 +21,10 @@
 
 .applied {
   background-color: rgb(95, 92, 92);
+}
+
+.applied-text {
+  color:  rgb(95, 92, 92);
 }
 
 .offered {
