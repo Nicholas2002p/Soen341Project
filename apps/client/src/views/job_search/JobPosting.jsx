@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import Filters from '../../components/job_search_views/Filters';
-import JobSearch from '../../components/job_search_views/JobSearch';
+import JobList from '../../components/job_search_views/JobList';
 
 import './JobPosting.scss';
 
-export default function JobPosting({ jobs = [] }) {
+export default function JobPosting({ setView, jobs = [], setSelectedJob }) {
   const [filters, setFilters] = useState({
     employmentTypes: [],
     minSalary: 0,
   });
-
-  console.log('jobs prop:', jobs, typeof jobs); // temporary
 
   const list = Array.isArray(jobs) ? jobs : [];
 
@@ -25,7 +23,7 @@ export default function JobPosting({ jobs = [] }) {
   return (
     <div className="job-posting">
       <Filters filters={filters} setFilters={setFilters} />
-      <JobSearch jobs={filteredJobs} />
+      <JobList setView={setView} jobs={filteredJobs} setSelectedJob={setSelectedJob} />
     </div>
   );
 }

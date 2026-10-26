@@ -1,25 +1,4 @@
-// =========================== VARIABLES ==============================
-$black-border: 1px solid black;
-$nav-color: #bee3fb;
-$button-color: #b7fdf8;
-
-// ============================= MIXINS ===============================
-
-@mixin flex-align-justify($align, $justify) {
-  display: flex;
-  justify-content: $justify;
-  align-items: $align;
-}
-
-@mixin flex-dir($direction) {
-  display: flex;
-  flex-direction: $direction;
-}
-
-@mixin width-height($width, $height) {
-  width: $width;
-  height: $height;
-}
+@import "../../utils/style";
 
 // =========================== PROFILE CARD ===========================
 
@@ -55,7 +34,7 @@ $button-color: #b7fdf8;
   @include flex-dir(column);
   @include width-height(none, 100%);
   border-radius: 20px;
-  background: radial-gradient($nav-color, #FFFFFF);
+  background: radial-gradient($main-blue, #FFFFFF);
   padding-left: 2em;
   padding-right: 2em;
 }

@@ -1,0 +1,56 @@
+@import "../../utils/style";
+
+// =========================== JOB ===========================
+
+.job-paper {
+  border: $black-border;
+  background-color: $off-white;
+  @include modified-a4-paper();
+  padding: 10px;
+}
+
+.job-paper-header {
+  @include flex-align-justify(end, space-between);
+}
+
+.job-paper-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  padding: 5px;
+}
+
+.job-paper-createdAt, .job-paper hr {
+  margin: 0;
+}
+
+.job-paper-recruiter {
+  @include flex-align-justify(center, none);
+  gap: 10px;
+
+  img {
+    @include width-height(none, 30px);
+  }
+}
+
+.job-paper-details {
+  @include flex-dir(column);
+}
+
+.job-paper-description {
+  word-break: break-word;
+}
+
+.job-paper-deadline {
+  font-weight: 800;
+  font-size: 20px;
+  color: darkred;
+}
+
+.job-display-paper {
+  border: 1px solid black;
+  background-color: #FAF9F6;
+  padding: 10px;
+  height: 90%;
+  width: 80%;
+}
