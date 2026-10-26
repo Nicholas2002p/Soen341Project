@@ -316,6 +316,33 @@ export async function GetJobsApi() {
         return [];
     }
 }
+
+/**
+ *  gets  job base on id
+ * @returns job with that id
+ */
+export async function GetJobApi(jobId) {
+        try {
+        const response = await fetch(
+            getApiUrl(`/api/jobs/${jobId}`), 
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+        if (!response.ok) {
+            return [];
+        }
+        const data = await response.json();
+        return data.job;
+    } catch (error) {
+        console.error("Error filtering jobs:", error);
+        return [];
+    }
+}
+
 /**
  * uploads a resume file (pdf, doc or docx, 5 MB max)
  * @param {*} file
@@ -328,7 +355,7 @@ export async function UploadResumeApi(file, setErrorMessage, token) {
     formData.append("resume", file);
 
     try {
-               const response = await fetch(getApiUrl("/api/resumes"), {
+            const response = await fetch(getApiUrl("/api/resumes"), {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -487,7 +514,7 @@ export async function ApplyForJob(jobId, resumeId, token) {
  * @param {*} token 
  * @returns  the application for the job
  */
-export async function GetSpecificJobHistory(jobId, token){
+export async function GetSpecificJobHistory(jobId, token) {
      try {
        
         const response = await fetch(
@@ -508,6 +535,28 @@ export async function GetSpecificJobHistory(jobId, token){
         return data.application;
     } catch (error) {
         console.error("Error filtering jobs:", error);
+        return null;
+    }
+}
+
+export async function GetJobHistory(token) {
+      try {
+        const response = await fetch(getApiUrl(`/api/applications/history`), {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return data.applications;
+    } catch (error) {
+        console.error(error);
         return null;
     }
 }

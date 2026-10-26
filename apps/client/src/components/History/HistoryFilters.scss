@@ -1,0 +1,60 @@
+@use "../../utils/style" as style;
+
+.history-filters {
+  flex: 1;
+  height: 300px;
+  align-self: center;
+  @include style.flex-dir-align-justify(column, none, center);
+  gap: 20px;
+  font-size: 22px;
+  border: 1px solid rgb(82, 82, 82);
+}
+
+.history-filters legend {
+  font-size: 25px;
+}
+
+.history-filters label {
+  display: flex;
+  gap: 10px;
+}
+
+.applied {
+  background-color: rgb(95, 92, 92);
+}
+
+.applied-text {
+  color:  rgb(95, 92, 92);
+}
+
+.offered {
+  background-color: rgb(83, 237, 83);
+}
+
+.offered-text {
+  color: rgb(83, 237, 83);
+}
+
+.interview {
+  background-color: rgb(19, 19, 180);
+}
+
+.interview-text {
+  color:  rgb(19, 19, 180);
+}
+
+.under_review {
+  background-color: rgb(255, 150, 31);
+}
+
+.under_review-text {
+  color: rgb(255, 150, 31);
+}
+
+.rejected {
+  background-color: rgb(209, 30, 30);
+}
+
+.rejected-text {
+  color: rgb(209, 30, 30);
+}

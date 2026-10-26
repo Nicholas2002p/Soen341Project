@@ -1,0 +1,20 @@
+@import "../../utils/style";
+
+.history-job-application {
+  @include width-height(100%, 100%);
+  background-color: $off-white;
+}
+
+.history {
+  @include flex-dir(row);
+  height: 90vh;
+  padding: 10px;
+}
+
+.history-applications {
+  @include flex-dir-align(column, center);
+  flex: 4;
+  padding-top: 2em;
+  gap: 1em;
+  overflow-y: scroll;
+}
