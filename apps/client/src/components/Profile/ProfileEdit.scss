@@ -1,9 +1,9 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 // =========================== PROFILE EDIT ===========================
 
 .profile-edit {
-  @include flex-dir(column);
+  @include style.flex-dir(column);
   flex: 1;
   font-size: 25px;
   padding: 10px;
@@ -12,27 +12,27 @@
 
 .profile-edit h2 {
   margin: 0;
-  background-color: $main-blue;
-  border: $black-border;
+  background-color: style.$main-blue;
+  border: style.$black-border;
   text-align: center;
 }
 
 label {
-  @include flex-dir(row);
+  @include style.flex-dir(row);
   margin-left: 10px;
   gap: 10px;
   align-items: center;
 }
 
  .profile-edit-input {
-  @include width-height(60%, none);
+  @include style.width-height(60%, none);
   font-size: 20px;
 }
 
 .profile-edit-button {
-  @include width-height(150px, 30px);
-  @include flex-align-justify(center, center);
-  background-color: $button-color;
+  @include style.width-height(150px, 30px);
+  @include style.flex-align-justify(center, center);
+  background-color: style.$button-color;
 
   cursor: pointer;
   margin-top: auto;

@@ -1,16 +1,16 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 // =========================== JOB ===========================
 
 .job-paper {
-  border: $black-border;
-  background-color: $off-white;
-  @include modified-a4-paper();
+  border: style.$black-border;
+  background-color: style.$off-white;
+  @include style.modified-a4-paper();
   padding: 10px;
 }
 
 .job-paper-header {
-  @include flex-align-justify(end, space-between);
+  @include style.flex-align-justify(end, space-between);
 }
 
 .job-paper-title {
@@ -25,16 +25,16 @@
 }
 
 .job-paper-recruiter {
-  @include flex-align-justify(center, none);
+  @include style.flex-align-justify(center, none);
   gap: 10px;
 
   img {
-    @include width-height(none, 30px);
+    @include style.width-height(none, 30px);
   }
 }
 
 .job-paper-details {
-  @include flex-dir(column);
+  @include style.flex-dir(column);
 }
 
 .job-paper-description {

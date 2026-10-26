@@ -23,25 +23,22 @@ export default function Application({ handleApply, selectedResumeId, setSelected
 
 return (
     <div className="application">
-      {alreadyApplied ? (
-        <p className="application-already-applied">
-          You have already applied for this job.
-        </p>
-      ) : (
-        <>
-          <p className="">Select the resume you want to use to apply?</p>
+      {
+        alreadyApplied ? <> </>: <p className="">Select the resume you want to use to apply?</p>
+      }
 
-          {resumes.length === 0 ? (
-            <p className="application-empty">No resumes uploaded yet go to profile to upload one.</p>
-          ) : (
-              <DisplayResume resumes={resumes} selectedResumeId={selectedResumeId } setSelectedResumeId={setSelectedResumeId} />
-          )}
+      {resumes.length === 0 ? (
+        <p className="application-empty">No resumes uploaded yet go to profile to upload one.</p>
+        ) : !alreadyApplied ? (
+          <DisplayResume resumes={resumes} selectedResumeId={selectedResumeId } setSelectedResumeId={setSelectedResumeId} />
+        ) : <> </>
+      }
 
-          {errorMessage && <p className="resume-error">{errorMessage}</p>}
-          
-          <button onClick={() => { handleApply(); }}>Apply</button>
-        </>
-      )}
+      <div className='application-already-applied'>
+        {errorMessage && <p className="resume-error">{errorMessage}</p>}
+        {alreadyApplied && <p className='applied-resume'> You've applied to this job! </p>}
+        <button disabled={alreadyApplied} onClick={() => { handleApply(); }}>Apply</button>
+      </div>
     </div>
   );
 }

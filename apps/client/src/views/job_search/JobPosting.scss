@@ -1,6 +1,6 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 .job-posting {
-  @include flex-dir(row);
-  @include width-height(none, 100%);
+  @include style.flex-dir(row);
+  @include style.width-height(none, 100%);
 }

@@ -1,22 +1,29 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 .application {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  
+  @include style.flex-dir(column);
 }
 
 .application p {
   font-size: 20px;
 }
 
-.application button {
-  background-color: $button-color;
+.application-already-applied {
   margin-top: auto;
+  align-self: center;
+  text-align: center;
+}
+
+.application-already-applied button {
+  background-color: style.$button-color;
+  
   margin-bottom: 20px;
   height: 40px;
   width: 300px;
   font-size: 25px;
-  align-self: center;
+}
+
+.application-resume-list li {
+  list-style-type: none;
 }

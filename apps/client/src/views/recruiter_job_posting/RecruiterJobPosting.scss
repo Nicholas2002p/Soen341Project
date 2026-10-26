@@ -1,13 +1,13 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 // =========================== RECRUITER JOB POSTING ===========================
 
 // inspiration for checkered pattern, slightly modified code 
 // https://codepen.io/yochans/pen/QWpbyVB 
 .recruiter-job-posting {
-  @include width-height(100%, 100vh);
-  @include flex-dir-justify(column, center);
-  background-color: $off-white;
+  @include style.width-height(100%, 100vh);
+  @include style.flex-dir-justify(column, center);
+  background-color: style.$off-white;
   background-image:
 		repeating-linear-gradient(0deg, rgba(13, 72, 161, 0.254) 7px 8px, transparent 8px 40px),
 		repeating-linear-gradient(90deg, rgba(13, 72, 161, 0.218) 7px 8px,	transparent 8px 40px);

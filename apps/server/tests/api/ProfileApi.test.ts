@@ -177,7 +177,11 @@ test('profile picture upload stores and serves the picture path', async () => {
         assert.equal(uploadResponse.status, 200);
         const uploaded = (await uploadResponse.json()) as { profile: { profileURL: string } };
         uploadedPath = uploaded.profile.profileURL;
-        assert.match(uploadedPath, /^\/uploads\/profile-pictures\/[^/]+\.png$/);
+        const uploadedURL = new URL(uploadedPath, baseUrl);
+        assert.match(uploadedURL.pathname, /^\/uploads\/profile-pictures\/[^/]+\.png$/);
+        if (process.env.PUBLIC_SERVER_URL) {
+            assert.equal(uploadedURL.origin, new URL(process.env.PUBLIC_SERVER_URL).origin);
+        }
 
         // Verify that the public profile endpoint returns the correct profile picture URL.
         const publicResponse = await request(`/api/profile/${account.userId}`);
@@ -186,13 +190,14 @@ test('profile picture upload stores and serves the picture path', async () => {
         assert.equal(publicProfile.profile.profileURL, uploadedPath);
 
         // Verify that the uploaded profile picture can be accessed and served correctly.
-        const pictureResponse = await request(uploadedPath);
+        const pictureResponse = await fetch(`${baseUrl}${uploadedURL.pathname}`);
         assert.equal(pictureResponse.status, 200);
         assert.equal(await pictureResponse.text(), 'profile picture');
     } finally {
         // Clean up by deleting the uploaded profile picture and the user after the test.
         if (uploadedPath) {
-            await unlink(path.join(process.cwd(), uploadedPath.slice(1))).catch(() => undefined);
+            const uploadedURL = new URL(uploadedPath, baseUrl);
+            await unlink(path.join(process.cwd(), uploadedURL.pathname.slice(1))).catch(() => undefined);
         }
         await deleteUser(account.userId);
     }

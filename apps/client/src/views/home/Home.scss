@@ -1,27 +1,27 @@
-@import "../../utils/style";
+@use "../../utils/style" as style;
 
 // =========================== HOME ===========================
 
 .homepage {
-  @include width-height(none, 100vh);
-  @include flex-dir(column);
+  @include style.width-height(none, 100vh);
+  @include style.flex-dir(column);
 }
 
 .home {
-  @include flex-dir(column);
-  background-color: $off-white;
+  @include style.flex-dir(column);
+  background-color: style.$off-white;
   flex: 4;
 }
 
 .get-started {
   padding: 10px;
-  @include flex-dir(column);
+  @include style.flex-dir(column);
   position: relative;
   display: none;
 }
 
 .get-started-text {
-  @include flex-dir(column);
+  @include style.flex-dir(column);
   align-items: center;
   padding-top: 20px;
 }
