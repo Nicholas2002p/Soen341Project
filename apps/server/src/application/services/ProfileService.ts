@@ -2,10 +2,7 @@ import type { IProfileRepository, ProfileData } from '../interfaces/repositories
 import type { IUserRepository } from '../interfaces/repositories/IUserRepository.js';
 import type { IProfileService } from '../interfaces/services/IProfileService.js';
 import type { Profile, PublicProfile } from '../../domain/entities/Profile.js';
-
-// Define a default profile picture URL to be used when a profile does not have a custom picture.
-const defaultProfileURL = process.env.DEFAULT_PROFILE_IMAGE_URL
-    ?? '/uploads/profile-pictures/profile_default.jpg';
+import { defaultProfileURL, toPublicProfileURL } from './ProfileImageUrl.js';
 
 export class ProfileService implements IProfileService {
     constructor(
@@ -18,7 +15,9 @@ export class ProfileService implements IProfileService {
         const profile = await this.profileRepository.getByUserId(userId);
 
         // If the profile exists, return it with the default profile picture URL if none is set; otherwise, return null.
-        return profile ? { ...profile, profileURL: profile.profileURL ?? defaultProfileURL } : null;
+        return profile
+            ? { ...profile, profileURL: toPublicProfileURL(profile.profileURL ?? defaultProfileURL) }
+            : null;
     }
 
     async getPublicByUserId(userId: number): Promise<PublicProfile | null> {
@@ -35,7 +34,7 @@ export class ProfileService implements IProfileService {
             lastName: profile.lastName,
             bio: profile.bio,
             location: profile.location,
-            profileURL: profile.profileURL ?? defaultProfileURL, // Use the default profile picture URL if none is set
+            profileURL: toPublicProfileURL(profile.profileURL ?? defaultProfileURL),
         };
     }
 
@@ -50,6 +49,6 @@ export class ProfileService implements IProfileService {
         const profile = await this.profileRepository.upsert(userId, data);
 
         // If the profile exists, return it with the default profile picture URL if none is set; otherwise, return null.
-        return { ...profile, profileURL: profile.profileURL ?? defaultProfileURL };
+        return { ...profile, profileURL: toPublicProfileURL(profile.profileURL ?? defaultProfileURL) };
     }
 }

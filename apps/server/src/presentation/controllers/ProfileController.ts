@@ -2,9 +2,7 @@ import type { Request, Response } from 'express';
 import type { ProfileData } from '../../application/interfaces/repositories/IProfileRepository.js';
 import { profileImageStorage, profileService } from '../../infrastructure/container.js';
 import { UnauthorizedUserActionError } from '../../domain/errors/UnauthorizedUserActionError.js';
-
-const defaultProfileURL = process.env.DEFAULT_PROFILE_IMAGE_URL
-    ?? '/uploads/profile-pictures/profile_default.jpg';
+import { defaultProfileURL } from '../../application/services/ProfileImageUrl.js';
 
 function getAuthenticatedUserId(res: Response): number {
     return (res.locals.user as { id: number }).id;
