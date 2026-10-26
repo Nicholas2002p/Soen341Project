@@ -33,7 +33,7 @@
 .add-job-opening-content {
   background-color: rgb(201, 218, 238);
   border: $black-border;
-  @include width-height(60%, 60%);
+  @include width-height(1000px, 700px);
   @include flex-dir(column);
   border-radius: 10px;
   gap: 10px;
