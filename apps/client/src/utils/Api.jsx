@@ -511,3 +511,28 @@ export async function GetSpecificJobHistory(jobId, token){
         return null;
     }
 }
+
+export async function GetJobHistory(token){
+      try {
+        const response = await fetch(getApiUrl(`/api/applications/history`), {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            setErrorMessage(data.message ?? "Unable to download resume.");
+            return null;
+        }
+
+        const data = await response.json();
+        return data.applications;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Unable to download resume.");
+        return null;
+    }
+}
