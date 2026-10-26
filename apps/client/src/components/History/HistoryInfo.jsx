@@ -21,7 +21,6 @@ export default function HistoryJobApplication({history}) {
 
         <div className='status-arrow'>
           <div className={`status ${history.status.toLowerCase()}`}></div>
-          <div className='status rejected'></div>
           <p onClick={() => { setArrow(!arrow) }} className='history-arrow'> { arrow ? <> &#x25BC; </> : <> &#x25B2; </> } </p>
         </div>
       </div>
