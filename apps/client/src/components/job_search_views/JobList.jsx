@@ -24,10 +24,11 @@ export default function JobList({ jobs, setView, setSelectedJob }) {
    * @returns 
    */
   const handleSelectJob = async (job) => {
-    if (!token || user?.role === "recruiter") return;
+    if (token && user?.role != "recruiter"){
     const jobData = await GetJobApi(job.jobId);
     setSelectedJob(jobData);
     setView("job-application");
+    }
   };
 
   return (
