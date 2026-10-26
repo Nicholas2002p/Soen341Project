@@ -13,6 +13,7 @@ import type {
     ApplicationWithJob,
 } from '../../domain/entities/Application.js';
 import type { EmploymentType } from '../../domain/entities/EmploymentType.js';
+import { getResumeFileType } from '../../domain/validation/ResumeFile.js';
 import { DuplicateApplicationError } from '../../domain/errors/ApplicationErrors.js';
 
 // Job fields loaded with an application
@@ -24,8 +25,22 @@ const jobSummarySelect = {
     company: { select: { name: true } },
 } as const;
 
+// Resume fields loaded with an application (fileURL is only used to work out the file type, it is never returned)
+const resumeSummarySelect = {
+    resumeId: true,
+    fileName: true,
+    fileURL: true,
+} as const;
+
+// Job and resume loaded with every application that is returned to the client
+const applicationRelationsInclude = {
+    job: { select: jobSummarySelect },
+    resume: { select: resumeSummarySelect },
+} as const;
+
 type PrismaApplicationWithJob = PrismaApplication & {
     job: { jobId: number; title: string; location: string | null; employmentType: string; company: { name: string } };
+    resume: { resumeId: number; fileName: string; fileURL: string | null };
 };
 
 // Prisma error code for a unique constraint violation (here: the same user applying to the same job twice)
@@ -58,6 +73,11 @@ export class PrismaApplicationRepository implements IApplicationRepository {
                 location: record.job.location,
                 employmentType: record.job.employmentType as EmploymentType,
             },
+            resume: {
+                id: record.resume.resumeId,
+                fileName: record.resume.fileName,
+                fileType: getResumeFileType(record.resume.fileURL ?? ''),
+            },
         };
     }
 
@@ -88,7 +108,7 @@ export class PrismaApplicationRepository implements IApplicationRepository {
     async getById(id: number): Promise<ApplicationWithJob | null> {
         const application = await this.prisma.application.findUnique({
             where: { applicationId: id },
-            include: { job: { select: jobSummarySelect } },
+            include: applicationRelationsInclude,
         });
 
         return application ? this.toDomainApplicationWithJob(application) : null;
@@ -107,7 +127,7 @@ export class PrismaApplicationRepository implements IApplicationRepository {
     async listByUserId(userId: number): Promise<ApplicationWithJob[]> {
         const applications = await this.prisma.application.findMany({
             where: { userId },
-            include: { job: { select: jobSummarySelect } },
+            include: applicationRelationsInclude,
             orderBy: { appliedAt: 'desc' },
         });
 
@@ -132,7 +152,7 @@ export class PrismaApplicationRepository implements IApplicationRepository {
         const applications = await this.prisma.application.findMany({
             where: { userId, ...(statuses ? { status: { in: statuses } } : {}) },
             include: {
-                job: { select: jobSummarySelect },
+                ...applicationRelationsInclude,
                 statusHistory: { orderBy: { createdAt: 'asc' } },
             },
             orderBy: { appliedAt: 'desc' },
@@ -146,7 +166,7 @@ export class PrismaApplicationRepository implements IApplicationRepository {
         const application = await this.prisma.application.findUnique({
             where: { userId_jobId: { userId, jobId } },
             include: {
-                job: { select: jobSummarySelect },
+                ...applicationRelationsInclude,
                 statusHistory: { orderBy: { createdAt: 'asc' } },
             },
         });

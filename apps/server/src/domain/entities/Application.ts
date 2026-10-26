@@ -1,4 +1,5 @@
 import type { EmploymentType } from './EmploymentType.js';
+import type { ResumeFileType } from '../validation/ResumeFile.js';
 
 // This file defines the Application entity, which represents a job seeker applying to a job with one of their resumes.
 
@@ -44,9 +45,18 @@ export interface ApplicationJobSummary {
     employmentType: EmploymentType;
 }
 
-// An application together with the job it was submitted to
+// Short information about the resume submitted with an application, so the client can show its file name.
+// The storage key (the file's name on the server) is never included.
+export interface ApplicationResumeSummary {
+    id: number;
+    fileName: string;
+    fileType: ResumeFileType | null;
+}
+
+// An application together with the job it was submitted to and the resume that was used
 export interface ApplicationWithJob extends Application {
     job: ApplicationJobSummary;
+    resume: ApplicationResumeSummary;
 }
 
 // An application together with its full status history
