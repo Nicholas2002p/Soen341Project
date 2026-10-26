@@ -11,6 +11,7 @@ interface ApplicationResponse {
     jobId: number;
     status: string;
     job?: { id: number; title: string; companyName: string };
+    resume?: { id: number; fileName: string; fileType: string; fileURL?: string };
     statusHistory?: { status: string }[];
 }
 
@@ -140,6 +141,9 @@ test('application lifecycle works through the HTTP API and database', async () =
         assert.equal(applications[0]?.job?.companyName, company.name);
         assert.equal(applications[0]?.job?.title, 'Junior Developer');
 
+        // The resume used for the application comes back with its file name, but not where it is stored.
+        assert.deepEqual(applications[0]?.resume, { id: resume.resumeId, fileName: 'cv.pdf', fileType: 'pdf' });
+
         // A recruiter has no applications of their own, so listing them is refused.
         const recruiterListResponse = await request('/api/applications', { headers: auth(recruiter.token) });
         assert.equal(recruiterListResponse.status, 403);
@@ -204,6 +208,7 @@ test('application lifecycle works through the HTTP API and database', async () =
         assert.equal(jobHistoryResponse.status, 200);
         const jobHistory = (await jobHistoryResponse.json()) as { application: ApplicationResponse };
         assert.equal(jobHistory.application.id, application.id);
+        assert.equal(jobHistory.application.resume?.fileName, 'cv.pdf');
         assert.deepEqual(jobHistory.application.statusHistory?.map((entry) => entry.status), ['Applied', 'Interview']);
 
         // A job the user has not applied to returns 404, and an invalid id returns 400.
