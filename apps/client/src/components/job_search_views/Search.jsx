@@ -3,7 +3,7 @@ import { JobFilter } from "../../utils/Api";
 import './Search.scss';
 
 export default function SearchBar({setJobs}) { 
-    const [searchFor, setsearchFor] = useState('all');
+    const [searchFor, setsearchFor] = useState('keyword');
     const [sortBy, setsortBy] = useState('recent');
     const [searchBar, setSearchBar] = useState('');
     const searchBy = [
