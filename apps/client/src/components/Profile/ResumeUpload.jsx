@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { useAuth } from '../../utils/Auth';
 import { UploadResumeApi, GetResumesApi, DownloadResumeApi, DeleteResumeApi } from '../../utils/Api';
-
+import ResumePreview from './ResumePreview';
 import './ResumeUpload.scss';
 
 /**
@@ -19,8 +19,7 @@ export default function ResumeUpload() {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [inputKey, setInputKey] = useState(0);
-  const [showResumes, setShowResumes] = useState(false); // resume list hidden by default
-
+  const [openResumeId, setOpenResumeId] = useState(null); // id of the resume shown in the preview
   // Load the user's resumes when the component is shown
   useEffect(() => {
     const loadResumes = async () => {
@@ -76,36 +75,40 @@ export default function ResumeUpload() {
 
       {errorMessage && <p className="resume-error">{errorMessage}</p>}
       {successMessage && <p className="resume-success">{successMessage}</p>}
+      <h3 className="resume-list-title">My Resumes ({resumes.length})</h3>
 
-      <label className="resume-toggle">
-        <input
-          type="checkbox"
-          checked={showResumes}
-          onChange={() => setShowResumes((current) => !current)}
-        />
-        <span className="resume-toggle-slider" />
-        <span>Show my resumes ({resumes.length})</span>
-      </label>
+      {resumes.length === 0 ? (
+        <p className="resume-empty">No resume uploaded yet.</p>
+      ) : (
+        <ul className="resume-list">
+          {resumes.map((resume) => {
+            const isOpen = openResumeId === resume.id;
 
-      {showResumes && (
-        resumes.length === 0 ? (
-          <p className="resume-empty">No resume uploaded yet.</p>
-        ) : (
-          <ul className="resume-list">
-            {resumes.map((resume) => (
-              <li key={resume.id} className="resume-item">
-                <span className="resume-name">{resume.fileName}</span>
-                <span className="resume-date">{new Date(resume.createdAt).toLocaleDateString()}</span>
-                <button type="button" onClick={() => DownloadResumeApi(resume, setErrorMessage, token)}>
-                  Download
-                </button>
-                <button type="button" onClick={() => handleDelete(resume.id)}>
-                  Delete
-                </button>
+            return (
+              <li key={resume.id} className="resume-entry">
+                <div className="resume-item">
+                  <button
+                    type="button"
+                    className="resume-name"
+                    aria-expanded={isOpen}
+                    onClick={() => setOpenResumeId(isOpen ? null : resume.id)}
+                  >
+                    {isOpen ? '▼' : '▶'} {resume.fileName}
+                  </button>
+                  <span className="resume-date">{new Date(resume.createdAt).toLocaleDateString()}</span>
+                  <button type="button" onClick={() => DownloadResumeApi(resume, setErrorMessage, token)}>
+                    Download
+                  </button>
+                  <button type="button" onClick={() => handleDelete(resume.id)}>
+                    Delete
+                  </button>
+                </div>
+
+                {isOpen && <ResumePreview resume={resume} />}
               </li>
-            ))}
-          </ul>
-        )
+            );
+          })}
+        </ul>
       )}
     </section>
   );
