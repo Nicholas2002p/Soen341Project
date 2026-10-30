@@ -515,6 +515,65 @@ test('GET /api/jobs/mine returns jobs posted by the authenticated recruiter', as
     assert.ok(body.jobs.some((job) => job.jobId === expiredJobId));
 });
 
+test('GET /api/jobs filters available jobs', async () => {
+    const response = await request('/api/jobs?available=true');
+
+    assert.equal(response.status, 200);
+
+    const body = (await response.json()) as {
+        jobs: Array<{
+            jobId: number;
+        }>;
+    };
+
+    assert.ok(body.jobs.some((job) => job.jobId === backendJobId));
+    assert.ok(body.jobs.some((job) => job.jobId === dataJobId));
+    assert.equal(body.jobs.some((job) => job.jobId === expiredJobId), false);
+});
+
+test('GET /api/jobs filters expired jobs', async () => {
+    const response = await request('/api/jobs?available=false');
+
+    assert.equal(response.status, 200);
+
+    const body = (await response.json()) as {
+        jobs: Array<{
+            jobId: number;
+        }>;
+    };
+
+    assert.ok(body.jobs.some((job) => job.jobId === expiredJobId));
+    assert.equal(body.jobs.some((job) => job.jobId === backendJobId), false);
+    assert.equal(body.jobs.some((job) => job.jobId === dataJobId), false);
+});
+
+test('GET /api/jobs combines available filter with other search filters', async () => {
+    const response = await request(
+        '/api/jobs?keyword=Backend&location=Montreal&available=true',
+    );
+
+    assert.equal(response.status, 200);
+
+    const body = (await response.json()) as {
+        jobs: Array<{
+            jobId: number;
+        }>;
+    };
+
+    assert.ok(body.jobs.some((job) => job.jobId === backendJobId));
+    assert.equal(body.jobs.some((job) => job.jobId === dataJobId), false);
+    assert.equal(body.jobs.some((job) => job.jobId === expiredJobId), false);
+});
+
+test('GET /api/jobs rejects invalid available filter', async () => {
+    const response = await request('/api/jobs?available=yes');
+
+    assert.equal(response.status, 400);
+
+    assert.deepEqual(await response.json(), {
+        message: 'available must be true or false.',
+    });
+});
 
 
 //NOTE - POST Tests
