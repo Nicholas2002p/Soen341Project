@@ -25,7 +25,7 @@ type PrismaJobSummary = Prisma.JobGetPayload<{
 export class PrismaJobRepository implements IJobRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
-    
+
 
     /**
      * searches for jobs based on the provided filtering criteria.
@@ -76,7 +76,24 @@ export class PrismaJobRepository implements IJobRepository {
                         },
                     }
                     : {}),
+                    
+                ...(filters.available === true
+                    ? {
+                        deadline: {
+                            gte: new Date(),
+                        },
+                    }
+                    : {}),
+
+                ...(filters.available === false
+                    ? {
+                        deadline: {
+                            lt: new Date(),
+                        },
+                    }
+                    : {}),
             },
+
 
             //NOTE - also include these data 
             include: jobSummaryInclude,
@@ -364,5 +381,5 @@ export class PrismaJobRepository implements IJobRepository {
         };
     }
 
-    
+
 }

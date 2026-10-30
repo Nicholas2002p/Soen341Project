@@ -5,6 +5,7 @@ export interface JobSearchFilters {
     keyword?: string;
     location?: string;
     category?: string;
+    available?: boolean;
 }
 
 export interface CreateJobData {

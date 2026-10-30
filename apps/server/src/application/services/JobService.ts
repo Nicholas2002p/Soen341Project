@@ -12,12 +12,13 @@ export class JobService implements IJobService {
      * @returns a promise that resolves to an array of matching job summaries.
      */
     async search(filters: JobSearchFilters): Promise<JobSummary[]> {
-        return this.jobRepository.search({
-            keyword: this.normalize(filters.keyword),
-            location: this.normalize(filters.location),
-            category: this.normalize(filters.category),
-        });
-    }
+    return this.jobRepository.search({
+        keyword: this.normalize(filters.keyword),
+        location: this.normalize(filters.location),
+        category: this.normalize(filters.category),
+        available: filters.available,
+    });
+}
 
     /**
      * searches for a certain job
