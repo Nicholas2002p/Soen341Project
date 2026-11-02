@@ -82,7 +82,7 @@ No issues so far
 
 | Date       | Time | Type     | Attendees                                       | Note Taker |
 |------------|------|----------|-------------------------------------------------|------------|
-| 2026-09-28 | 4 pm | In Person| Michelle, Nicholas, Chen,  Tyler, Magley| Nicholas   |
+| 2026-10-12 | 4 pm | In Person| Michelle, Nicholas, Chen,  Tyler, Magley| Nicholas   |
 
 ### What was done
 - Michelle : skeleton of recruiter page, job posting ui, code refactoring
