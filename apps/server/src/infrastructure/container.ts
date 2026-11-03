@@ -22,6 +22,9 @@ import { SupabaseProfileImageStorage } from './storage/SupabaseProfileImageStora
 import path from 'node:path';
 import { PrismaJobRepository } from './repositories/PrismaJobRepository.js';
 import { JobService } from '../application/services/JobService.js';
+import { FileEmailTemplateLoader } from './email/FileEmailTemplateLoader.js';
+import { SendGridEmailService } from './email/SendGridEmailService.js';
+import { emailConfig } from './email/emailConfig.js';
 
 // Initialize repositories, services, and other dependencies
 const userRepository = new PrismaUserRepository(prisma);
@@ -44,6 +47,10 @@ const profileRepository = new PrismaProfileRepository(prisma);
 const jobRepository = new PrismaJobRepository(prisma);
 const jobService = new JobService(jobRepository);
 const applicationRepository = new PrismaApplicationRepository(prisma);
+const emailService = new SendGridEmailService(
+  new FileEmailTemplateLoader(emailConfig.templatesDirectory, emailConfig.templateExtension),
+  emailConfig.from,
+);
 
 const userService = new UserService(userRepository);
 const authService = new AuthService(
@@ -69,4 +76,5 @@ export {
   applicationService,
   profileImageStorage,
   jobService,
+  emailService,
 };

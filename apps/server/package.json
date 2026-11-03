@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test node --import tsx --test tests/api/ApplicationApi.test.ts tests/api/AuthApi.test.ts tests/api/CompanyApi.test.ts tests/api/ProfileApi.test.ts tests/api/ResumeApi.test.ts tests/integration/ApplicationLifecycle.test.ts tests/integration/AuthLifecycle.test.ts tests/integration/ProfileLifecycle.test.ts tests/integration/ResumeLifecycle.test.ts tests/unit/ApplicationService.test.ts tests/unit/AuthService.test.ts tests/unit/ProfileService.test.ts tests/unit/ResumeFile.test.ts tests/unit/ResumeService.test.ts tests/unit/SupabaseProfileImageStorage.test.ts tests/unit/UserService.test.ts",
+    "test": "cross-env NODE_ENV=test node --import tsx --test tests/api/ApplicationApi.test.ts tests/api/AuthApi.test.ts tests/api/CompanyApi.test.ts tests/api/ProfileApi.test.ts tests/api/ResumeApi.test.ts tests/integration/ApplicationLifecycle.test.ts tests/integration/AuthLifecycle.test.ts tests/integration/ProfileLifecycle.test.ts tests/integration/ResumeLifecycle.test.ts tests/unit/ApplicationService.test.ts tests/unit/AuthService.test.ts tests/unit/ProfileService.test.ts tests/unit/ResumeFile.test.ts tests/unit/ResumeService.test.ts tests/unit/SupabaseProfileImageStorage.test.ts tests/unit/UserService.test.ts tests/unit/SendGridEmailService.test.ts",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
@@ -23,6 +23,9 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.0.6",
+    "@sendgrid/mail": "^8.1.6",
     "@supabase/supabase-js": "^2.109.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
@@ -31,6 +34,7 @@
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.4.0",
     "pg": "^8.23.0",
+    "react-email": "^6.11.6",
     "ws": "^8.22.0",
     "zod": "^4.6.5"
   },
