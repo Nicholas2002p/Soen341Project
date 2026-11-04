@@ -3,11 +3,13 @@ import type { IUserRepository } from '../interfaces/repositories/IUserRepository
 import type { IProfileService } from '../interfaces/services/IProfileService.js';
 import type { Profile, PublicProfile } from '../../domain/entities/Profile.js';
 import { defaultProfileURL, toPublicProfileURL } from './ProfileImageUrl.js';
+import type { IEmailService } from '../interfaces/infrastructure/IEmailService.js';
 
 export class ProfileService implements IProfileService {
     constructor(
         private readonly profileRepository: IProfileRepository,
         private readonly userRepository: IUserRepository,
+        private readonly emailService: IEmailService,
     ) {}
 
     // get a profile by its userId
@@ -46,7 +48,20 @@ export class ProfileService implements IProfileService {
             return null;
         }
 
+        const existingProfile = await this.profileRepository.getByUserId(userId);
         const profile = await this.profileRepository.upsert(userId, data);
+
+        if (!existingProfile) {
+            const user = await this.userRepository.getById(userId);
+            if (user) {
+                await this.emailService.send({
+                    to: user.email,
+                    subject: 'Welcome to CareerConnect',
+                    template: 'WelcomeEmail',
+                    props: { firstName: profile.firstName },
+                });
+            }
+        }
 
         // If the profile exists, return it with the default profile picture URL if none is set; otherwise, return null.
         return { ...profile, profileURL: toPublicProfileURL(profile.profileURL ?? defaultProfileURL) };

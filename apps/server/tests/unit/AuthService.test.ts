@@ -79,6 +79,7 @@ test('register defaults to jobseeker and accepts recruiter role', async () => {
         email: 'default@example.com',
         password: 'secret-password',
     });
+
     assert.equal(defaultResult.user.role, UserRole.JobSeeker);
 
     const recruiterRegistration = createService();

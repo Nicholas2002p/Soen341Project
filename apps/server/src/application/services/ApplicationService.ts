@@ -1,6 +1,8 @@
 import type { ApplyToJobData, IApplicationService } from '../interfaces/services/IApplicationService.js';
 import type { IApplicationRepository } from '../interfaces/repositories/IApplicationRepository.js';
 import type { IResumeRepository } from '../interfaces/repositories/IResumeRepository.js';
+import type { IUserRepository } from '../interfaces/repositories/IUserRepository.js';
+import type { IEmailService } from '../interfaces/infrastructure/IEmailService.js';
 import type { Application, ApplicationDetails, ApplicationJob, ApplicationStatus, ApplicationWithJob } from '../../domain/entities/Application.js';
 import { INITIAL_APPLICATION_STATUS } from '../../domain/entities/Application.js';
 import type { PublicUser } from '../../domain/entities/PublicUser.js';
@@ -21,6 +23,8 @@ export class ApplicationService implements IApplicationService {
     constructor(
         private readonly applicationRepository: IApplicationRepository,
         private readonly resumeRepository: IResumeRepository,
+        private readonly userRepository: IUserRepository,
+        private readonly emailService: IEmailService,
     ) {}
 
     // Retrieve a job, throws JobNotFoundError ("Job not found.") if it does not exist
@@ -59,12 +63,29 @@ export class ApplicationService implements IApplicationService {
             throw new DuplicateApplicationError();
         }
 
-        return this.applicationRepository.create({
+        const createdApplication = await this.applicationRepository.create({
             userId: user.id,
             jobId: data.jobId,
             resumeId: data.resumeId,
             status: INITIAL_APPLICATION_STATUS,
         });
+        const recruiter = await this.userRepository.getById(job.recruiterId);
+
+        if (!recruiter) {
+            throw new Error(`The recruiter for job ${data.jobId} was not found.`);
+        }
+
+        await this.emailService.send({
+            to: recruiter.email,
+            subject: `New application for ${job.title}`,
+            template: 'NewApplication',
+            props: {
+                jobTitle: job.title,
+                applicantEmail: user.email,
+            },
+        });
+
+        return createdApplication;
     }
 
     //list the applications of a job seeker.
@@ -155,7 +176,24 @@ export class ApplicationService implements IApplicationService {
             throw new InvalidStatusChangeError(`An application that is ${application.status} cannot be changed to ${status}.`);
         }
 
-        return this.applicationRepository.updateStatus(applicationId, status);
+        const updatedApplication = await this.applicationRepository.updateStatus(applicationId, status);
+        const jobSeeker = await this.userRepository.getById(application.userId);
+
+        if (!jobSeeker) {
+            throw new Error(`The jobseeker for application ${applicationId} was not found.`);
+        }
+
+        await this.emailService.send({
+            to: jobSeeker.email,
+            subject: `Application update for ${application.job.title}`,
+            template: 'ApplicationStatusChange',
+            props: {
+                status: updatedApplication.status,
+                jobTitle: application.job.title,
+            },
+        });
+
+        return updatedApplication;
     }
 
     //withdraw (delete) an application, only the applicant can do this

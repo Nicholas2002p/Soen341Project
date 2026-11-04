@@ -68,7 +68,6 @@ export class AuthService implements IAuthService {
         await this.sessionRepository.create(newUser.id,
             this.sessionTokenGenerator.hash(sessionToken),
             this.getSessionExpiration());
-
         return {
             user: this.toPublicUser(newUser),
             sessionToken,

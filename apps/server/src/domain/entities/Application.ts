@@ -68,5 +68,6 @@ export interface ApplicationDetails extends ApplicationWithJob {
 export interface ApplicationJob {
     id: number;
     recruiterId: number; // Recruiter who posted the job
+    title: string;
     deadline: Date | null; // Last day to apply, null if there is no deadline
 }

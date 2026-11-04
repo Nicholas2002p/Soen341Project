@@ -23,13 +23,24 @@ import {
     recruiter,
 } from '../fakes/ApplicationFakes.js';
 import { FakeResumeRepository, resume } from '../fakes/ResumeFakes.js';
+import { FakeUserRepository, user } from '../fakes/AuthFakes.js';
+import { DummyEmailService } from '../fakes/EmailFakes.js';
 
 // The shared resume fixture belongs to user 1, which is `jobSeeker`
 const otherUsersResume = { ...resume, id: 2, userId: otherJobSeeker.id };
 
 function createService(applications = new FakeApplicationRepository([openJob, closedJob])) {
-    const service = new ApplicationService(applications, new FakeResumeRepository([resume, otherUsersResume]));
-    return { service, applications };
+    const emailService = new DummyEmailService();
+    const service = new ApplicationService(
+        applications,
+        new FakeResumeRepository([resume, otherUsersResume]),
+        new FakeUserRepository([
+            { ...user, id: jobSeeker.id, email: jobSeeker.email },
+            { ...user, id: recruiter.id, email: recruiter.email },
+        ]),
+        emailService,
+    );
+    return { service, applications, emailService };
 }
 
 test('apply creates an application with the initial status and a first history entry', async () => {
@@ -41,6 +52,22 @@ test('apply creates an application with the initial status and a first history e
     assert.equal(result.jobId, openJob.id);
     assert.equal(result.status, ApplicationStatus.Applied);
     assert.deepEqual((await applications.getStatusHistory(result.id)).map((entry) => entry.status), [ApplicationStatus.Applied]);
+});
+
+test('apply emails the recruiter after creating the application', async () => {
+    const { service, emailService } = createService();
+
+    await service.apply(jobSeeker, { jobId: openJob.id, resumeId: resume.id });
+
+    assert.deepEqual(emailService.messages, [{
+        to: recruiter.email,
+        subject: 'New application for Junior Developer',
+        template: 'NewApplication',
+        props: {
+            jobTitle: 'Junior Developer',
+            applicantEmail: jobSeeker.email,
+        },
+    }]);
 });
 
 test('apply rejects users who are not job seekers', async () => {
@@ -176,6 +203,24 @@ test('updateStatus lets the recruiter change the status and records it in the hi
         (await applications.getStatusHistory(application.id)).map((entry) => entry.status),
         [ApplicationStatus.Applied, ApplicationStatus.Interview],
     );
+});
+
+test('updateStatus emails the jobseeker after changing the application status', async () => {
+    const { service, emailService } = createService(
+        new FakeApplicationRepository([openJob], [application]),
+    );
+
+    await service.updateStatus(recruiter, application.id, ApplicationStatus.Interview);
+
+    assert.deepEqual(emailService.messages, [{
+        to: jobSeeker.email,
+        subject: 'Application update for Junior Developer',
+        template: 'ApplicationStatusChange',
+        props: {
+            status: ApplicationStatus.Interview,
+            jobTitle: 'Junior Developer',
+        },
+    }]);
 });
 
 test('updateStatus refuses the applicant, who can see the application but not change it', async () => {

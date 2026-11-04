@@ -4,13 +4,15 @@ import type { ProfileData } from '../../src/application/interfaces/repositories/
 import { ProfileService } from '../../src/application/services/ProfileService.js';
 import { FakeUserRepository, user } from '../fakes/AuthFakes.js';
 import { FakeProfileRepository, profile } from '../fakes/ProfileFakes.js';
+import { DummyEmailService } from '../fakes/EmailFakes.js';
 
 console.log('\n=== tests/unit/ProfileService.test.ts ===');
 
-function createService(repository = new FakeProfileRepository()) {
+function createService(repository = new FakeProfileRepository(), emailService = new DummyEmailService()) {
     return new ProfileService(
         repository,
         new FakeUserRepository([{ ...user, id: profile.userId }]),
+        emailService,
     );
 }
 
@@ -86,6 +88,37 @@ test('update delegates the user id and profile data to upsert', async () => {
     assert.ok(result);
     assert.equal(result!.userId, profile.userId);
     assert.equal(result!.firstName, 'Grace');
+});
+
+test('creating a profile sends a welcome email with the profile first name', async () => {
+    const repository = new FakeProfileRepository();
+    const emailService = new DummyEmailService();
+    const service = createService(repository, emailService);
+
+    await service.upsert(profile.userId, {
+        firstName: 'Grace',
+        lastName: 'Hopper',
+    });
+
+    assert.deepEqual(emailService.messages, [{
+        to: user.email,
+        subject: 'Welcome to CareerConnect',
+        template: 'WelcomeEmail',
+        props: { firstName: 'Grace' },
+    }]);
+});
+
+test('updating an existing profile does not resend the welcome email', async () => {
+    const repository = new FakeProfileRepository(profile);
+    const emailService = new DummyEmailService();
+    const service = createService(repository, emailService);
+
+    await service.upsert(profile.userId, {
+        firstName: 'Grace',
+        lastName: 'Hopper',
+    });
+
+    assert.deepEqual(emailService.messages, []);
 });
 
 test('update does not create a profile when the user does not exist', async () => {

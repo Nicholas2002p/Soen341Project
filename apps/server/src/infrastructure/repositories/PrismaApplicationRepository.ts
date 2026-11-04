@@ -224,9 +224,11 @@ export class PrismaApplicationRepository implements IApplicationRepository {
     async getJob(jobId: number): Promise<ApplicationJob | null> {
         const job = await this.prisma.job.findUnique({
             where: { jobId },
-            select: { jobId: true, recruiterId: true, deadline: true },
+            select: { jobId: true, recruiterId: true, title: true, deadline: true },
         });
 
-        return job ? { id: job.jobId, recruiterId: job.recruiterId, deadline: job.deadline } : null;
+        return job
+            ? { id: job.jobId, recruiterId: job.recruiterId, title: job.title, deadline: job.deadline }
+            : null;
     }
 }

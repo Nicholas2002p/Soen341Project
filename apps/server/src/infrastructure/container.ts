@@ -24,6 +24,7 @@ import { PrismaJobRepository } from './repositories/PrismaJobRepository.js';
 import { JobService } from '../application/services/JobService.js';
 import { FileEmailTemplateLoader } from './email/FileEmailTemplateLoader.js';
 import { SendGridEmailService } from './email/SendGridEmailService.js';
+import { NoopEmailService } from './email/NoopEmailService.js';
 import { emailConfig } from './email/emailConfig.js';
 
 // Initialize repositories, services, and other dependencies
@@ -47,10 +48,12 @@ const profileRepository = new PrismaProfileRepository(prisma);
 const jobRepository = new PrismaJobRepository(prisma);
 const jobService = new JobService(jobRepository);
 const applicationRepository = new PrismaApplicationRepository(prisma);
-const emailService = new SendGridEmailService(
-  new FileEmailTemplateLoader(emailConfig.templatesDirectory, emailConfig.templateExtension),
-  emailConfig.from,
-);
+const emailService = process.env.NODE_ENV === 'test'
+  ? new NoopEmailService()
+  : new SendGridEmailService(
+    new FileEmailTemplateLoader(emailConfig.templatesDirectory, emailConfig.templateExtension),
+    emailConfig.from,
+  );
 
 const userService = new UserService(userRepository);
 const authService = new AuthService(
@@ -60,11 +63,16 @@ const authService = new AuthService(
   sessionTokenGenerator,
   saltRepository,
   googleTokenVerifier,
-  profileRepository
+  profileRepository,
 );
-const profileService = new ProfileService(profileRepository, userRepository);
+const profileService = new ProfileService(profileRepository, userRepository, emailService);
 const resumeService = new ResumeService(resumeRepository, resumeStorage);
-const applicationService = new ApplicationService(applicationRepository, resumeRepository);
+const applicationService = new ApplicationService(
+  applicationRepository,
+  resumeRepository,
+  userRepository,
+  emailService,
+);
 
 // Export the initialized services for use in other parts of the application
 export {
