@@ -109,10 +109,26 @@ export class JobController {
             return;
         }
 
+        let available: boolean | undefined;
+
+        if (req.query.available !== undefined) {
+            if (req.query.available === 'true') {
+                available = true;
+            } else if (req.query.available === 'false') {
+                available = false;
+            } else {
+                res.status(400).json({
+                    message: 'available must be true or false.',
+                });
+                return;
+            }
+        }
+
         const filters: JobSearchFilters = {
             keyword,
             location,
             category,
+            available,
         };
 
         const jobs = await jobService.search(filters);
