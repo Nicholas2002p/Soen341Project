@@ -22,6 +22,8 @@ import { SupabaseProfileImageStorage } from './storage/SupabaseProfileImageStora
 import path from 'node:path';
 import { PrismaJobRepository } from './repositories/PrismaJobRepository.js';
 import { JobService } from '../application/services/JobService.js';
+import { PrismaSavedJobRepository } from './repositories/PrismaSavedJobRepository.js';
+import { SavedJobService } from '../application/services/SavedJobService.js';
 
 // Initialize repositories, services, and other dependencies
 const userRepository = new PrismaUserRepository(prisma);
@@ -58,6 +60,8 @@ const authService = new AuthService(
 const profileService = new ProfileService(profileRepository, userRepository);
 const resumeService = new ResumeService(resumeRepository, resumeStorage);
 const applicationService = new ApplicationService(applicationRepository, resumeRepository);
+const savedJobRepository = new PrismaSavedJobRepository(prisma);
+const savedJobService = new SavedJobService(savedJobRepository, jobRepository);
 
 // Export the initialized services for use in other parts of the application
 export {
@@ -69,4 +73,5 @@ export {
   applicationService,
   profileImageStorage,
   jobService,
+  savedJobService,
 };
