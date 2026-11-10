@@ -6,6 +6,7 @@ import { resumeRoutes } from './presentation/routes/ResumeRoutes.js';
 import { applicationRoutes } from './presentation/routes/ApplicationRoutes.js';
 import { companyRoutes } from './presentation/routes/CompanyRoutes.js';
 import { jobRoutes } from './presentation/routes/JobRoutes.js';
+import { savedJobRoutes } from './presentation/routes/SavedJobRoutes.js';
 import cors from 'cors';
 
 export const app: Express = express();
@@ -45,11 +46,16 @@ app.use('/api/auth', authRoutes);
 //-----------------------------------------------------------------------------------------------------------
 app.use('/api/resumes', resumeRoutes);
 app.use('/api/applications', applicationRoutes);
-app.use('/api/companies', companyRoutes);
-app.use('/api/jobs', jobRoutes);
 
 //-----------------------------------------------------------------------------------------------------------
 // ------------------------------------------ Profile routes ------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
 app.use('/api/auth/profile', profileRoutes);
 app.use('/api/profile', publicProfileRoutes);
+
+//-----------------------------------------------------------------------------------------------------------
+// ------------------------------------------ Job routes ------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------
+app.use('/api/jobs', jobRoutes);
+app.use('/api/companies', companyRoutes);
+app.use('/api/saved-jobs', savedJobRoutes);
