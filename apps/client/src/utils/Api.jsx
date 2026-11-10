@@ -269,7 +269,7 @@ export async function JobFilter (filterField, sortBy, searchQuery){
     void sortBy;
     try {
         const response = await fetch(
-            getApiUrl(`/api/jobs?${filterField}=${encodeURIComponent(searchQuery)}`), 
+            getApiUrl(`/api/jobs?available=true&${filterField}=${encodeURIComponent(searchQuery)}`), 
             {
                 method: 'GET',
                 headers: {
