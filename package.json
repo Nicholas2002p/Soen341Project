@@ -21,6 +21,8 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.103.2",
+    "firebase": "^13.2.0",
+    "firebase-admin": "^14.5.0",
     "google-auth-library": "^11.1.0",
     "lucide-react": "^1.47.0",
     "react-router": "^8.4.0",
