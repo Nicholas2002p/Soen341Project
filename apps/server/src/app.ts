@@ -10,10 +10,19 @@ import { savedJobRoutes } from './presentation/routes/SavedJobRoutes.js';
 import cors from 'cors';
 
 export const app: Express = express();
+
+const frontendUrl = process.env.FRONTEND_URL;
+
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://localhost:5173',
+    ...(frontendUrl ? [frontendUrl] : []),
+];
+
 app.set('trust proxy', true);
 app.use(cors({
-  origin: ["http://localhost:5173", "https://localhost:5173"],
-  credentials: true, // needed if you send cookies or auth headers cross-origin
+    origin: allowedOrigins,
+    credentials: true,
 }));
 app.use(express.json());
 
