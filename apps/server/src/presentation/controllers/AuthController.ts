@@ -9,6 +9,7 @@ import { InvalidEmailError } from '../../domain/errors/InvalidEmailError.js';
 import { InvalidAuthCredentialsError } from '../../domain/errors/InvalidAuthCredentialsError.js';
 import { UserAlreadyExistsError } from '../../domain/errors/UserAlreadyExistsError.js';
 import { InvalidGoogleTokenError } from '../../domain/errors/InvalidGoogleTokenError.js';
+import { notificationService } from '../../application/services/NotificationService.js';
 
 export class AuthController {
   async register(req: Request, res: Response): Promise<void> {
@@ -202,7 +203,11 @@ export class AuthController {
       }
 
       // Call the authService to log out the user
+      const user = await authService.authenticate(token);
       await authService.logout(token);
+      if (user) {
+        await notificationService.unregisterAll(user.id);
+      }
 
       // Return a 200 OK response indicating successful logout
       res.status(200).json({ message: 'Logged out successfully' });

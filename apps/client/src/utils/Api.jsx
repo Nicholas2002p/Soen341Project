@@ -122,6 +122,29 @@ export async function LogOutApi(token) {
             return false;
         }
 
+        export async function RegisterPushInstallationApi(token, installationId) {
+            const response = await fetch(getApiUrl("/api/notifications/push"), {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ installationId }),
+            });
+            return response.ok;
+        }
+
+        export async function UnregisterPushInstallationApi(token, installationId) {
+            const response = await fetch(
+                getApiUrl(`/api/notifications/push/${encodeURIComponent(installationId)}`),
+                {
+                    method: "DELETE",
+                    headers: { Authorization: `Bearer ${token}` },
+                },
+            );
+            return response.ok || response.status === 404;
+        }
+
         return true;
     } catch (error) {
         console.error(error);

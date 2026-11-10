@@ -24,6 +24,7 @@ import { PrismaJobRepository } from './repositories/PrismaJobRepository.js';
 import { JobService } from '../application/services/JobService.js';
 import { PrismaSavedJobRepository } from './repositories/PrismaSavedJobRepository.js';
 import { SavedJobService } from '../application/services/SavedJobService.js';
+import { notificationService } from '../application/services/NotificationService.js';
 
 // Initialize repositories, services, and other dependencies
 const userRepository = new PrismaUserRepository(prisma);
@@ -59,7 +60,7 @@ const authService = new AuthService(
 );
 const profileService = new ProfileService(profileRepository, userRepository);
 const resumeService = new ResumeService(resumeRepository, resumeStorage);
-const applicationService = new ApplicationService(applicationRepository, resumeRepository);
+const applicationService = new ApplicationService(applicationRepository, resumeRepository, notificationService);
 const savedJobRepository = new PrismaSavedJobRepository(prisma);
 const savedJobService = new SavedJobService(savedJobRepository, jobRepository);
 
@@ -74,4 +75,5 @@ export {
   profileImageStorage,
   jobService,
   savedJobService,
+  notificationService,
 };
