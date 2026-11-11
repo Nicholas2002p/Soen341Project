@@ -264,9 +264,8 @@ export async function GetProfileApi(token) {
  * @param {*} token 
  * @returns all jobs that match filter and are not past deadline
  */
-export async function JobFilter (filterField, sortBy, searchQuery){
-    //to avoid lint error and to be added later in query
-    void sortBy;
+export async function JobFilter (filterField,  searchQuery){
+    
     try {
         const response = await fetch(
             getApiUrl(`/api/jobs?available=true&${filterField}=${encodeURIComponent(searchQuery)}`), 
@@ -590,5 +589,241 @@ export async function GetJobHistory(token) {
     } catch (error) {
         console.error(error);
         return null;
+    }
+}
+
+/**
+ * gets all the job postings of the logged in recruiter
+ * @param {*} token
+ * @returns a list of jobs 
+ */
+export async function GetMyJobsApi(token) {
+    try {
+        const response = await fetch(getApiUrl("/api/jobs/mine"), {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            return [];
+        }
+
+        return data.jobs;
+    } catch (error) {
+        console.error(error);
+        setErrorMessage("Unable to load your job postings.");
+        return [];
+    }
+}
+
+/**
+ * creates a job posting
+ * @param {*} job object with the job fields  
+ * (title, category, salary, employmentType, deadline, location, description, companyId)
+ * @param {*} token
+ * @returns the created job, or null if it failed
+ */
+export async function CreateJobApi(job, token) {
+    try {
+        const response = await fetch(getApiUrl("/api/jobs"), {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                companyId: Number(job.companyId),
+                title: job.title,
+                category: job.category,
+                location: job.location,
+                description: job.description,
+                salary: Number(job.salary),
+                employmentType: job.employmentType,
+                deadline: job.deadline,
+            }),
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return data.job;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+/**
+ * edits a job posting
+ * @param {*} jobId
+ * @param {*} job object with all fields 
+ * @param {*} token
+ * @returns the updated job
+ */
+export async function UpdateJobApi(jobId, job, token) {
+    try {
+        const response = await fetch(getApiUrl(`/api/jobs/${jobId}`), {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                companyId: Number(job.companyId),
+                title: job.title,
+                category: job.category,
+                location: job.location,
+                description: job.description,
+                salary: Number(job.salary),
+                employmentType: job.employmentType,
+                deadline: job.deadline,
+            }),
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return data.job;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+/**
+ * deletes a job posting
+ * @param {*} jobId
+ * @param {*} token
+ * @returns true if the job was deleted
+ */
+export async function DeleteJobApi(jobId, token) {
+    try {
+        const response = await fetch(getApiUrl(`/api/jobs/${jobId}`), {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.ok;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
+
+/**
+ * gets all the applications submitted to a job for recruiter
+ * @param {*} jobId
+ * @param {*} token
+ * @returns a list of applications
+ */
+export async function GetJobApplicationsApi(jobId, token) {
+    try {
+        const response = await fetch(getApiUrl(`/api/applications/jobs/${jobId}`), {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+        return data.applications;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+/**
+ * gets one application with its status history jobseeker or recruiter
+ * @param {*} applicationId
+ * @param {*} token
+ * @returns the application, or null if it failed
+ */
+export async function GetApplicationApi(applicationId, token) {
+    try {
+        const response = await fetch(getApiUrl(`/api/applications/${applicationId}`), {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return data.application;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+/**
+ * changes the status of an application recruiter
+ * @param {*} applicationId
+ * @param {*} status the new status
+ * @param {*} token
+ * @returns the updated application
+ */
+export async function UpdateApplicationStatusApi(applicationId, status, token) {
+    try {
+        const response = await fetch(getApiUrl(`/api/applications/${applicationId}/status`), {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ status }),
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return data.application;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+/**
+ * gets all the companies 
+ * @returns a list of companies
+ */
+export async function GetCompaniesApi() {
+    try {
+        const response = await fetch(getApiUrl("/api/companies"), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+        return data.companies;
+    } catch (error) {
+        console.error(error);
+        return [];
     }
 }
