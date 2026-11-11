@@ -1,8 +1,9 @@
 import type { ApplyToJobData, IApplicationService } from '../interfaces/services/IApplicationService.js';
 import type { IApplicationRepository } from '../interfaces/repositories/IApplicationRepository.js';
 import type { IResumeRepository } from '../interfaces/repositories/IResumeRepository.js';
-import type { Application, ApplicationDetails, ApplicationJob, ApplicationStatus, ApplicationWithJob } from '../../domain/entities/Application.js';
-import { INITIAL_APPLICATION_STATUS } from '../../domain/entities/Application.js';
+import type { Application, ApplicationDetails, ApplicationJob, ApplicationWithJob } from '../../domain/entities/Application.js';
+import { ApplicationStatus, INITIAL_APPLICATION_STATUS } from '../../domain/entities/Application.js';
+import type { ApplicationAnalytics, WeeklyApplicationCount } from '../../domain/entities/ApplicationAnalytics.js';
 import type { PublicUser } from '../../domain/entities/PublicUser.js';
 import { UserRole } from '../../domain/entities/User.js';
 import {
@@ -16,6 +17,38 @@ import {
 } from '../../domain/errors/ApplicationErrors.js';
 import { ResumeNotFoundError } from '../../domain/errors/ResumeNotFoundError.js';
 import { canChangeStatus } from '../../domain/validation/ApplicationStatusChange.js';
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+const WEEK_MS = 7 * DAY_MS;
+
+// Monday 00:00 (UTC) of the week the date is in
+function startOfWeek(date: Date): Date {
+    const day = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+    const daysSinceMonday = (day.getUTCDay() + 6) % 7; // getUTCDay() is 0 for Sunday
+    return new Date(day.getTime() - daysSinceMonday * DAY_MS);
+}
+
+// Count the applications submitted each week, from the week of the first one to the week of the last one.
+// Weeks with no applications are included with a count of 0 so the client can draw the chart directly.
+function countPerWeek(appliedDates: Date[]): WeeklyApplicationCount[] {
+    if (appliedDates.length === 0) {
+        return [];
+    }
+
+    const counts = new Map<number, number>();
+    for (const date of appliedDates) {
+        const week = startOfWeek(date).getTime();
+        counts.set(week, (counts.get(week) ?? 0) + 1);
+    }
+
+    const weeks = [...counts.keys()];
+    const result: WeeklyApplicationCount[] = [];
+    for (let week = Math.min(...weeks); week <= Math.max(...weeks); week += WEEK_MS) {
+        result.push({ weekStart: new Date(week).toISOString().slice(0, 10), count: counts.get(week) ?? 0 });
+    }
+
+    return result;
+}
 
 export class ApplicationService implements IApplicationService {
     constructor(
@@ -103,6 +136,36 @@ export class ApplicationService implements IApplicationService {
         }
 
         return application;
+    }
+
+    //get the numbers for the job seeker's dashboard, calculated from their applications and status history.
+    //Only job seekers have applications, so other roles get a clear error (same as listMine).
+    async getAnalytics(user: PublicUser): Promise<ApplicationAnalytics> {
+        if (user.role !== UserRole.JobSeeker) {
+            throw new ApplicationNotAllowedError('Only job seekers have application analytics.');
+        }
+
+        const applications = await this.applicationRepository.listHistoryByUserId(user.id);
+
+        const byStatus = Object.fromEntries(Object.values(ApplicationStatus).map((status) => [status, 0])) as Record<ApplicationStatus, number>;
+        for (const application of applications) {
+            byStatus[application.status] += 1;
+        }
+
+        // The history is used instead of the current status, so an application rejected after its interview still counts
+        const reachedInterview = applications.filter((application) =>
+            application.statusHistory.some((change) => change.status === ApplicationStatus.Interview || change.status === ApplicationStatus.Offered),
+        ).length;
+
+        const total = applications.length;
+
+        return {
+            total,
+            pending: byStatus[ApplicationStatus.Applied] + byStatus[ApplicationStatus.UnderReview],
+            byStatus,
+            interviewRate: total === 0 ? 0 : Math.round((reachedInterview / total) * 100) / 100,
+            submittedOverTime: countPerWeek(applications.map((application) => application.appliedAt)),
+        };
     }
 
     //get one application with its status history, for the applicant or the recruiter of the job.
