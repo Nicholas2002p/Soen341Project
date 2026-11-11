@@ -22,12 +22,17 @@ export class NotificationController {
     }
 
     async update(req: Request, res: Response): Promise<void> {
+        const notificationId = req.params.notificationId;
+        if (typeof notificationId !== 'string') {
+            res.status(400).json({ message: 'Notification id is required.' });
+            return;
+        }
         const read = req.body?.read;
         if (typeof read !== 'boolean') {
             res.status(400).json({ message: 'read must be a boolean.' });
             return;
         }
-        const updated = await notificationService.markRead(userId(res), req.params.notificationId, read);
+        const updated = await notificationService.markRead(userId(res), notificationId, read);
         if (!updated) {
             res.status(404).json({ message: 'Notification not found.' });
             return;
@@ -36,7 +41,12 @@ export class NotificationController {
     }
 
     async delete(req: Request, res: Response): Promise<void> {
-        const deleted = await notificationService.delete(userId(res), req.params.notificationId);
+        const notificationId = req.params.notificationId;
+        if (typeof notificationId !== 'string') {
+            res.status(400).json({ message: 'Notification id is required.' });
+            return;
+        }
+        const deleted = await notificationService.delete(userId(res), notificationId);
         if (!deleted) {
             res.status(404).json({ message: 'Notification not found.' });
             return;
@@ -55,7 +65,12 @@ export class NotificationController {
     }
 
     async unregisterPush(req: Request, res: Response): Promise<void> {
-        const removed = await notificationService.unregisterInstallation(userId(res), req.params.installationId);
+        const installationId = req.params.installationId;
+        if (typeof installationId !== 'string') {
+            res.status(400).json({ message: 'Installation id is required.' });
+            return;
+        }
+        const removed = await notificationService.unregisterInstallation(userId(res), installationId);
         if (!removed) {
             res.status(404).json({ message: 'Push installation not found.' });
             return;

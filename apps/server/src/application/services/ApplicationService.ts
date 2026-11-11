@@ -70,8 +70,8 @@ export class ApplicationService implements IApplicationService {
         await this.notificationService?.create(job.recruiterId, {
             type: 'new_application',
             title: 'New application',
-            body: `A new application was submitted for ${job.title}.`,
-            data: { applicationId: String(application.applicationId), jobId: String(job.jobId) },
+            body: `A new application was submitted for job ${job.id}.`,
+            data: { applicationId: String(application.id), jobId: String(job.id) },
         });
         return application;
     }
@@ -168,7 +168,7 @@ export class ApplicationService implements IApplicationService {
         await this.notificationService?.create(application.userId, {
             type: status === 'Interview' ? 'interview_invitation' : 'application_update',
             title: status === 'Interview' ? 'Interview invitation' : 'Application updated',
-            body: `Your application for ${job.title} is now ${status}.`,
+            body: `Your application for job ${job.id} is now ${status}.`,
             data: { applicationId: String(applicationId), status },
         });
         return updated;

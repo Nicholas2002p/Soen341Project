@@ -25,7 +25,6 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
             setErrorMessage("Error Message:", data.message);
             return false;
         }
-
         setToken(data.sessionToken);
         setUser(data.user);
         return await CreateProfileApi(fname, lname, setErrorMessage, data.sessionToken);
@@ -120,29 +119,6 @@ export async function LogOutApi(token) {
             const data = await response.json().catch(() => ({}));
             console.error("Logout failed:", data.message ?? response.status);
             return false;
-        }
-
-        export async function RegisterPushInstallationApi(token, installationId) {
-            const response = await fetch(getApiUrl("/api/notifications/push"), {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ installationId }),
-            });
-            return response.ok;
-        }
-
-        export async function UnregisterPushInstallationApi(token, installationId) {
-            const response = await fetch(
-                getApiUrl(`/api/notifications/push/${encodeURIComponent(installationId)}`),
-                {
-                    method: "DELETE",
-                    headers: { Authorization: `Bearer ${token}` },
-                },
-            );
-            return response.ok || response.status === 404;
         }
 
         return true;
@@ -614,4 +590,66 @@ export async function GetJobHistory(token) {
         console.error(error);
         return null;
     }
+}
+
+export async function RegisterPushInstallationApi(token, installationId) {
+    const response = await fetch(getApiUrl("/api/notifications/push"), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ installationId }),
+    });
+    if (!response.ok) {
+        let message = `Push registration failed (${response.status}).`;
+        try {
+            const data = await response.json();
+            if (typeof data.message === "string") message = data.message;
+        } catch {
+            // Keep the status-based message when the server does not return JSON.
+        }
+        throw new Error(message);
+    }
+
+    return true;
+}
+
+export async function UnregisterPushInstallationApi(token, installationId) {
+    const response = await fetch(
+        getApiUrl(`/api/notifications/push/${encodeURIComponent(installationId)}`),
+        {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+        },
+    );
+    return response.ok || response.status === 404;
+}
+
+export async function SendTestNotificationApi(token) {
+    const response = await fetch(getApiUrl("/api/notifications"), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            type: "test",
+            title: "Test notification",
+            body: "Your notifications are working.",
+        }),
+    });
+
+    if (!response.ok) {
+        let message = `Test notification failed (${response.status}).`;
+        try {
+            const data = await response.json();
+            if (typeof data.message === "string") message = data.message;
+        } catch {
+            // Keep the status-based message when the server does not return JSON.
+        }
+        throw new Error(message);
+    }
+
+    return true;
 }

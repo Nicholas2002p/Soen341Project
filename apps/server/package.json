@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test node --import tsx --test tests/api/ApplicationApi.test.ts tests/api/AuthApi.test.ts tests/api/CompanyApi.test.ts tests/api/ProfileApi.test.ts tests/api/ResumeApi.test.ts tests/api/NotificationApi.test.ts tests/integration/ApplicationLifecycle.test.ts tests/integration/AuthLifecycle.test.ts tests/integration/ProfileLifecycle.test.ts tests/integration/ResumeLifecycle.test.ts tests/unit/ApplicationService.test.ts tests/unit/AuthService.test.ts tests/unit/ProfileService.test.ts tests/unit/ResumeFile.test.ts tests/unit/ResumeService.test.ts tests/unit/SupabaseProfileImageStorage.test.ts tests/unit/UserService.test.ts",
+    "pretest": "npm run prisma:generate",
+    "test": "cross-env NODE_ENV=test node --import tsx --test tests/api/ApplicationApi.test.ts tests/api/AuthApi.test.ts tests/api/CompanyApi.test.ts tests/api/ProfileApi.test.ts tests/api/ResumeApi.test.ts tests/api/NotificationApi.test.ts tests/integration/ApplicationLifecycle.test.ts tests/integration/AuthLifecycle.test.ts tests/integration/ProfileLifecycle.test.ts tests/integration/ResumeLifecycle.test.ts tests/unit/ApplicationService.test.ts tests/unit/AuthService.test.ts tests/unit/SavedJobService.test.ts tests/unit/ProfileService.test.ts tests/unit/ResumeFile.test.ts tests/unit/ResumeService.test.ts tests/unit/SupabaseProfileImageStorage.test.ts tests/unit/UserService.test.ts",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
@@ -28,6 +29,7 @@
     "cors": "^2.8.6",
     "dotenv": "^18.0.2",
     "express": "^5.2.1",
+    "firebase-admin": "^14.5.0",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.4.0",
     "pg": "^8.23.0",

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../utils/Auth';
-import { GetProfileApi }from '../../utils/Api';
+import { GetProfileApi, SendTestNotificationApi }from '../../utils/Api';
 
 import ProfileCard from '../../components/Profile/ProfileCard';
 import ProfileEdit from '../../components/Profile/ProfileEdit';
@@ -24,6 +24,8 @@ export default function Profile({ setView }) {
   const [profileURL, setProfileURL] = useState(null);
   const [role, setRole] = useState('ROLE');
   const [desc, setDesc] = useState(null);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [sendingNotification, setSendingNotification] = useState(false);
   
   useEffect(() => {
     if (!token) return;
@@ -42,6 +44,22 @@ export default function Profile({ setView }) {
     getProfile();
     
   }, [token, user?.role]);
+
+  const sendTestNotification = async () => {
+    setSendingNotification(true);
+    setNotificationMessage('');
+    try {
+      const sent = await SendTestNotificationApi(token);
+      setNotificationMessage(sent
+        ? 'Test notification sent.'
+        : 'Test notification could not be sent.');
+    } catch (error) {
+      console.error('Test notification failed:', error);
+      setNotificationMessage('Test notification could not be sent.');
+    } finally {
+      setSendingNotification(false);
+    }
+  };
 
   return (
     <main className="profilepage">
@@ -62,6 +80,13 @@ export default function Profile({ setView }) {
             setProfileURL={setProfileURL}
           />
           <ResumeUpload />
+          <section className="notification-test">
+            <h2>Notifications</h2>
+            <button type="button" onClick={sendTestNotification} disabled={sendingNotification}>
+              {sendingNotification ? 'Sending...' : 'Send test notification'}
+            </button>
+            {notificationMessage && <p role="status">{notificationMessage}</p>}
+          </section>
         </section>
       </section>
     </main>
