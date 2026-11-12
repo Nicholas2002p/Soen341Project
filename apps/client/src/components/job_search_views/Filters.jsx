@@ -1,4 +1,5 @@
 import "./Filters.scss";
+import {employmentTypes, orderBy} from "../../utils/filterTypes";
 /**
  * Filters
  * column that shows every filter option possible for the job board
@@ -27,6 +28,12 @@ export default function Filters({ filters, setFilters }) {
   return (
     <section className="filters">
       <h2> Filters </h2>
+      <SortFilter
+        value={filters.sortBy}
+        onChange={(sortBy) =>
+          setFilters((prev) => ({ ...prev, sortBy }))
+        }
+      />
       <Filter
         id="employmentType"
         choices={employmentTypes}
@@ -101,10 +108,29 @@ function SalaryFilter({ value, onChange }) {
   );
 }
 
-// ============================= FILTER DATA ==================================
+/**
+ * the sort by dropdown
+ * @param {*} value
+ * @param {*} onChange
+ * @returns the sort 
+ */
+function SortFilter({ value, onChange }) {
+  return (
+    <fieldset className="filter">
+      <legend> Sort by </legend>
 
-const employmentTypes = [
-  { value: "on_site", label: "on site" },
-  { value: "hybrid", label: "hybrid" },
-  { value: "remote", label: "remote" },
-];
+      <select
+        id="sortBy"
+        className="dropdown"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        {orderBy.map((item) => (
+          <option key={item.id} value={item.id}>
+            {item.name}
+          </option>
+        ))}
+      </select>
+    </fieldset>
+  );
+}
