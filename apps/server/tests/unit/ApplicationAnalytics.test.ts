@@ -65,23 +65,34 @@ test('getAnalytics only counts the applications of the logged in job seeker', as
     assert.equal(analytics.total, 1);
 });
 
-test('getAnalytics interview rate counts applications rejected after their interview', async () => {
+test('getAnalytics interview rate only counts applications that reached an interview', async () => {
     const { service, repository } = createService([
         applicationWith(1, ApplicationStatus.Rejected, '2026-10-05'),
         applicationWith(2, ApplicationStatus.Offered, '2026-10-05'),
-        applicationWith(3, ApplicationStatus.Rejected, '2026-10-05'),
+        applicationWith(3, ApplicationStatus.Offered, '2026-10-05'),
+        applicationWith(4, ApplicationStatus.Rejected, '2026-10-05'),
     ]);
 
-    // Application 1 went through an interview before being rejected, application 3 was rejected right away
+    // Application 1 was rejected after its interview and application 2 got an offer after its interview.
+    // Application 3 got an offer without an interview and application 4 was rejected right away, so they do not count.
     repository.statusHistory.set(1, [
         { status: ApplicationStatus.Applied, changedAt: new Date('2026-10-05') },
         { status: ApplicationStatus.Interview, changedAt: new Date('2026-10-10') },
         { status: ApplicationStatus.Rejected, changedAt: new Date('2026-10-15') },
     ]);
+    repository.statusHistory.set(2, [
+        { status: ApplicationStatus.Applied, changedAt: new Date('2026-10-05') },
+        { status: ApplicationStatus.Interview, changedAt: new Date('2026-10-10') },
+        { status: ApplicationStatus.Offered, changedAt: new Date('2026-10-15') },
+    ]);
+    repository.statusHistory.set(3, [
+        { status: ApplicationStatus.Applied, changedAt: new Date('2026-10-05') },
+        { status: ApplicationStatus.Offered, changedAt: new Date('2026-10-10') },
+    ]);
 
     const analytics = await service.getAnalytics(jobSeeker);
 
-    assert.equal(analytics.interviewRate, 0.67); // 2 of 3, rounded to two decimals
+    assert.equal(analytics.interviewRate, 0.5); // 2 of 4
 });
 
 test('getAnalytics groups applications by week and includes the weeks with none', async () => {

@@ -12,6 +12,6 @@ export interface ApplicationAnalytics {
     total: number; // Number of applications the job seeker has
     pending: number; // Applications still waiting for an answer (Applied or Under_Review)
     byStatus: Record<ApplicationStatus, number>; // Number of applications currently in each status
-    interviewRate: number; // Share of applications that reached Interview or Offered, from 0 to 1
+    interviewRate: number; // Share of applications that reached the Interview status, from 0 to 1
     submittedOverTime: WeeklyApplicationCount[]; // Applications submitted per week, oldest first, weeks with none included
 }

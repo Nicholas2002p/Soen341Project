@@ -152,9 +152,10 @@ export class ApplicationService implements IApplicationService {
             byStatus[application.status] += 1;
         }
 
-        // The history is used instead of the current status, so an application rejected after its interview still counts
+        // The history is used instead of the current status, so an application rejected or offered after its interview still counts.
+        // An offer made without an interview (Applied straight to Offered) is not counted.
         const reachedInterview = applications.filter((application) =>
-            application.statusHistory.some((change) => change.status === ApplicationStatus.Interview || change.status === ApplicationStatus.Offered),
+            application.statusHistory.some((change) => change.status === ApplicationStatus.Interview),
         ).length;
 
         const total = applications.length;
