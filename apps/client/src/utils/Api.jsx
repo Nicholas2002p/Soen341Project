@@ -614,7 +614,6 @@ export async function GetMyJobsApi(token) {
         return data.jobs;
     } catch (error) {
         console.error(error);
-        setErrorMessage("Unable to load your job postings.");
         return [];
     }
 }
