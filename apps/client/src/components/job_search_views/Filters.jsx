@@ -1,4 +1,5 @@
 import "./Filters.scss";
+import {employmentTypes, orderBy} from "../../utils/filterTypes";
 /**
  * Filters
  * column that shows every filter option possible for the job board
@@ -133,18 +134,3 @@ function SortFilter({ value, onChange }) {
     </fieldset>
   );
 }
-
-// ============================= FILTER DATA ==================================
-
-const employmentTypes = [
-  { value: "on_site", label: "on site" },
-  { value: "hybrid", label: "hybrid" },
-  { value: "remote", label: "remote" },
-];
-
-const orderBy = [
-{ id: "recent", name: "Most recent" },
-{ id: "salaryDesc", name: "Salary: high to low" },
-{ id: "salaryAsc", name: "Salary: low to high" },
-{ id: "titleAsc", name: "Title A-Z" }
-];
