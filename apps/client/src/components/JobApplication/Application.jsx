@@ -4,10 +4,10 @@ import {useState, useEffect} from 'react';
 import { useAuth } from '../../utils/Auth';
 
 export default function Application({ handleApply, selectedResumeId, setSelectedResumeId, alreadyApplied }) {
-   
-   const [resumes, setResumes] = useState([]);
-   const [errorMessage, setErrorMessage] = useState('');
-   const { token } = useAuth();
+  const [favorite, setFavorite] = useState(false);
+  const [resumes, setResumes] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+  const { token } = useAuth();
 
     useEffect(() => {
       const getResumes = async () => {
@@ -19,7 +19,7 @@ export default function Application({ handleApply, selectedResumeId, setSelected
       getResumes();
     }, [alreadyApplied, setResumes, token]);
 
-    
+      
 
 return (
     <div className="application">
@@ -38,6 +38,11 @@ return (
         {errorMessage && <p className="resume-error">{errorMessage}</p>}
         {alreadyApplied && <p className='applied-resume'> You've applied to this job! </p>}
         <button disabled={alreadyApplied} onClick={() => { handleApply(); }}>Apply</button>
+      
+        <p onClick={() => {setFavorite(!favorite)}} className='save-job'> 
+          <div class={`left ${favorite ? "saved": ""}`}></div>
+          <div class={`right ${favorite ? "saved": ""}`}></div>
+        </p>
       </div>
     </div>
   );
