@@ -9,16 +9,12 @@ export function useSavedJobs(jobId) {
 
     
     useEffect(() => {
-        let cancelled = false;
-
         async function checkSaved() {
             const saved = await GetSavedJobsApi(token);
-            if (cancelled) return;
             setIsSaved(saved.some((job) => job.jobId === jobId));
         }
 
         checkSaved();
-        return () => { cancelled = true; };
     }, [jobId, token]);
 
     async function toggleSave() {
