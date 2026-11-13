@@ -61,6 +61,12 @@ export class GeminiAiService implements IAiService {
                                 ...(options.maxOutputTokens === undefined
                                     ? {}
                                     : { maxOutputTokens: options.maxOutputTokens }),
+                                ...(options.responseMimeType === undefined
+                                    ? {}
+                                    : { responseMimeType: options.responseMimeType }),
+                                ...(options.responseSchema === undefined
+                                    ? {}
+                                    : { responseSchema: options.responseSchema }),
                             },
                         }
                         : {}),
