@@ -848,7 +848,8 @@ export async function GetSavedJobsApi(token) {
         }
 
         const data = await response.json();
-        return data.savedJobs;
+        console.log(data);
+        return data.jobs;
     } catch (error) {
         console.error(error);
         return [];
