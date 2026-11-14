@@ -21,6 +21,10 @@ applicationRoutes.get('/', applicationController.listMine.bind(applicationContro
 // Declared before "/:id" so "history" is not read as an application id.
 applicationRoutes.get('/history', applicationController.listHistory.bind(applicationController));
 
+// Get the numbers for the logged in job seeker's dashboard (status breakdown, interview rate, applications per week).
+// Declared before "/:id" so "analytics" is not read as an application id.
+applicationRoutes.get('/analytics', applicationController.getAnalytics.bind(applicationController));
+
 // List the applications submitted to a job (recruiter of the job only).
 // Declared before "/:id" so "jobs" is not read as an application id.
 applicationRoutes.get('/jobs/:jobId', applicationController.listForJob.bind(applicationController));

@@ -32,6 +32,7 @@ test('every application route rejects requests without a bearer token', async ()
     ['POST', '/api/applications'],
     ['GET', '/api/applications'],
     ['GET', '/api/applications/history'],
+    ['GET', '/api/applications/analytics'],
     ['GET', '/api/applications/1'],
     ['DELETE', '/api/applications/1'],
     ['PATCH', '/api/applications/1/status'],
