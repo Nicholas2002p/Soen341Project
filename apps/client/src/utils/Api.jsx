@@ -651,6 +651,8 @@ export async function SendTestNotificationApi(token) {
     }
 
     return true;
+}
+
 /**
  * gets all the job postings of the logged in recruiter
  * @param {*} token
