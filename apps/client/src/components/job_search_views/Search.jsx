@@ -4,26 +4,18 @@ import './Search.scss';
 
 export default function SearchBar({setJobs}) { 
     const [searchFor, setsearchFor] = useState('keyword');
-    const [sortBy, setsortBy] = useState('recent');
     const [searchBar, setSearchBar] = useState('');
     const searchBy = [
     { id: "keyword", name: "Keywords" },
     { id: "location", name: "Location" },
     { id: "category", name: "Category" }
     ];
-
-    const orderBy = [
-    { id: "recent", name: "Most recent" },
-    { id: "salaryDesc", name: "Salary: high to low" },
-    { id: "salaryAsc", name: "Salary: low to high" },
-    { id: "titleAsc", name: "Title A-Z" }
-    ];
     
 
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         try {
-            const results = await JobFilter(searchFor, sortBy, searchBar);
+            const results = await JobFilter(searchFor, searchBar);
             
             setJobs(results);
         } catch (error) {
@@ -40,18 +32,6 @@ export default function SearchBar({setJobs}) {
                     onChange={(e) => setsearchFor(e.target.value)}
                 >
                     {searchBy.map((item) => (
-                        <option key={item.id} value={item.id}>
-                            {item.name}
-                        </option>
-                    ))}
-                </select>
-
-                <select
-                    className="dropdown"
-                    value={sortBy}
-                    onChange={(e) => setsortBy(e.target.value)}
-                >
-                    {orderBy.map((item) => (
                         <option key={item.id} value={item.id}>
                             {item.name}
                         </option>

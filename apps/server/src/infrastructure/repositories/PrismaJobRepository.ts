@@ -176,6 +176,7 @@ export class PrismaJobRepository implements IJobRepository {
                 deadline: {
                     gte: new Date(),
                 },
+                archive: false,
             },
             include: jobSummaryInclude,
             orderBy: {

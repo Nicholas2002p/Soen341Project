@@ -126,6 +126,18 @@ export class ApplicationController {
         }
     }
 
+    async getAnalytics(req: Request, res: Response): Promise<void> {
+        try {
+            const user = res.locals.user as PublicUser;
+
+            // Return a 200 OK response with the numbers for the job seeker's dashboard
+            const analytics = await applicationService.getAnalytics(user);
+            res.status(200).json({ analytics });
+        } catch (error: unknown) {
+            handleApplicationError(error, res, 'Your application analytics could not be loaded. Please try again.');
+        }
+    }
+
     async getById(req: Request, res: Response): Promise<void> {
         try {
             const user = res.locals.user as PublicUser;
