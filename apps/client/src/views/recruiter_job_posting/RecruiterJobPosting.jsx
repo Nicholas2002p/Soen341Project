@@ -25,7 +25,7 @@ export default function RecruiterJobPosting({ setView }) {
         setJobs(data);
       };
       getMyJobs();
-    }, []);
+    }, [token]);
 
   return (
     <section>
