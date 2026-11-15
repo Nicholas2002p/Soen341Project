@@ -4,7 +4,17 @@ import { GetJobHistory } from '../../utils/Api';
 
 import './SaveJob.scss';
 
-export default function SaveJob({ savedJobs }) {
+/**
+ * Saved Jobs
+ * Displays a list of the saved jobs of the user
+ * - shows the deadline
+ * - title + company
+ * - whether they've applied to it or not
+ * 
+ * @param {*} savedJobs 
+ * @returns Saved Jobs Component
+ */
+export default function SavedJobs({ savedJobs }) {
   const { token } = useAuth();
   const [history, setHistory] = useState([]);
 
@@ -31,6 +41,14 @@ export default function SaveJob({ savedJobs }) {
   );
 }
 
+/**
+ * Saved Job
+ * shows the information of the saved job
+ * 
+ * @param {Object} job
+ * @param {Boolean} applied => shows if they've applied to the saved job or not 
+ * @returns Saved Job Component
+ */
 function SavedJob({ job, applied }) {
   const date = new Date(job.deadline);
 

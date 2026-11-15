@@ -5,7 +5,7 @@ import { GetProfileApi, GetSavedJobsApi }from '../../utils/Api';
 import ProfileCard from '../../components/Profile/ProfileCard';
 import ProfileEdit from '../../components/Profile/ProfileEdit';
 import ResumeUpload from '../../components/Profile/ResumeUpload';
-import SaveJob from '../../components/Profile/SaveJob';
+import SavedJobs from '../../components/Profile/SaveJob';
 import Nav from '../../components/Navigation/Nav';
 
 import './Profile.scss';
@@ -69,7 +69,7 @@ export default function Profile({ setView }) {
             setDesc={setDesc} 
             setProfileURL={setProfileURL}
           />
-          <SaveJob savedJobs={savedJobs} />
+          <SavedJobs savedJobs={savedJobs} />
           <ResumeUpload />
         </section>
       </section>
