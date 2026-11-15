@@ -17,6 +17,7 @@ import {
 } from '../../domain/errors/ApplicationErrors.js';
 import { ResumeNotFoundError } from '../../domain/errors/ResumeNotFoundError.js';
 import { canChangeStatus } from '../../domain/validation/ApplicationStatusChange.js';
+import type { NotificationService } from './NotificationService.js';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WEEK_MS = 7 * DAY_MS;
@@ -54,6 +55,7 @@ export class ApplicationService implements IApplicationService {
     constructor(
         private readonly applicationRepository: IApplicationRepository,
         private readonly resumeRepository: IResumeRepository,
+        private readonly notificationService?: Pick<NotificationService, 'create'>,
     ) {}
 
     // Retrieve a job, throws JobNotFoundError ("Job not found.") if it does not exist
@@ -92,12 +94,19 @@ export class ApplicationService implements IApplicationService {
             throw new DuplicateApplicationError();
         }
 
-        return this.applicationRepository.create({
+        const application = await this.applicationRepository.create({
             userId: user.id,
             jobId: data.jobId,
             resumeId: data.resumeId,
             status: INITIAL_APPLICATION_STATUS,
         });
+        await this.notificationService?.create(job.recruiterId, {
+            type: 'new_application',
+            title: 'New application',
+            body: `A new application was submitted for job ${job.id}.`,
+            data: { applicationId: String(application.id), jobId: String(job.id) },
+        });
+        return application;
     }
 
     //list the applications of a job seeker.
@@ -219,7 +228,14 @@ export class ApplicationService implements IApplicationService {
             throw new InvalidStatusChangeError(`An application that is ${application.status} cannot be changed to ${status}.`);
         }
 
-        return this.applicationRepository.updateStatus(applicationId, status);
+        const updated = await this.applicationRepository.updateStatus(applicationId, status);
+        await this.notificationService?.create(application.userId, {
+            type: status === 'Interview' ? 'interview_invitation' : 'application_update',
+            title: status === 'Interview' ? 'Interview invitation' : 'Application updated',
+            body: `Your application for job ${job.id} is now ${status}.`,
+            data: { applicationId: String(applicationId), status },
+        });
+        return updated;
     }
 
     //withdraw (delete) an application, only the applicant can do this
