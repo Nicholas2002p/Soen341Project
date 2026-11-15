@@ -70,7 +70,7 @@ No issues so far
 ### Future tasks
 - Michelle : 
 - Nicholas :
-- Chen : 
+- Chen : Fix jobs api by adding skills back to jobs
 - Abdulla : 
 - Tyler :   ai feature 
 - Magley :    ai feature 
