@@ -56,6 +56,39 @@ export class JobService implements IJobService {
     }
 
     /**
+     * retrieves the current recruiter's archived jobs
+     * @param user - the current logged in recruiter
+     * @returns a promise that resolves to a job array
+     */
+    async getArchived(user: PublicUser): Promise<JobSummary[]> {
+        this.requireRecruiter(user);
+        return this.jobRepository.getArchivedByRecruiterId(user.id);
+    }
+
+    /**
+     * archives or unarchives one of the recruiter's jobs
+     * @param user - the current logged in recruiter
+     * @param jobId - the id of the job to change
+     * @param archive - true to archive the job, false to make it visible again
+     * @returns a promise that resolves to the updated job or null if it does not exist
+     */
+    async setArchive(user: PublicUser, jobId: number, archive: boolean): Promise<JobDetails | null> {
+        this.requireRecruiter(user);
+
+        const job = await this.jobRepository.getById(jobId);
+
+        if (!job) {
+            return null;
+        }
+
+        if (job.recruiterId !== user.id) {
+            throw new Error('You can only archive your own job postings.');
+        }
+
+        return this.jobRepository.setArchive(jobId, archive);
+    }
+
+    /**
      * creates a new job
      * @param user - the current logged in recruiter
      * @param data - data to create a new promise
