@@ -52,6 +52,16 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
   const setPlaceholder = (input) => {
     if (currentJob == {}) return;
 
+    if (input === "company") {
+      return currentJob.company.companyId;
+    }
+
+    if (input === "deadline") {
+      const date = new Date(currentJob.deadline);
+      date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+      return date.toISOString().slice(0, 16); 
+    }
+
     return currentJob[input];
   }
 
@@ -72,8 +82,8 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
 
         <label className='add-job-inputs' htmlFor="job-company">
           Company:
-          <select onChange={(e) => { setCompany(e.target.value); }} id="job-company" name="job-company" value={company} >
-            <option value={setPlaceholder("company")}>--Select a company--</option>
+          <select onChange={(e) => { setCompany(e.target.value); }} id="job-company" name="job-company" value={setPlaceholder("company")} >
+            <option value="">--Select a company--</option>
             {listCompany.map((c) => (
               <option key={c.companyId} value={c.companyId}>
                 {c.name}
@@ -84,9 +94,9 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
 
         <label className='add-job-inputs' htmlFor="job-employ-type">
           Employment Type: 
-          <select onChange={(e) => { setType(e.target.value); }} name="employ-type" id="employ-type">
-            <option value={setPlaceholder("employmentType")}>--Select the employment type--</option>
-            <option value="on_site">On Site</option>
+          <select onChange={(e) => { setType(e.target.value); }} name="employ-type" id="employ-type" value={setPlaceholder("employmentType")}>
+            <option value="">--Select the employment type--</option>
+            <option value="on_site" >On Site</option>
             <option value="hybrid">Hybrid</option>
             <option value="remote">Remote</option>
           </select>
@@ -115,19 +125,19 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
 
         <label className='add-job-inputs' htmlFor="job-salary">
           Salary per year:
-          <input className='' value={setPlaceholder("salary")} type="number" name="job-salary" min="0"
+          <input className='' value={setPlaceholder("salary")} type="number" name="job-salary" min="0" max="5000000"
             onChange={(e) => { setSalary(e.target.value); }} 
           />
         </label>
 
         <label className='add-job-inputs' htmlFor="job-deadline">
           Deadline: 
-          <input className='' placeholder={setPlaceholder("deadline")} type="datetime-local" name="job-deadline"  
+          <input className='' value={setPlaceholder("deadline")} type="datetime-local" name="job-deadline"  
             onChange={(e) => { setDeadline(e.target.value); }} 
           />
         </label>
 
-        <button onClick={() => { postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token); }}> Post </button>
+        <button onClick={() => { postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token); }}> Done </button>
       </section>
       
     </section>
