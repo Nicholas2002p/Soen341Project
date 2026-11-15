@@ -1,4 +1,5 @@
 import type { Application, ApplicationDetails, ApplicationStatus, ApplicationWithJob } from '../../../domain/entities/Application.js';
+import type { ApplicationAnalytics } from '../../../domain/entities/ApplicationAnalytics.js';
 import type { PublicUser } from '../../../domain/entities/PublicUser.js';
 
 export interface ApplyToJobData {
@@ -19,6 +20,10 @@ export interface IApplicationService {
 
     //get the job seeker's application for one job with its status history, other roles get ApplicationNotAllowedError
     getHistoryForJob(user: PublicUser, jobId: number): Promise<ApplicationDetails>;
+
+    //get the numbers for the job seeker's dashboard (status breakdown, interview rate, applications per week),
+    //other roles get ApplicationNotAllowedError
+    getAnalytics(user: PublicUser): Promise<ApplicationAnalytics>;
 
     //get one application with its status history, for the applicant or the recruiter of the job
     getById(user: PublicUser, applicationId: number): Promise<ApplicationDetails>;

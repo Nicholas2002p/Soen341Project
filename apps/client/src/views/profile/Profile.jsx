@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../utils/Auth';
-import { GetProfileApi, GetSavedJobsApi }from '../../utils/Api';
-
+import { GetProfileApi, GetSavedJobsApi, SendTestNotificationApi }from '../../utils/Api';
 import ProfileCard from '../../components/Profile/ProfileCard';
 import ProfileEdit from '../../components/Profile/ProfileEdit';
 import ResumeUpload from '../../components/Profile/ResumeUpload';
@@ -26,6 +25,8 @@ export default function Profile({ setView }) {
   const [profileURL, setProfileURL] = useState(null);
   const [role, setRole] = useState('ROLE');
   const [desc, setDesc] = useState(null);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [sendingNotification, setSendingNotification] = useState(false);
   
   useEffect(() => {
     if (!token) return;
@@ -51,6 +52,22 @@ export default function Profile({ setView }) {
     getSavedJobs();
   }, [token, user?.role]);
 
+  const sendTestNotification = async () => {
+    setSendingNotification(true);
+    setNotificationMessage('');
+    try {
+      const sent = await SendTestNotificationApi(token);
+      setNotificationMessage(sent
+        ? 'Test notification sent.'
+        : 'Test notification could not be sent.');
+    } catch (error) {
+      console.error('Test notification failed:', error);
+      setNotificationMessage('Test notification could not be sent.');
+    } finally {
+      setSendingNotification(false);
+    }
+  };
+
   return (
     <main className="profilepage">
       <Nav setView={setView} profileURL={profileURL} />
@@ -71,6 +88,13 @@ export default function Profile({ setView }) {
           />
           <SavedJobs savedJobs={savedJobs} />
           <ResumeUpload />
+          <section className="notification-test">
+            <h2>Notifications</h2>
+            <button type="button" onClick={sendTestNotification} disabled={sendingNotification}>
+              {sendingNotification ? 'Sending...' : 'Send test notification'}
+            </button>
+            {notificationMessage && <p role="status">{notificationMessage}</p>}
+          </section>
         </section>
       </section>
     </main>
