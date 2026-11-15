@@ -83,6 +83,11 @@ export class ApplicationService implements IApplicationService {
             throw new JobClosedError();
         }
 
+        // The recruiter archived the job, so it is no longer accepting applications
+        if (job.archived) {
+            throw new JobClosedError('This job is no longer accepting applications.');
+        }
+
         // The resume must be one of the applicant's own resumes
         const resume = await this.resumeRepository.getById(data.resumeId);
         if (!resume || resume.userId !== user.id) {

@@ -57,6 +57,7 @@ function job(jobId: number, deadline: Date): JobSummary {
         employmentType: 'remote',
         deadline,
         createdAt: new Date(),
+        archive: false,
         company: { companyId: 1, name: 'Company' },
         skills: [],
     };
