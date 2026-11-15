@@ -24,15 +24,57 @@
 
 ### Issues
 No issues so far
-Attach api to recruiter page
-    - filtering + posting the job
-job seeker activity for recuirter/admin
-- UI page for the metrics
-- monitor the search
-- api to save search activity - trigger -> when something is added to metrics table => audit log (time when it was searched, job seeker who searched it) 
-- update the schema to keep track of activity - audit log + metrics (search parameters)
-ai job aplication 
-- button who allows ai to auto apply based on the resume selected
 
-notifications for aplication update, intervies, deadlines and recruiter actions
-- send notification by email (backend)
+
+## Meeting #6
+
+| Date       | Time | Type     | Attendees                                       | Note Taker |
+|------------|------|----------|-------------------------------------------------|------------|
+| 2026-11-09 | 4 pm | Online    | Michelle, Nicholas, Chen,  Abdulla, Tyler       | Nicholas   |
+
+### What was done
+- Michelle :  star/heart on jobs to save
+- Nicholas :  fix another bug with search bar, fix pagination, 
+- Chen :   save job api, 
+- Abdulla :  started api routes to save the metrics
+- Tyler :started in app notification, 
+- Magley :  
+
+### Future tasks
+- Michelle : Create UI page for job seeker activity,  recruiter page to manage applications, analytics
+- Nicholas : add new filter option to search bar, add logic to save jobs so it already displayed as saved, add logic for recruiters page
+- Chen : acceptance test, deployment,
+- Abdulla : api routes to save the metrics
+- Tyler : in app notification,   ai feature 
+- Magley :  ai feature 
+
+### Issues
+No issues so far
+
+
+
+## Meeting #7
+
+| Date       | Time | Type     | Attendees                                       | Note Taker |
+|------------|------|----------|-------------------------------------------------|------------|
+| 2026-11-14 | 4 pm | Online    | Michelle, Nicholas, Chen,  Abdulla, Tyler       | Nicholas   |
+
+### What was done
+- Michelle :  Create UI page for job seeker activity ,  recuriter page to manage applications, 
+- Nicholas : add new filter option to search bar, add logic to save jobs so it already displayed as saved, add logic for recruiters page
+- Chen :  acceptance test, , deployment
+- Abdulla :  api routes to save the metrics
+- Tyler : in app notification, stated ai feature 
+- Magley :  
+
+### Future tasks
+- Michelle : 
+- Nicholas :
+- Chen : 
+- Abdulla : 
+- Tyler :   ai feature 
+- Magley :    ai feature 
+
+### Issues
+No issues so far
+
