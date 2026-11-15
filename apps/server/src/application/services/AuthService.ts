@@ -16,6 +16,7 @@ import { randomBytes } from 'node:crypto';
 import { UserRole } from '../../domain/entities/User.js';
 import { UserNotFoundError } from '../../domain/errors/UserNotFoundError.js';
 import { UnauthorizedUserActionError } from '../../domain/errors/UnauthorizedUserActionError.js';
+import type { NotificationService } from './NotificationService.js';
 
 export class AuthService implements IAuthService {
     private static readonly SESSION_EXPIRATION_DAYS = 30; // Session expires in 30 days
@@ -28,6 +29,7 @@ export class AuthService implements IAuthService {
         private readonly saltRepository: ISaltRepository,
         private readonly googleTokenVerifier: IGoogleTokenVerifier,
         private readonly profileRepository: IProfileRepository,
+        private readonly notificationService?: Pick<NotificationService, 'create'>,
     ) { }
 
     private toPublicUser(user: User): PublicUser {
@@ -68,6 +70,15 @@ export class AuthService implements IAuthService {
         await this.sessionRepository.create(newUser.id,
             this.sessionTokenGenerator.hash(sessionToken),
             this.getSessionExpiration());
+
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Sending registration notification for user:', newUser.id);
+            await this.notificationService?.create(newUser.id, {
+                type: 'registration',
+                title: 'Welcome to CareerConnect',
+                body: 'Your CareerConnect account has been created.',
+            });
+        }
 
         return {
             user: this.toPublicUser(newUser),
@@ -194,6 +205,16 @@ export class AuthService implements IAuthService {
         // Create a new session in the repository with the hashed token and expiration date
         await this.sessionRepository.create(authenticatedUser.id, tokenHash, this.getSessionExpiration()); // Session expires in 24 hours
 
+        console.log(process.env.NODE_ENV);
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Sending registration notification for user:', authenticatedUser.id);
+            await this.notificationService?.create(authenticatedUser.id, {
+                type: 'login',
+                title: 'Login successful',
+                body: 'You have successfully logged in to CareerConnect.',
+            });
+        }
+
         return {
             user: this.toPublicUser(authenticatedUser),
             sessionToken,
@@ -233,6 +254,14 @@ export class AuthService implements IAuthService {
             this.sessionTokenGenerator.hash(sessionToken),
             this.getSessionExpiration()
         );
+
+        if (process.env.NODE_ENV === 'development') {
+            await this.notificationService?.create(user.id, {
+                type: 'login',
+                title: 'Login successful',
+                body: 'You have successfully logged in to CareerConnect.',
+            });
+        }
 
         return {
             user: this.toPublicUser(user),

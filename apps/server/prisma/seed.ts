@@ -501,6 +501,326 @@ async function main() {
     },
   });
 
+  const devOpsEngineerJob = await prisma.job.create({
+    data: {
+      companyId: techCorp.companyId,
+      recruiterId: emily.userId,
+      title: "Junior DevOps Engineer",
+      category: "Software Development",
+      location: "Montreal, QC",
+      description:
+        "Junior DevOps engineer working with Docker, CI/CD pipelines and cloud infrastructure.",
+      salary: 68000,
+      employmentType: EmploymentType.hybrid,
+      deadline: new Date("2026-11-12T23:59:59"),
+      createdAt: new Date("2026-10-20T09:00:00"),
+    },
+  });
+
+  const qaEngineerJob = await prisma.job.create({
+    data: {
+      companyId: pixelWorks.companyId,
+      recruiterId: emily.userId,
+      title: "QA Automation Engineer",
+      category: "Software Development",
+      location: "Montreal, QC",
+      description:
+        "QA engineer responsible for automated testing of web applications and APIs.",
+      salary: 61000,
+      employmentType: EmploymentType.hybrid,
+      deadline: new Date("2026-11-15T23:59:59"),
+      createdAt: new Date("2026-10-22T11:00:00"),
+    },
+  });
+
+  const databaseDeveloperJob = await prisma.job.create({
+    data: {
+      companyId: mapleFinance.companyId,
+      recruiterId: david.userId,
+      title: "Database Developer",
+      category: "Software Development",
+      location: "Montreal, QC",
+      description:
+        "Database developer responsible for PostgreSQL databases, SQL queries and backend integrations.",
+      salary: 70000,
+      employmentType: EmploymentType.on_site,
+      deadline: new Date("2026-11-18T23:59:59"),
+      createdAt: new Date("2026-10-25T08:30:00"),
+    },
+  });
+
+  const webDeveloperInternJob = await prisma.job.create({
+    data: {
+      companyId: pixelWorks.companyId,
+      recruiterId: emily.userId,
+      title: "Web Developer Intern",
+      category: "Software Development",
+      location: "Montreal, QC",
+      description:
+        "Web development internship focused on JavaScript, React and responsive web applications.",
+      salary: 42000,
+      employmentType: EmploymentType.hybrid,
+      deadline: new Date("2026-11-25T23:59:59"),
+      createdAt: new Date("2026-10-27T10:00:00"),
+    },
+  });
+
+  const cloudDeveloperJob = await prisma.job.create({
+    data: {
+      companyId: techCorp.companyId,
+      recruiterId: emily.userId,
+      title: "Cloud Software Developer",
+      category: "Software Development",
+      location: "Toronto, ON",
+      description:
+        "Software developer building cloud applications using TypeScript, Node.js and AWS.",
+      salary: 76000,
+      employmentType: EmploymentType.remote,
+      deadline: new Date("2026-12-01T23:59:59"),
+      createdAt: new Date("2026-10-28T10:00:00"),
+    },
+  });
+
+  const businessDataAnalystJob = await prisma.job.create({
+    data: {
+      companyId: northernData.companyId,
+      recruiterId: david.userId,
+      title: "Business Data Analyst",
+      category: "Data Analytics",
+      location: "Toronto, ON",
+      description:
+        "Data analyst responsible for analyzing business datasets using SQL and Python.",
+      salary: 66000,
+      employmentType: EmploymentType.hybrid,
+      deadline: new Date("2026-12-15T23:59:59"),
+      createdAt: new Date("2026-10-30T13:00:00"),
+    },
+  });
+
+  const mobileDeveloperJob = await prisma.job.create({
+    data: {
+      companyId: pixelWorks.companyId,
+      recruiterId: emily.userId,
+      title: "Mobile Application Developer",
+      category: "Software Development",
+      location: "Montreal, QC",
+      description:
+        "Mobile developer responsible for developing and maintaining cross-platform applications.",
+      salary: 69000,
+      employmentType: EmploymentType.hybrid,
+      deadline: new Date("2026-12-31T23:59:59"),
+      createdAt: new Date("2026-11-01T09:00:00"),
+    },
+  });
+
+  const dataEngineerJob = await prisma.job.create({
+    data: {
+      companyId: northernData.companyId,
+      recruiterId: david.userId,
+      title: "Junior Data Engineer",
+      category: "Data Analytics",
+      location: "Toronto, ON",
+      description:
+        "Junior data engineer building data pipelines using Python, SQL and PostgreSQL.",
+      salary: 71000,
+      employmentType: EmploymentType.remote,
+      deadline: new Date("2027-01-15T23:59:59"),
+      createdAt: new Date("2026-11-02T13:00:00"),
+    },
+  });
+
+  const backendInternJob = await prisma.job.create({
+    data: {
+      companyId: techCorp.companyId,
+      recruiterId: emily.userId,
+      title: "Backend Developer Intern",
+      category: "Software Development",
+      location: "Montreal, QC",
+      description:
+        "Backend development internship working with Node.js, TypeScript, REST APIs and PostgreSQL.",
+      salary: 46000,
+      employmentType: EmploymentType.hybrid,
+      deadline: new Date("2027-02-01T23:59:59"),
+      createdAt: new Date("2026-11-03T08:30:00"),
+    },
+  });
+
+  const aiDeveloperJob = await prisma.job.create({
+    data: {
+      companyId: northernData.companyId,
+      recruiterId: david.userId,
+      title: "AI Software Developer",
+      category: "Artificial Intelligence",
+      location: "Toronto, ON",
+      description:
+        "AI developer building intelligent applications using Python and machine learning.",
+      salary: 82000,
+      employmentType: EmploymentType.hybrid,
+      deadline: new Date("2027-03-31T23:59:59"),
+      createdAt: new Date("2026-11-04T14:00:00"),
+    },
+  });
+
+  const frontendInternJob = await prisma.job.create({
+    data: {
+      companyId: pixelWorks.companyId,
+      recruiterId: emily.userId,
+      title: "Frontend Developer Intern",
+      category: "Software Development",
+      location: "Montreal, QC",
+      description:
+        "Frontend internship developing responsive user interfaces with React and TypeScript.",
+      salary: 44000,
+      employmentType: EmploymentType.hybrid,
+      deadline: new Date("2027-04-30T23:59:59"),
+      createdAt: new Date("2026-11-05T11:00:00"),
+    },
+  });
+
+  const machineLearningEngineerJob = await prisma.job.create({
+    data: {
+      companyId: northernData.companyId,
+      recruiterId: david.userId,
+      title: "Machine Learning Engineer",
+      category: "Artificial Intelligence",
+      location: "Toronto, ON",
+      description:
+        "Machine learning engineer developing and deploying predictive models using Python.",
+      salary: 90000,
+      employmentType: EmploymentType.remote,
+      deadline: new Date("2027-05-31T23:59:59"),
+      createdAt: new Date("2026-11-06T09:30:00"),
+    },
+  });
+
+  const softwareEngineerInternJob = await prisma.job.create({
+    data: {
+      companyId: pixelWorks.companyId,
+      recruiterId: emily.userId,
+      title: "Software Engineer Intern",
+      category: "Software Development",
+      location: "Montreal, QC",
+      description:
+        "Software engineering internship focused on React, TypeScript and Node.js development.",
+      salary: 47000,
+      employmentType: EmploymentType.hybrid,
+      deadline: new Date("2027-06-30T23:59:59"),
+      createdAt: new Date("2026-11-07T12:00:00"),
+    },
+  });
+
+  const fintechDeveloperJob = await prisma.job.create({
+    data: {
+      companyId: mapleFinance.companyId,
+      recruiterId: david.userId,
+      title: "FinTech Backend Developer",
+      category: "Software Development",
+      location: "Montreal, QC",
+      description:
+        "Backend developer building secure financial APIs and payment processing services.",
+      salary: 85000,
+      employmentType: EmploymentType.on_site,
+      deadline: new Date("2027-08-15T23:59:59"),
+      createdAt: new Date("2026-11-08T10:00:00"),
+    },
+  });
+
+  const dataScienceInternJob = await prisma.job.create({
+    data: {
+      companyId: northernData.companyId,
+      recruiterId: david.userId,
+      title: "Data Science Intern",
+      category: "Data Analytics",
+      location: "Toronto, ON",
+      description:
+        "Data science internship focused on Python, machine learning and statistical analysis.",
+      salary: 50000,
+      employmentType: EmploymentType.remote,
+      deadline: new Date("2027-09-30T23:59:59"),
+      createdAt: new Date("2026-11-09T13:30:00"),
+    },
+  });
+
+  const apiDeveloperJob = await prisma.job.create({
+    data: {
+      companyId: techCorp.companyId,
+      recruiterId: emily.userId,
+      title: "API Developer",
+      category: "Software Development",
+      location: "Montreal, QC",
+      description:
+        "Backend developer responsible for designing REST APIs using Node.js and PostgreSQL.",
+      salary: 78000,
+      employmentType: EmploymentType.remote,
+      deadline: new Date("2027-11-30T23:59:59"),
+      createdAt: new Date("2026-11-10T09:00:00"),
+    },
+  });
+
+  const seniorBackendJob = await prisma.job.create({
+    data: {
+      companyId: techCorp.companyId,
+      recruiterId: emily.userId,
+      title: "Senior Backend Developer",
+      category: "Software Development",
+      location: "Montreal, QC",
+      description:
+        "Senior backend developer designing scalable APIs using Node.js, TypeScript and PostgreSQL.",
+      salary: 105000,
+      employmentType: EmploymentType.remote,
+      deadline: new Date("2027-12-31T23:59:59"),
+      createdAt: new Date("2026-11-11T09:30:00"),
+    },
+  });
+
+  const seniorDataEngineerJob = await prisma.job.create({
+    data: {
+      companyId: northernData.companyId,
+      recruiterId: david.userId,
+      title: "Senior Data Engineer",
+      category: "Data Analytics",
+      location: "Toronto, ON",
+      description:
+        "Senior data engineer responsible for designing scalable data pipelines and analytics infrastructure.",
+      salary: 110000,
+      employmentType: EmploymentType.hybrid,
+      deadline: new Date("2028-03-31T23:59:59"),
+      createdAt: new Date("2026-11-11T10:00:00"),
+    },
+  });
+
+  const softwareArchitectJob = await prisma.job.create({
+    data: {
+      companyId: techCorp.companyId,
+      recruiterId: emily.userId,
+      title: "Software Architect",
+      category: "Software Development",
+      location: "Toronto, ON",
+      description:
+        "Software architect responsible for designing scalable cloud-based application architectures.",
+      salary: 125000,
+      employmentType: EmploymentType.remote,
+      deadline: new Date("2028-08-31T23:59:59"),
+      createdAt: new Date("2026-11-11T10:30:00"),
+    },
+  });
+
+  const aiResearchEngineerJob = await prisma.job.create({
+    data: {
+      companyId: northernData.companyId,
+      recruiterId: david.userId,
+      title: "AI Research Engineer",
+      category: "Artificial Intelligence",
+      location: "Toronto, ON",
+      description:
+        "AI research engineer developing experimental machine learning models and intelligent systems.",
+      salary: 115000,
+      employmentType: EmploymentType.remote,
+      deadline: new Date("2028-12-31T23:59:59"),
+      createdAt: new Date("2026-11-11T11:00:00"),
+    },
+  });
+
   //NOTE - Job Skills
 
   await prisma.skillOnJob.createMany({
