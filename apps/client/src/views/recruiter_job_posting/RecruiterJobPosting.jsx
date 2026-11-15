@@ -3,7 +3,7 @@ import { useAuth } from "../../utils/Auth";
 import Nav from "../../components/Navigation/Nav";
 import Folder from "../../components/RecruiterJobPosting/Folder";
 import { AddJobOpeningPage } from "../../components/RecruiterJobPosting/AddJobOpening";
-import {GetMyJobsApi, GetMyApplicationsApi} from '../../utils/Api';
+import {GetMyJobsApi} from '../../utils/Api';
 import './RecruiterJobPosting.scss';
 
 /**
@@ -22,12 +22,11 @@ export default function RecruiterJobPosting({ setView }) {
    useEffect(() => {
       const getMyJobs = async () => {
         const data = await GetMyJobsApi(token);
-       
         if (!data) return;
         setJobs(data);
       };
       getMyJobs();
-    }, []);
+    }, [token]);
 
   return (
     <section>

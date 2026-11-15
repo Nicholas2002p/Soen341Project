@@ -1,7 +1,8 @@
-import { useState} from "react";
+import { useState, useMemo, useEffect} from "react";
 
 import { AddJobOpening } from "./AddJobOpening";
 import Job from "../Job/Job";
+import { GetArchivedJobsApi } from "../../utils/Api";
 
 import './Folder.scss';
 
@@ -15,13 +16,41 @@ import './Folder.scss';
  */
 export default function Folder({ setIsAdding, jobs, setCurrentJob }) {
   const [folderView, setFolderView] = useState("all");
-  
+  const [archivedJobs, setArchivedJobs] = useState([]);
+
+  useEffect(() => {
+    if (folderView === "archived") {
+      GetArchivedJobsApi().then(setArchivedJobs);
+    }
+  }, [folderView]);
+
+  const filteredJobs = useMemo(() => {
+    const now = new Date();
+    const isClosed = (job) => new Date(job.deadline) < now;
+
+    switch (folderView) {
+      case "open":
+        return jobs.filter((job) => !isClosed(job));
+      case "closed":
+        return jobs.filter((job) => isClosed(job));
+      case "applicants": {
+        return jobs;
+      }
+      case "archived": {
+        return archivedJobs;
+      }
+      case "all":
+      default:
+        return jobs;
+    }
+  }, [folderView, jobs, archivedJobs]);
+
   return (
     <section className="folder">
       <FolderTabs folderView={folderView} setFolderView={setFolderView} />
 
       <section className="folder-content">
-        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={jobs} setCurrentJob={setCurrentJob} />
+        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={filteredJobs} setCurrentJob={setCurrentJob} />
       </section>    
 
     </section>

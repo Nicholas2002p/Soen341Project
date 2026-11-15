@@ -889,24 +889,52 @@ export async function GetCompaniesApi() {
 }
 
 /**
- * 
- * gets all the applications of the logged in job seeker
- * @param {string} token
- * @returns  list of applications, or null if it failed
+ * gets array of all jobs that been archived
+ * @returns all ArchivedJobs
  */
-export async function GetMyApplicationsApi(token) {
+export async function GetArchivedJobsApi() {
     try {
-        const res = await fetch(`${API_URL}/applications`, {
+        const response = await fetch(getApiUrl("/api/jobs/archived"), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
             },
         });
-        if (!res.ok) return null;
-        return await res.json();
-    } catch (err) {
-        console.error("GetMyApplicationsApi failed:", err);
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+        return data.jobs;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+/**
+ * toggels a job from archived to not archived and vice verse
+ * @param {*} jobId 
+ * @returns the updated job 
+ */
+export async function ArchivedJobsApi(jobId) {
+    try {
+        const response = await fetch(getApiUrl(`/api/jobs/${jobId}`), {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return data.job;
+    } catch (error) {
+        console.error(error);
         return null;
     }
 }

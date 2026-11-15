@@ -8,6 +8,7 @@ export interface JobSummary {
     location: string | null;
     salary: number;
     employmentType: EmploymentType;
+    description: string | null;
     deadline: Date;
     createdAt: Date;
     company: Pick<Company, 'companyId' | 'name'>; // keeping only company
