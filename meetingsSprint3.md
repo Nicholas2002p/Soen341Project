@@ -30,7 +30,7 @@ No issues so far
 
 | Date       | Time | Type     | Attendees                                       | Note Taker |
 |------------|------|----------|-------------------------------------------------|------------|
-| 2026-11-09 | 4 pm | Online    | Michelle, Nicholas, Chen,  Abdulla, Tyler       | Nicholas   |
+| 2026-11-09 | 4 pm | IN person| Michelle, Nicholas, Chen,  Abdulla, Tyler       | Nicholas   |
 
 ### What was done
 - Michelle :  star/heart on jobs to save
