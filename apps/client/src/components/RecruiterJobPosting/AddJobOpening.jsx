@@ -1,7 +1,7 @@
 import { useState , useEffect} from 'react';
 import { useAuth } from "../../utils/Auth";
 import './AddJobOpening.scss';
-import {CreateJobApi, GetCompaniesApi} from '../../utils/Api';
+import {CreateJobApi, GetCompaniesApi,  UpdateJobApi} from '../../utils/Api';
 
 /**
  * Add Job Opening
@@ -154,7 +154,7 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
           </div>
         )}
 
-        <button onClick={() => { postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token); }}> Done </button>
+        <button onClick={() => { postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token, currentJob); }}> Done </button>
       </section>
       
     </section>
@@ -162,9 +162,26 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
 }
 
 // Post Job is a function that will call the api to post the job after clicking on the Post button
-async function postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token) {
-  // call api to post the job
+async function postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token, currentJob) {
+
+  const editing = Boolean(currentJob?.jobId);
   setIsAdding(true);
+
+  if (editing){
+    const jobEdit = {
+    companyId: company || currentJob.company?.companyId,
+    title: title || currentJob.title,
+    category: category || currentJob.category,
+    location: location || currentJob.location,
+    description: description || currentJob.description,
+    salary: salary || currentJob.salary,
+    employmentType: type || currentJob.employmentType,
+    deadline: deadline || currentJob.deadline
+  };
+    console.log(jobEdit);
+    await  UpdateJobApi(currentJob.jobId, jobEdit,token)
+
+  }else{
     const job = {
     companyId: company,
     title,
@@ -175,7 +192,9 @@ async function postJob(title, company, location, description, salary, deadline, 
     employmentType: type,
     deadline
   };
-  const newJob = await CreateJobApi(job, token)
-  console.log(newJob);
+   await CreateJobApi(job, token)
+
+  }
+
   setIsAdding(false);
 }
