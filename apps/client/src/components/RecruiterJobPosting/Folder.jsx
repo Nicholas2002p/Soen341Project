@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect} from "react";
+import { useAuth } from "../../utils/Auth";
 
 import { AddJobOpening } from "./AddJobOpening";
 import Job from "../Job/Job";
@@ -17,10 +18,11 @@ import './Folder.scss';
 export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete }) {
   const [folderView, setFolderView] = useState("all");
   const [archivedJobs, setArchivedJobs] = useState([]);
+  const { token} = useAuth();
   
   useEffect(() => {
-    if (folderView === "archived") {
-      GetArchivedJobsApi().then(setArchivedJobs);
+    if (folderView === "archive") {
+      GetArchivedJobsApi(token).then(setArchivedJobs);
     }
   }, [folderView]);
 
@@ -36,7 +38,7 @@ export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete }) {
       case "applicants": {
         return jobs;
       }
-      case "archived": {
+      case "archive": {
         return archivedJobs;
       }
       case "all":

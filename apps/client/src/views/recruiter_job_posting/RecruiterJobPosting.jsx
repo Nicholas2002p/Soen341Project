@@ -23,6 +23,7 @@ export default function RecruiterJobPosting({ setView }) {
       const getMyJobs = async () => {
         const data = await GetMyJobsApi(token);
         if (!data) return;
+        console.log(data);
         setJobs(data);
       };
       getMyJobs();

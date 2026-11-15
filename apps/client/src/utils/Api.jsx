@@ -892,12 +892,13 @@ export async function GetCompaniesApi() {
  * gets array of all jobs that been archived
  * @returns all ArchivedJobs
  */
-export async function GetArchivedJobsApi() {
+export async function GetArchivedJobsApi(token) {
     try {
         const response = await fetch(getApiUrl("/api/jobs/archived"), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
             },
         });
 
@@ -918,13 +919,15 @@ export async function GetArchivedJobsApi() {
  * @param {*} jobId 
  * @returns the updated job 
  */
-export async function ArchivedJobsApi(jobId) {
+export async function ArchivedJobsApi(jobId, token, archive) {
     try {
-        const response = await fetch(getApiUrl(`/api/jobs/${jobId}`), {
+        const response = await fetch(getApiUrl(`/api/jobs/${jobId}/archive`), {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
+                 Authorization: `Bearer ${token}`,
             },
+            body: JSON.stringify({ archive }),
         });
 
         if (!response.ok) {
