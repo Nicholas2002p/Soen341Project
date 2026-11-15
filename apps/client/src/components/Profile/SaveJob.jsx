@@ -23,7 +23,7 @@ export default function SaveJob({ savedJobs }) {
 
       <ul className="saved-jobs-list">
         { savedJobs.length == 0 ? 
-          <li> There are no saved jobs </li> : savedJobs.map((job) => <SavedJob job={job} applied={history.includes(job.id)} /> 
+          <li> There are no saved jobs </li> : savedJobs.map((job) => <SavedJob job={job} applied={history.some((application) => application.jobId === job.jobId)} /> 
         )}
       </ul>
 
@@ -33,7 +33,7 @@ export default function SaveJob({ savedJobs }) {
 
 function SavedJob({ job, applied }) {
   const date = new Date(job.deadline);
-  
+
   return (
     <li className='saved-job'> 
       <p className='saved-job-deadline'> Deadline {date.toLocaleDateString()}: </p> 
@@ -42,7 +42,7 @@ function SavedJob({ job, applied }) {
         <p className='saved-job-detail'> {job.company.name}, {job.location} </p> 
       </div>
       <div className='saved-job-application'>
-        {applied ? "Applied" : "Not Applied"}
+        {applied ? <p className="applied-job"> Applied </p> : <p> Not Applied </p> }
       </div>
     </li>
   );

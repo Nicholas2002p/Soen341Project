@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+import { useAuth } from '../../utils/Auth';
 import HistoryFilters from '../../components/History/HistoryFilters';
 import HistoryJobApplication from '../../components/History/HistoryInfo';
 import Nav from '../../components/Navigation/Nav';
