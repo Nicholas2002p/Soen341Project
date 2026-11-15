@@ -1,0 +1,46 @@
+.saved-jobs {
+  font-size: 25px;
+}
+
+.saved-jobs h2 {
+  margin: 10px;
+  background-color: #bee3fb;
+  border: 1px solid black;
+  height: 50px;
+  font-size: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.saved-jobs ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-right: 20px;
+}
+
+.saved-job {
+  padding-left: 20px;
+  list-style-type: none;
+  border-radius: 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 2px black dashed;
+}
+
+.saved-job-title, .saved-job-detail {
+  margin: 0;
+  padding: 0;
+}
+
+.saved-job-title {
+  margin-top: 30px;
+}
+
+.saved-job-application {
+  margin-left: auto;
+  margin-right: 20px;
+}
