@@ -298,6 +298,7 @@ export class PrismaJobRepository implements IJobRepository {
                 jobId,
             },
             data: {
+                companyId: data.companyId,
                 title: data.title,
                 category: data.category,
                 location: data.location,

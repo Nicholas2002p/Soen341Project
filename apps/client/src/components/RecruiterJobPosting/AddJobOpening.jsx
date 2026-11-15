@@ -26,7 +26,7 @@ export function AddJobOpening({ setIsAdding, setCurrentJob }) {
  * @param {Function} setIsAdding 
  * @returns Add Job Opening Page
  */
-export function AddJobOpeningPage({ setIsAdding, currentJob }) {
+export function AddJobOpeningPage({ setIsAdding, currentJob, handleJobSaved }) {
   const {token} = useAuth();
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");
@@ -84,7 +84,7 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
 
         <label className='add-job-inputs' htmlFor="job-company">
           Company:
-          <select onChange={(e) => { setCompany(e.target.value); }} id="job-company" name="job-company" value={setPlaceholder("company")} >
+          <select onChange={(e) => { setCompany(e.target.value); }} id="job-company" name="job-company" value={company || setPlaceholder("company") || ""} >
             <option value="">--Select a company--</option>
             {listCompany.map((c) => (
               <option key={c.companyId} value={c.companyId}>
@@ -96,7 +96,7 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
 
         <label className='add-job-inputs' htmlFor="job-employ-type">
           Employment Type: 
-          <select onChange={(e) => { setType(e.target.value); }} name="employ-type" id="employ-type" value={setPlaceholder("employmentType")}>
+          <select onChange={(e) => { setType(e.target.value); }} name="employ-type" id="employ-type" value={type || setPlaceholder("employmentType") || ""}>
             <option value="">--Select the employment type--</option>
             <option value="on_site" >On Site</option>
             <option value="hybrid">Hybrid</option>
@@ -154,7 +154,7 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
           </div>
         )}
 
-        <button onClick={() => { postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token, currentJob); }}> Done </button>
+        <button onClick={() => { postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token, currentJob, handleJobSaved); }}> Done </button>
       </section>
       
     </section>
@@ -162,37 +162,41 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
 }
 
 // Post Job is a function that will call the api to post the job after clicking on the Post button
-async function postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token, currentJob) {
+async function postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token, currentJob, handleJobSaved) {
 
   const editing = Boolean(currentJob?.jobId);
   setIsAdding(true);
-
+  console.log(currentJob.company?.companyId);
   if (editing){
     const jobEdit = {
-    companyId: company || currentJob.company?.companyId,
-    title: title || currentJob.title,
-    category: category || currentJob.category,
-    location: location || currentJob.location,
-    description: description || currentJob.description,
-    salary: salary || currentJob.salary,
-    employmentType: type || currentJob.employmentType,
-    deadline: deadline || currentJob.deadline
-  };
+      companyId: company || currentJob.company?.companyId,
+      title: title || currentJob.title,
+      category: category || currentJob.category,
+      location: location || currentJob.location,
+      description: description || currentJob.description,
+      salary: salary || currentJob.salary,
+      employmentType: type || currentJob.employmentType,
+      deadline: deadline || currentJob.deadline
+    };
     console.log(jobEdit);
-    await  UpdateJobApi(currentJob.jobId, jobEdit,token)
 
-  }else{
+    const updated = await UpdateJobApi(currentJob.jobId, jobEdit, token);
+    if (updated) handleJobSaved?.(updated, true);
+
+  }
+  else{
     const job = {
-    companyId: company,
-    title,
-    category,
-    location,
-    description,
-    salary,
-    employmentType: type,
-    deadline
-  };
-   await CreateJobApi(job, token)
+      companyId: company,
+      title,
+      category,
+      location,
+      description,
+      salary,
+      employmentType: type,
+      deadline
+    };
+   const created = await CreateJobApi(job, token);
+    if (created) handleJobSaved?.(created, false);
 
   }
 

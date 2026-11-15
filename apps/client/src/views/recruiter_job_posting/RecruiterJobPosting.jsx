@@ -32,6 +32,13 @@ export default function RecruiterJobPosting({ setView }) {
     setJobs((prev) => prev.filter((j) => j.jobId !== jobId));
   };
 
+  const handleJobSaved = (savedJob, isEdit) => {
+    setJobs((prev) =>
+      isEdit
+        ? prev.map((j) => (j.jobId === savedJob.jobId ? { ...j, ...savedJob } : j))
+        : [...prev, savedJob]
+    );
+  };
   return (
     <section>
       <Nav setView={setView} /> 
@@ -39,7 +46,7 @@ export default function RecruiterJobPosting({ setView }) {
       <main className="recruiter-job-posting">
         <h2> Job Posting </h2>
         <Folder setIsAdding={setIsAdding} jobs={jobs} setCurrentJob={setCurrentJob} onDelete={handleJobDeleted} />
-        { isAdding && <AddJobOpeningPage setIsAdding={setIsAdding} currentJob={currentJob} /> }
+        { isAdding && <AddJobOpeningPage setIsAdding={setIsAdding} currentJob={currentJob} handleJobSaved ={handleJobSaved}/> }
       </main>
     </section>
   );
