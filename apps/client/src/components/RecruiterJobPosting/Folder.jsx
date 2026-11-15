@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState, useMemo} from "react";
 
 import { AddJobOpening } from "./AddJobOpening";
 import Job from "../Job/Job";
@@ -15,13 +15,34 @@ import './Folder.scss';
  */
 export default function Folder({ setIsAdding, jobs }) {
   const [folderView, setFolderView] = useState("all");
-  
+
+    const filteredJobs = useMemo(() => {
+    const now = new Date();
+    const isClosed = (job) => new Date(job.deadline) < now;
+
+    switch (folderView) {
+      case "open":
+        return jobs.filter((job) => !isClosed(job));
+      case "closed":
+        return jobs.filter((job) => isClosed(job));
+      case "applicants": {
+        return jobs;
+      }
+      case "archived": {
+        return jobs;
+      }
+      case "all":
+      default:
+        return jobs;
+    }
+  }, [folderView, jobs]);
+
   return (
     <section className="folder">
       <FolderTabs folderView={folderView} setFolderView={setFolderView} />
 
       <section className="folder-content">
-        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={jobs} />
+        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={filteredJobs} />
       </section>    
 
     </section>
@@ -47,6 +68,7 @@ function FolderTabs({ folderView, setFolderView }) {
       <li id={folderView == "open" ? "folder-tabs-selected" : " "} onClick={() => { setFolderView("open"); }}> Open </li>
       <li id={folderView == "applicants" ? "folder-tabs-selected" : " "} onClick={() => { setFolderView("applicants"); }}> Applicants </li>
       <li id={folderView == "closed" ? "folder-tabs-selected" : " "} onClick={() => { setFolderView("closed"); }}> Closed </li>
+      <li id={folderView == "archived" ? "folder-tabs-selected" : " "} onClick={() => { setFolderView("archived"); }}> Archive </li>
     </ul>
   );
 }
