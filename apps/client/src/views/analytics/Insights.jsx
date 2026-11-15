@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../utils/Auth';
 import Nav from '../../components/Navigation/Nav';
-import './JobApplicationHistory.scss';
-import {GetAnalytics} from '../../utils/Api';
+import {GetAnalyticsApi} from '../../utils/Api';
 
 /**
  * Job Application History
@@ -18,7 +17,7 @@ export default function Analytics({ setView }) {
 
   useEffect(() => {
     const SeeHistory = async () => {
-      const data = await GetAnalytics(token);
+      const data = await GetAnalyticsApi(token);
       if (!data) return;
       setAnalytics(data);
     };
@@ -30,7 +29,18 @@ export default function Analytics({ setView }) {
       <Nav setView={setView} />
       
       <main className='main_analytics'>
-        
+         {analytics && (
+        <>
+          <div>Total: {analytics.total}</div>
+          <div>Pending: {analytics.pending}</div>
+          <div>Applied: {analytics.byStatus?.Applied}</div>
+          <div>Under Review: {analytics.byStatus?.Under_Review}</div>
+          <div>Interview: {analytics.byStatus?.Interview}</div>
+          <div>Offered: {analytics.byStatus?.Offered}</div>
+          <div>Rejected: {analytics.byStatus?.Rejected}</div>
+          <div>Interview Rate: {analytics.interviewRate}</div>
+          <div>Submitted Over Time: {analytics.submittedOverTime?.length} entries</div>
+        </>)}
       </main>
     </section>
   );

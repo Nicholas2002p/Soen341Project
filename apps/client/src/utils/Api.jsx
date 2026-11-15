@@ -831,7 +831,7 @@ export async function GetCompaniesApi() {
  * gets all analytics for user
  * @returns a list of analytics
  */
-export async function GetCompaniesApi(token) {
+export async function GetAnalyticsApi(token) {
     try {
         const response = await fetch(getApiUrl("/api/applications/analytics"), {
             method: "GET",
@@ -845,7 +845,7 @@ export async function GetCompaniesApi(token) {
             return [];
         }
 
-        const data = await response.json();
+        const data = await response.json();;
         return data.analytics;
     } catch (error) {
         console.error(error);

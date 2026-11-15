@@ -31,12 +31,13 @@ function NavItems({ setView }) {
   return (
     <ul className="nav-list-items">
       <a onClick={() => { setView("home")}}> Home </a>
-      { token &&user?.role != "recruiter" && <a onClick={() => { setView("history") }}> History </a>}
+      { token && user?.role != "recruiter" && <a onClick={() => { setView("history") }}> History </a>}
       <a onClick={() => { setView("job-search") }}> Jobs </a>
       {token && <a onClick={() => setView("profile")}> Profile </a>}
       {token && user?.role === "recruiter" ||user?.role === "admin" && (
       <a onClick={() => setView("recruiter-job-posting")}> Post a Job </a>
     )}
+    { token && user?.role != "recruiter" && <a onClick={() => { setView("Analytics")}}> Analytics</a>}
 
     </ul>
   );
