@@ -1,8 +1,9 @@
-import { useState } from "react";
-
+import { useState, useEffect} from "react";
+import { useAuth } from "../../utils/Auth";
 import Nav from "../../components/Navigation/Nav";
 import Folder from "../../components/RecruiterJobPosting/Folder";
 import { AddJobOpeningPage } from "../../components/RecruiterJobPosting/AddJobOpening";
+import {GetMyJobsApi} from '../../utils/Api';
 import './RecruiterJobPosting.scss';
 
 /**
@@ -12,8 +13,19 @@ import './RecruiterJobPosting.scss';
  * @param {Function} setView 
  * @returns Recruiter Job Posting Component
  */
-export default function RecruiterJobPosting({ setView, jobs }) {
+export default function RecruiterJobPosting({ setView }) {
   const [isAdding, setIsAdding] = useState(false);
+  const [jobs, setJobs] = useState([]);
+  const { token} = useAuth();
+
+   useEffect(() => {
+      const getMyJobs = async () => {
+        const data = await GetMyJobsApi(token);
+        if (!data) return;
+        setJobs(data);
+      };
+      getMyJobs();
+    }, []);
 
   return (
     <section>

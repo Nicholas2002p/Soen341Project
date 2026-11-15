@@ -37,7 +37,7 @@ function Main() {
         {view === "sign-in" && <Login setView={setView} />} 
         {view === "history" && <JobApplicationHistory setView={setView}/>}
         {view === "job-search" && <JobSearch setView={setView} setSelectedJob={setSelectedJob} />} 
-        {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} jobs={jobs} /> }
+        {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} /> }
         {view === "job-application" && <JobApplication setView={setView} job={selectedJob}/> }
       </div>
     </AuthContext.Provider>
