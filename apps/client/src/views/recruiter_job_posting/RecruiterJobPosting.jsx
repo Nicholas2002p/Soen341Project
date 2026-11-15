@@ -17,12 +17,12 @@ export default function RecruiterJobPosting({ setView }) {
   const [isAdding, setIsAdding] = useState(false);
   const [jobs, setJobs] = useState([]);
   const { token} = useAuth();
+  const [currentJob, setCurrentJob] = useState({});
 
    useEffect(() => {
       const getMyJobs = async () => {
         const data = await GetMyJobsApi(token);
-        //all aplicants 
-        const aplicationData = await GetMyApplicationsApi(token)
+       
         if (!data) return;
         setJobs(data);
       };
@@ -35,8 +35,8 @@ export default function RecruiterJobPosting({ setView }) {
 
       <main className="recruiter-job-posting">
         <h2> Job Posting </h2>
-        <Folder setIsAdding={setIsAdding} jobs={jobs} />
-        { isAdding && <AddJobOpeningPage setIsAdding={setIsAdding} /> }
+        <Folder setIsAdding={setIsAdding} jobs={jobs} setCurrentJob={setCurrentJob} />
+        { isAdding && <AddJobOpeningPage setIsAdding={setIsAdding} currentJob={currentJob} /> }
       </main>
     </section>
   );

@@ -11,7 +11,7 @@ import {CreateJobApi, GetCompaniesApi} from '../../utils/Api';
  * @param {Function} setIsAdding 
  * @returns Add Job Opening component
  */
-export function AddJobOpening({ setIsAdding }) {
+export function AddJobOpening({ setIsAdding  }) {
   return (
     <section onClick={() => { setIsAdding(true); }} className="add-job-button">
       <p className='add-job'> + </p>
@@ -26,8 +26,8 @@ export function AddJobOpening({ setIsAdding }) {
  * @param {Function} setIsAdding 
  * @returns Add Job Opening Page
  */
-export function AddJobOpeningPage({ setIsAdding }) {
-  const { token} = useAuth();
+export function AddJobOpeningPage({ setIsAdding, currentJob }) {
+  const {token} = useAuth();
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");
   const [location, setLocation] = useState("");
@@ -49,17 +49,23 @@ export function AddJobOpeningPage({ setIsAdding }) {
     getCompany();
   }, []);
 
+  const setPlaceholder = (input) => {
+    if (currentJob == {}) return;
+
+    return currentJob[input];
+  }
+
   return (
     <section className='add-job-opening-page'>
       <section className='add-job-opening-content'>
         <div className='add-job-page-header'>
-          <h2> New Job Posting </h2>
+          <h2> Job Posting </h2>
           <p onClick={() => { setIsAdding(false); }} className='leave'> X </p>
         </div>
 
         <label className='add-job-inputs' htmlFor="job-title">
           Title:
-          <input className='' type="text" name="job-title" maxLength="50" 
+          <input className='' placeholder={setPlaceholder("title")} type="text" name="job-title" maxLength="50" 
             onChange={(e) => { setTitle(e.target.value); }} 
           />
         </label>
@@ -67,7 +73,7 @@ export function AddJobOpeningPage({ setIsAdding }) {
         <label className='add-job-inputs' htmlFor="job-company">
           Company:
           <select onChange={(e) => { setCompany(e.target.value); }} id="job-company" name="job-company" value={company} >
-            <option value="">--Select a company--</option>
+            <option value={setPlaceholder("company")}>--Select a company--</option>
             {listCompany.map((c) => (
               <option key={c.companyId} value={c.companyId}>
                 {c.name}
@@ -79,7 +85,7 @@ export function AddJobOpeningPage({ setIsAdding }) {
         <label className='add-job-inputs' htmlFor="job-employ-type">
           Employment Type: 
           <select onChange={(e) => { setType(e.target.value); }} name="employ-type" id="employ-type">
-            <option value="">--Select the employment type--</option>
+            <option value={setPlaceholder("employmentType")}>--Select the employment type--</option>
             <option value="on_site">On Site</option>
             <option value="hybrid">Hybrid</option>
             <option value="remote">Remote</option>
@@ -88,35 +94,35 @@ export function AddJobOpeningPage({ setIsAdding }) {
 
         <label className='add-job-inputs' htmlFor="job-category">
           Category:
-          <input className='' type="text" name="job-category" maxLength="50" 
+          <input className='' placeholder={setPlaceholder("category")} type="text" name="job-category" maxLength="50" 
             onChange={(e) => { setCategory(e.target.value); }} 
           />
         </label>
 
         <label className='add-job-inputs' htmlFor="job-location">
           Location:
-          <input className='' type="text" name="job-location" maxLength="100" 
+          <input className='' placeholder={setPlaceholder("location")} type="text" name="job-location" maxLength="100" 
             onChange={(e) => { setLocation(e.target.value); }} 
           />
         </label>
 
         <label className='add-job-inputs' htmlFor="job-description">
           Description:
-          <input className='' type="text" name="job-description" maxLength="250" 
+          <input className='' placeholder={setPlaceholder("description")} type="text" name="job-description" maxLength="250" 
             onChange={(e) => { setDescription(e.target.value); }} 
           />
         </label>
 
         <label className='add-job-inputs' htmlFor="job-salary">
           Salary per year:
-          <input className='' type="number" name="job-salary" min="0"
+          <input className='' value={setPlaceholder("salary")} type="number" name="job-salary" min="0"
             onChange={(e) => { setSalary(e.target.value); }} 
           />
         </label>
 
         <label className='add-job-inputs' htmlFor="job-deadline">
           Deadline: 
-          <input className='' type="datetime-local" name="job-deadline"  
+          <input className='' placeholder={setPlaceholder("deadline")} type="datetime-local" name="job-deadline"  
             onChange={(e) => { setDeadline(e.target.value); }} 
           />
         </label>

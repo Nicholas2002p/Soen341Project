@@ -8,10 +8,18 @@ import './Job.scss';
  * @param {Object} job - for next PR
  * @returns Job Component
  */
-export default function Job({ page, job }) {
+export default function Job({ page, job, setIsAdding, setCurrentJob }) {
   const deadlineDate = new Date(job.deadline).toLocaleDateString();
+
+  const editPage = () => {
+    if (page === "application") return;
+    
+    setIsAdding(true);
+    setCurrentJob(job);
+  }
+
   return (
-    <section className={page === "application" ? "job-display-paper" : "job-paper"}>
+    <section onClick={editPage} className={page === "application" ? "job-display-paper" : "job-paper"}>
       <div className="job-paper-header">
         <p className="job-paper-title"> {job.title} </p>
         <p className="job-paper-createdAt"> {new Date(job.createdAt).toLocaleDateString()}</p>

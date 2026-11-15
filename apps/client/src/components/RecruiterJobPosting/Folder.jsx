@@ -13,7 +13,7 @@ import './Folder.scss';
  * @param {Function} setIsAdding 
  * @returns the Folder Component
  */
-export default function Folder({ setIsAdding, jobs }) {
+export default function Folder({ setIsAdding, jobs, setCurrentJob }) {
   const [folderView, setFolderView] = useState("all");
   
   return (
@@ -21,7 +21,7 @@ export default function Folder({ setIsAdding, jobs }) {
       <FolderTabs folderView={folderView} setFolderView={setFolderView} />
 
       <section className="folder-content">
-        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={jobs} />
+        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={jobs} setCurrentJob={setCurrentJob} />
       </section>    
 
     </section>
@@ -59,14 +59,14 @@ function FolderTabs({ folderView, setFolderView }) {
  * @param {Function} setIsAdding 
  * @returns Display Job Openings
  */
-function DisplayJobOpenings({ setIsAdding, jobs }) {
+function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob }) {
 
   return (
     <section className="folder-job-openings">
       <AddJobOpening setIsAdding={setIsAdding} />
 
       {jobs.map((job, index) => (
-        <Job page={""} key={index} job={job} />
+        <Job page={""} key={index} job={job} setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
       ))}
     </section>
   );
