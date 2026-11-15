@@ -57,7 +57,7 @@ export class InvalidStatusChangeError extends Error {
     }
 }
 
-// The deadline to apply to the job has passed
+// The deadline to apply to the job has passed, or the recruiter archived the job
 export class JobClosedError extends Error {
     constructor(message = 'The deadline to apply to this job has passed.') {
         super(message);

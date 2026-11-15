@@ -35,6 +35,9 @@ export class PrismaJobRepository implements IJobRepository {
     async search(filters: JobSearchFilters): Promise<JobSummary[]> {
         const jobs = await this.prisma.job.findMany({
             where: {
+                //NOTE - archived jobs are hidden from job seekers
+                archive: false,
+
                 //NOTE - if this filter exists, add it to the query if not, add nothing
                 ...(filters.keyword
                     ? {
@@ -112,6 +115,7 @@ export class PrismaJobRepository implements IJobRepository {
             employmentType: job.employmentType as EmploymentType,
             deadline: job.deadline,
             createdAt: job.createdAt,
+            archive: job.archive,
             company: {
                 companyId: job.company.companyId,
                 name: job.company.name,
@@ -154,6 +158,7 @@ export class PrismaJobRepository implements IJobRepository {
             employmentType: job.employmentType as EmploymentType,
             deadline: job.deadline,
             createdAt: job.createdAt,
+            archive: job.archive,
             updatedAt: job.updatedAt,
             company: {
                 companyId: job.company.companyId,
@@ -197,6 +202,7 @@ export class PrismaJobRepository implements IJobRepository {
                 deadline: {
                     lt: new Date(),
                 },
+                archive: false,
             },
             include: jobSummaryInclude,
             orderBy: {
@@ -224,6 +230,56 @@ export class PrismaJobRepository implements IJobRepository {
         });
 
         return jobs.map((job) => this.toJobSummary(job));
+    }
+
+    /**
+     * gets the archived jobs of a recruiter
+     * @param recruiterId - the current logged in recruiter
+     * @returns a promise that resolves to a job array
+     */
+    async getArchivedByRecruiterId(recruiterId: number): Promise<JobSummary[]> {
+        const jobs = await this.prisma.job.findMany({
+            where: {
+                recruiterId,
+                archive: true,
+            },
+            include: jobSummaryInclude,
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+
+        return jobs.map((job) => this.toJobSummary(job));
+    }
+
+    /**
+     * archives or unarchives a job
+     * @param jobId - the job id to change
+     * @param archive - true to archive the job, false to make it visible again
+     * @returns a promise that resolves to the updated job or null if it does not exist
+     */
+    async setArchive(jobId: number, archive: boolean): Promise<JobDetails | null> {
+        const existing = await this.prisma.job.findUnique({
+            where: {
+                jobId,
+            },
+        });
+
+        if (!existing) {
+            return null;
+        }
+
+        await this.prisma.job.update({
+            where: {
+                jobId,
+            },
+            data: {
+                archive,
+                updatedAt: new Date(),
+            },
+        });
+
+        return this.getById(jobId);
     }
 
     /**
@@ -265,6 +321,7 @@ export class PrismaJobRepository implements IJobRepository {
             employmentType: job.employmentType as EmploymentType,
             deadline: job.deadline,
             createdAt: job.createdAt,
+            archive: job.archive,
             updatedAt: job.updatedAt,
             company: {
                 companyId: job.company.companyId,
@@ -327,6 +384,7 @@ export class PrismaJobRepository implements IJobRepository {
             employmentType: job.employmentType as EmploymentType,
             deadline: job.deadline,
             createdAt: job.createdAt,
+            archive: job.archive,
             updatedAt: job.updatedAt,
             company: {
                 companyId: job.company.companyId,
@@ -374,6 +432,7 @@ export class PrismaJobRepository implements IJobRepository {
             employmentType: job.employmentType as EmploymentType,
             deadline: job.deadline,
             createdAt: job.createdAt,
+            archive: job.archive,
             company: {
                 companyId: job.company.companyId,
                 name: job.company.name,
