@@ -69,4 +69,5 @@ export interface ApplicationJob {
     id: number;
     recruiterId: number; // Recruiter who posted the job
     deadline: Date | null; // Last day to apply, null if there is no deadline
+    archived: boolean; // Archived jobs no longer accept applications
 }
