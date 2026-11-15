@@ -1,4 +1,5 @@
 import './Job.scss';
+import './Trash.scss';
 
 /**
  * Job
@@ -20,6 +21,8 @@ export default function Job({ page, job, setIsAdding, setCurrentJob }) {
 
   return (
     <section onClick={editPage} className={page === "application" ? "job-display-paper" : "job-paper"}>
+      {page !== "application" && <DeleteJob job={job} />}
+
       <div className="job-paper-header">
         <p className="job-paper-title"> {job.title} </p>
         <p className="job-paper-createdAt"> {new Date(job.createdAt).toLocaleDateString()}</p>
@@ -41,4 +44,17 @@ export default function Job({ page, job, setIsAdding, setCurrentJob }) {
       <p className="job-paper-deadline"> Deadline: {deadlineDate} </p>
     </section>
   );
+}
+
+function DeleteJob({ job }) {
+  return (
+    <div onClick={() => { deleteJob(job); }} className='delete-job'>
+      <img src="trash.svg" alt="trash-icon" />
+    </div>
+  )
+}
+
+// API call to delete the job
+function deleteJob(job) {
+
 }

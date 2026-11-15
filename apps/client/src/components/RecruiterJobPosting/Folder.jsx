@@ -76,6 +76,7 @@ function FolderTabs({ folderView, setFolderView }) {
       <li id={folderView == "open" ? "folder-tabs-selected" : " "} onClick={() => { setFolderView("open"); }}> Open </li>
       <li id={folderView == "applicants" ? "folder-tabs-selected" : " "} onClick={() => { setFolderView("applicants"); }}> Applicants </li>
       <li id={folderView == "closed" ? "folder-tabs-selected" : " "} onClick={() => { setFolderView("closed"); }}> Closed </li>
+      <li id={folderView == "archive" ? "folder-tabs-selected" : " "} onClick={() => { setFolderView("archive"); }}> Archive </li>
     </ul>
   );
 }
@@ -92,7 +93,7 @@ function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob }) {
 
   return (
     <section className="folder-job-openings">
-      <AddJobOpening setIsAdding={setIsAdding} />
+      <AddJobOpening setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
 
       {jobs.map((job, index) => (
         <Job page={""} key={index} job={job} setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
