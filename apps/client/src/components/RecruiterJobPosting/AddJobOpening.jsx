@@ -11,9 +11,9 @@ import {CreateJobApi, GetCompaniesApi} from '../../utils/Api';
  * @param {Function} setIsAdding 
  * @returns Add Job Opening component
  */
-export function AddJobOpening({ setIsAdding  }) {
+export function AddJobOpening({ setIsAdding, setCurrentJob }) {
   return (
-    <section onClick={() => { setIsAdding(true); }} className="add-job-button">
+    <section onClick={() => { setCurrentJob({}); setIsAdding(true); }} className="add-job-button">
       <p className='add-job'> + </p>
     </section>
   );
@@ -40,6 +40,8 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
   // employment type: on_site, hybrid, remote
   const [type, setType] = useState(""); 
 
+  const [archived, setArchived] = useState(false);
+
   useEffect(() => {
     const getCompany = async () => {
       const data = await GetCompaniesApi();
@@ -50,7 +52,7 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
   }, []);
 
   const setPlaceholder = (input) => {
-    if (currentJob == {}) return;
+    if (!Object.keys(currentJob).length > 0) return;
 
     if (input === "company") {
       return currentJob.company.companyId;
@@ -136,6 +138,21 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
             onChange={(e) => { setDeadline(e.target.value); }} 
           />
         </label>
+
+        {Object.keys(currentJob).length > 0 && (
+          <div className='archive'>
+            Archive:
+            <div>
+              <input type="radio" id="archive-yes" name="archive" value="yes" checked={archived} onChange={() => { setArchived(true); }} />
+              <label htmlFor="archive-yes"> Yes </label>
+            </div>
+
+            <div>
+              <input type="radio" id="archive-no" name="archive" value="no" checked={!archived} onChange={() => { setArchived(false); }} />
+              <label htmlFor="archive-no"> No </label>
+            </div>
+          </div>
+        )}
 
         <button onClick={() => { postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token); }}> Done </button>
       </section>

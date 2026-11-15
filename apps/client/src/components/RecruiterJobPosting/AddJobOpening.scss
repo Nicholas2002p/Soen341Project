@@ -33,7 +33,7 @@
 .add-job-opening-content {
   background-color: rgb(201, 218, 238);
   border: style.$black-border;
-  @include style.width-height(1000px, 700px);
+  @include style.width-height(1000px, 750px);
   @include style.flex-dir(column);
   border-radius: 10px;
   gap: 10px;
@@ -66,6 +66,23 @@
     right: 1px;
     top: 0;
   }
+}
+
+.archive {
+  display: flex;
+  gap: 20px;
+  font-size: 25px;
+  margin-left: 10px;
+
+  div {
+    display: flex;
+  }
+}
+
+#archive-no, #archive-yes {
+  width: 20px;
+  padding: 0;
+  margin: 0;
 }
 
 .add-job-page-header {

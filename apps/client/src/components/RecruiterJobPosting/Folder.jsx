@@ -64,7 +64,7 @@ function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob }) {
 
   return (
     <section className="folder-job-openings">
-      <AddJobOpening setIsAdding={setIsAdding} />
+      <AddJobOpening setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
 
       {jobs.map((job, index) => (
         <Job page={""} key={index} job={job} setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
