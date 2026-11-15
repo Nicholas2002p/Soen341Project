@@ -86,7 +86,9 @@ export default function Profile({ setView }) {
             setDesc={setDesc} 
             setProfileURL={setProfileURL}
           />
-          <SavedJobs savedJobs={savedJobs} />
+
+          { user?.role === "jobseeker" ? <SavedJobs savedJobs={savedJobs} /> : ""}
+          
           <ResumeUpload />
           <section className="notification-test">
             <h2>Notifications</h2>
