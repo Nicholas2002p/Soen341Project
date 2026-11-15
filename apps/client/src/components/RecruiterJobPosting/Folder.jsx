@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState, useMemo} from "react";
 
 import { AddJobOpening } from "./AddJobOpening";
 import Job from "../Job/Job";
@@ -15,7 +15,28 @@ import './Folder.scss';
  */
 export default function Folder({ setIsAdding, jobs, setCurrentJob }) {
   const [folderView, setFolderView] = useState("all");
-  
+
+    const filteredJobs = useMemo(() => {
+    const now = new Date();
+    const isClosed = (job) => new Date(job.deadline) < now;
+
+    switch (folderView) {
+      case "open":
+        return jobs.filter((job) => !isClosed(job));
+      case "closed":
+        return jobs.filter((job) => isClosed(job));
+      case "applicants": {
+        return jobs;
+      }
+      case "archived": {
+        return jobs;
+      }
+      case "all":
+      default:
+        return jobs;
+    }
+  }, [folderView, jobs]);
+
   return (
     <section className="folder">
       <FolderTabs folderView={folderView} setFolderView={setFolderView} />

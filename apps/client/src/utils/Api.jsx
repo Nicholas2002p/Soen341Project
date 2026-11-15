@@ -887,26 +887,3 @@ export async function GetCompaniesApi() {
         return [];
     }
 }
-
-/**
- * 
- * gets all the applications of the logged in job seeker
- * @param {string} token
- * @returns  list of applications, or null if it failed
- */
-export async function GetMyApplicationsApi(token) {
-    try {
-        const res = await fetch(`${API_URL}/applications`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        if (!res.ok) return null;
-        return await res.json();
-    } catch (err) {
-        console.error("GetMyApplicationsApi failed:", err);
-        return null;
-    }
-}
