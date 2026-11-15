@@ -15,6 +15,7 @@ import { ResumeNotFoundError } from '../../src/domain/errors/ResumeNotFoundError
 import {
     FakeApplicationRepository,
     application,
+    archivedJob,
     closedJob,
     jobSeeker,
     openJob,
@@ -82,6 +83,13 @@ test('apply rejects a job whose deadline has passed', async () => {
     const { service } = createService();
 
     await assert.rejects(service.apply(jobSeeker, { jobId: closedJob.id, resumeId: resume.id }), JobClosedError);
+});
+
+test('apply rejects a job the recruiter archived', async () => {
+    const { service, applications } = createService(new FakeApplicationRepository([archivedJob]));
+
+    await assert.rejects(service.apply(jobSeeker, { jobId: archivedJob.id, resumeId: resume.id }), JobClosedError);
+    assert.equal(applications.applications.size, 0); // Nothing was created
 });
 
 test('apply rejects a resume that belongs to another user', async () => {
