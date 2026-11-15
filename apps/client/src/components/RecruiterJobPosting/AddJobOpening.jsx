@@ -1,6 +1,7 @@
-import { useState } from 'react';
-
+import { useState , useEffect} from 'react';
+import { useAuth } from "../../utils/Auth";
 import './AddJobOpening.scss';
+import {CreateJobApi, GetCompaniesApi} from '../../utils/Api';
 
 /**
  * Add Job Opening
@@ -26,15 +27,27 @@ export function AddJobOpening({ setIsAdding }) {
  * @returns Add Job Opening Page
  */
 export function AddJobOpeningPage({ setIsAdding }) {
+  const { token} = useAuth();
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [salary, setSalary] = useState(0);
   const [deadline, setDeadline] = useState(null);
+  const [category, setCategory] = useState("");
+  const [listCompany, setListCompany] = useState([]);
 
   // employment type: on_site, hybrid, remote
   const [type, setType] = useState(""); 
+
+  useEffect(() => {
+    const getCompany = async () => {
+      const data = await GetCompaniesApi();
+      if (!data) return;
+      setListCompany(data);
+    };
+    getCompany();
+  }, []);
 
   return (
     <section className='add-job-opening-page'>
@@ -53,9 +66,14 @@ export function AddJobOpeningPage({ setIsAdding }) {
 
         <label className='add-job-inputs' htmlFor="job-company">
           Company:
-          <input className='' type="text" name="job-company"
-            onChange={(e) => { setCompany(e.target.value); }} 
-          />
+          <select onChange={(e) => { setCompany(e.target.value); }} id="job-company" name="job-company" value={company} >
+            <option value="">--Select a company--</option>
+            {listCompany.map((c) => (
+              <option key={c.companyId} value={c.companyId}>
+                {c.name}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label className='add-job-inputs' htmlFor="job-employ-type">
@@ -66,6 +84,13 @@ export function AddJobOpeningPage({ setIsAdding }) {
             <option value="hybrid">Hybrid</option>
             <option value="remote">Remote</option>
           </select>
+        </label>
+
+        <label className='add-job-inputs' htmlFor="job-category">
+          Category:
+          <input className='' type="text" name="job-category" maxLength="50" 
+            onChange={(e) => { setCategory(e.target.value); }} 
+          />
         </label>
 
         <label className='add-job-inputs' htmlFor="job-location">
@@ -96,7 +121,7 @@ export function AddJobOpeningPage({ setIsAdding }) {
           />
         </label>
 
-        <button onClick={() => { postJob(title, company, location, description, salary, deadline, type, setIsAdding); }}> Post </button>
+        <button onClick={() => { postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token); }}> Post </button>
       </section>
       
     </section>
@@ -104,8 +129,20 @@ export function AddJobOpeningPage({ setIsAdding }) {
 }
 
 // Post Job is a function that will call the api to post the job after clicking on the Post button
-function postJob(title, company, location, description, salary, deadline, type, setIsAdding) {
+async function postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token) {
   // call api to post the job
-
+  setIsAdding(true);
+    const job = {
+    companyId: company,
+    title,
+    category,
+    location,
+    description,
+    salary,
+    employmentType: type,
+    deadline
+  };
+  const newJob = await CreateJobApi(job, token)
+  console.log(newJob);
   setIsAdding(false);
 }
