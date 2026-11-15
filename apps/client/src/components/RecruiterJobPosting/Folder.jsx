@@ -14,10 +14,10 @@ import './Folder.scss';
  * @param {Function} setIsAdding 
  * @returns the Folder Component
  */
-export default function Folder({ setIsAdding, jobs, setCurrentJob }) {
+export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete }) {
   const [folderView, setFolderView] = useState("all");
   const [archivedJobs, setArchivedJobs] = useState([]);
-
+  
   useEffect(() => {
     if (folderView === "archived") {
       GetArchivedJobsApi().then(setArchivedJobs);
@@ -50,7 +50,7 @@ export default function Folder({ setIsAdding, jobs, setCurrentJob }) {
       <FolderTabs folderView={folderView} setFolderView={setFolderView} />
 
       <section className="folder-content">
-        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={filteredJobs} setCurrentJob={setCurrentJob} />
+        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={filteredJobs} setCurrentJob={setCurrentJob} onDelete={onDelete}/>
       </section>    
 
     </section>
@@ -89,14 +89,14 @@ function FolderTabs({ folderView, setFolderView }) {
  * @param {Function} setIsAdding 
  * @returns Display Job Openings
  */
-function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob }) {
+function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob, onDelete }) {
 
   return (
     <section className="folder-job-openings">
       <AddJobOpening setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
 
       {jobs.map((job, index) => (
-        <Job page={""} key={index} job={job} setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
+        <Job page={""} key={index} job={job} setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} onDelete={onDelete}/>
       ))}
     </section>
   );

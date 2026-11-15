@@ -28,13 +28,17 @@ export default function RecruiterJobPosting({ setView }) {
       getMyJobs();
     }, [token]);
 
+  const handleJobDeleted = (jobId) => {
+    setJobs((prev) => prev.filter((j) => j.jobId !== jobId));
+  };
+
   return (
     <section>
       <Nav setView={setView} /> 
 
       <main className="recruiter-job-posting">
         <h2> Job Posting </h2>
-        <Folder setIsAdding={setIsAdding} jobs={jobs} setCurrentJob={setCurrentJob} />
+        <Folder setIsAdding={setIsAdding} jobs={jobs} setCurrentJob={setCurrentJob} onDelete={handleJobDeleted} />
         { isAdding && <AddJobOpeningPage setIsAdding={setIsAdding} currentJob={currentJob} /> }
       </main>
     </section>
