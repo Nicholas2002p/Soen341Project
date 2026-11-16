@@ -3,6 +3,7 @@
 All commits
 - Sprint 1: https://github.com/Nicholas2002p/Soen341Project/commits/sprint-1/?author=mags-2121
 - Sprint 2: https://github.com/Nicholas2002p/Soen341Project/commits/sprint-2/?author=mags-2121
+- Sprint 3: https://github.com/Nicholas2002p/Soen341Project/commits/ai-auto-apply/?author=mags-2121
 
 All PRs
 https://github.com/Nicholas2002p/Soen341Project/pulls?q=is%3Apr+author%3Amags-2121
@@ -33,4 +34,13 @@ Sprint 1 total: 11.5 hrs
 
 Sprint 2 total: 13 hrs
 
-Overall total: 24.5 hrs
+## Sprint 3
+- Planned the AI feature with Sauron: split the work (he did the PDF extraction and Gemini service, I did the matching, scoring and auto apply), and chose the design (small prompts, structured JSON, one Gemini call for all jobs) (1 hr)
+- Set up Gemini (AI Studio API key, local .env) and fixed my local test database so all tests passed again (1 hr)
+- Added structured JSON output (responseMimeType + responseSchema) to the Gemini service (PR#160) (1 hr)
+- ResumeAnalysisService: extracts skills, certifications and experience from the resume text, with unit tests using a fake AI (PR#160) (2.5 hrs)
+- JobMatchingService: scores every open job from 0 to 100 against the resume with a short reason, ignores unknown or duplicate jobs, with unit tests (PR#160) (2.5 hrs)
+
+Sprint 3 total: 8 hrs
+
+Overall total: 32.5 hrs
