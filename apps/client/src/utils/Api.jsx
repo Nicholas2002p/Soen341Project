@@ -888,6 +888,32 @@ export async function GetCompaniesApi() {
     }
 }
 
+/**
+ * gets array of all jobs that been archived
+ * @returns all ArchivedJobs
+ */
+export async function GetArchivedJobsApi(token) {
+    try {
+        const response = await fetch(getApiUrl("/api/jobs/archived"), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+        return data.jobs;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
 export async function GetSavedJobsApi(token) {
     try {
         const response = await fetch(getApiUrl("/api/saved-jobs"), {
