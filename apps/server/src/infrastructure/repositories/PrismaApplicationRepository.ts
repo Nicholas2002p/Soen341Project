@@ -21,9 +21,9 @@ import type {
 import type { EmploymentType } from '../../domain/entities/EmploymentType.js';
 import type { PublicUser } from '../../domain/entities/PublicUser.js';
 import type { PublicResume } from '../../domain/entities/Resume.js';
-import { getResumeFileType, ResumeFileType } from '../../domain/validation/ResumeFile.js';
+import { getResumeFileType, type ResumeFileType } from '../../domain/validation/ResumeFile.js';
 import { DuplicateApplicationError } from '../../domain/errors/ApplicationErrors.js';
-import { UserRole } from '../../domain/entities/User.js';
+import type { UserRole } from '../../domain/entities/User.js';
 
 // Job fields loaded with an application
 const jobSummarySelect = {
