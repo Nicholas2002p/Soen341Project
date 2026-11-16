@@ -34,11 +34,11 @@ export default function Analytics({}) {
  */
 function JobApplicationAnalytics({ byStatus }) {
   const statuses = [
-    { name: 'Applied', key: 'Applied', color: '#0088FE' },
-    { name: 'Under Review', key: 'Under_Review', color: '#00C49F' },
-    { name: 'Interview', key: 'Interview', color: '#FFBB28' },
-    { name: 'Offered', key: 'Offered', color: '#FF8042' },
-    { name: 'Rejected', key: 'Rejected', color: '#A855F7' }
+    { name: 'Applied', key: 'Applied', color: 'rgb(121, 116, 116)' },
+    { name: 'Under Review', key: 'Under_Review', color: 'rgb(227, 138, 35)' },
+    { name: 'Interview', key: 'Interview', color: 'rgb(49, 49, 190)' },
+    { name: 'Offered', key: 'Offered', color: 'rgb(73, 204, 73)' },
+    { name: 'Rejected', key: 'Rejected', color: 'rgb(151, 31, 31)' }
   ].map((status) => ({
     ...status,
     value: byStatus[status.key] ?? 0,
