@@ -15,11 +15,16 @@ function toDateTimeLocal(isoDate) {
   return date.toISOString().slice(0, 16);
 }
 ```
+AI-Suggested Content: Code on how to show the deadline
+Validation: I ran it and verified it was added correctly
+Decision: Accepted but Modified
+Reflection: AI makes the search easier
+Responsible Person: Michelle
 
-accepted but modified to fit the logic
+-------------
 
 Task ID/Title: Display the legend for the pie chart
-Purpose of AI Use: recharts website didn't show how to display the legend 
+Purpose of AI Use: recharts website didn't show how to display the legend, on the website, it only showed the math and then i added the data but it didn't show what each color did and the rest of the pie charts didn't have a legend or wrote what each sector did.
 Chat Link or Prompt/Response:
 prompt:
 the pie chart doesnt show what each color does, how do i display it
@@ -35,4 +40,8 @@ code:
   ))}
 </ul>
 ```
-accepted
+AI-Suggested Content: Code on how to display the legend for the pie chart
+Validation: I ran it and verified it was added correctly
+Decision: Accepted
+Reflection: AI makes the search easier
+Responsible Person: Michelle
