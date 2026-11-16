@@ -15,7 +15,7 @@ import './Folder.scss';
  * @param {Function} setIsAdding 
  * @returns the Folder Component
  */
-export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete }) {
+export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete, setIsManaging }) {
   const [folderView, setFolderView] = useState("all");
   const [archivedJobs, setArchivedJobs] = useState([]);
   const {token} = useAuth();
@@ -52,7 +52,7 @@ export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete }) {
       <FolderTabs folderView={folderView} setFolderView={setFolderView} />
 
       <section className="folder-content">
-        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={filteredJobs} setCurrentJob={setCurrentJob} onDelete={onDelete}/>
+        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={filteredJobs} setCurrentJob={setCurrentJob} onDelete={onDelete} folderView={folderView} setIsManaging={setIsManaging} />
       </section>    
 
     </section>
@@ -91,14 +91,13 @@ function FolderTabs({ folderView, setFolderView }) {
  * @param {Function} setIsAdding 
  * @returns Display Job Openings
  */
-function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob, onDelete }) {
-
+function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob, onDelete, folderView, setIsManaging }) {
   return (
     <section className="folder-job-openings">
       <AddJobOpening setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
 
       {jobs.map((job, index) => (
-        <Job page={""} key={index} job={job} setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} onDelete={onDelete}/>
+        <Job page={""} key={index} job={job} setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} onDelete={onDelete} folderView={folderView} setIsManaging={setIsManaging} />
       ))}
     </section>
   );

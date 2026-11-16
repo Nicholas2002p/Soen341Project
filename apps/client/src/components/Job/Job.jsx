@@ -12,18 +12,12 @@ import { useAuth } from './../../utils/Auth';
  * @param {Object} job - for next PR
  * @returns Job Component
  */
-export default function Job({ page, job, setIsAdding, setCurrentJob, onDelete }) {
+export default function Job({ page, job, setIsAdding, setCurrentJob, onDelete, folderView, setIsManaging }) {
   const deadlineDate = new Date(job.deadline).toLocaleDateString();
   const { token } = useAuth();
-  const editPage = () => {
-    if (page === "application") return;
-    
-    setIsAdding(true);
-    setCurrentJob(job);
-  }
-
+  
   return (
-    <section onClick={editPage} className={page === "application" ? "job-display-paper" : "job-paper"}>
+    <section onClick={() => { jobClick(page, setIsAdding, setCurrentJob, job, folderView, setIsManaging); }} className={page === "application" ? "job-display-paper" : "job-paper"}>
       {page !== "application" && <DeleteJob job={job} token={token} onDelete={onDelete}/>}
 
       <div className="job-paper-header">
@@ -57,6 +51,18 @@ function DeleteJob({ job , token , onDelete}) {
       <img src="trash.svg" alt="trash-icon" />
     </div>
   )
+}
+
+function jobClick(page, setIsAdding, setCurrentJob, job, folderView, setIsManaging) {
+  if (page === "application") return;
+  
+  if (folderView === "applicants") {
+    setIsManaging(true);
+    return;
+  }
+
+  setIsAdding(true);
+  setCurrentJob(job);
 }
 
 // API call to delete the job

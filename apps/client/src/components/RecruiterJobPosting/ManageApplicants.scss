@@ -1,6 +1,7 @@
 @use "../../utils/style" as style;
 
 .recruiter-manage-applicants {
+  position: absolute;
   background-color: style.$off-white;
   height: 900px;
   width: 1300px;
@@ -8,6 +9,13 @@
   border-radius: 10px;
   padding: 10px;
   display: flex;
+  align-self: center;
+}
+
+.leave {
+  font-size: 30px;
+  background: none;
+  border: none;
 }
 
 .manage-applicants {

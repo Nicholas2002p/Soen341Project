@@ -1,9 +1,9 @@
 import './ManageApplicants.scss';
 import { useState } from 'react';
 
-export default function ManageApplicants({}) {
+export default function ManageApplicants({ isManaging, setIsManaging }) {
   const [index, setIndex] = useState(0);
-  const data = [{"resume": 1}, { "resume": 2 }, {"resume": 3}, {"resume": 4}];
+  const data = [{"resume": 1}, { "resume": 2 }, {"resume": 3}, {"resume": 4}]; // SAMPLE DATA
 
   const prevResume = () => {
     if (index === 0) return;
@@ -17,6 +17,7 @@ export default function ManageApplicants({}) {
 
   return (
     <section className="recruiter-manage-applicants">
+      <button className="leave" onClick={() => { setIsManaging(false); }}> X </button>
       <section className='manage-applicants'>
         <div>
           <button onClick={prevResume}> &lt; </button>
@@ -36,9 +37,9 @@ function ApplicationMenu({}) {
       <div className='application-menu'>
         <h2> Application menu </h2>
         <div className='application-menu-options'>
-          <button> <div className='status offered'></div> Accept </button>
-          <button> <div className='status interview'></div> Interview </button>
-          <button> <div className='status rejected'></div> Reject </button>
+          <button onClick={() => {updateApplicationStatus("offered")}}> <div className='status offered'></div> Accept </button>
+          <button onClick={() => {updateApplicationStatus("interview")}}> <div className='status interview'></div> Interview </button>
+          <button onClick={() => {updateApplicationStatus("rejected")}}> <div className='status rejected'></div> Reject </button>
         </div>
       </div>
     </section>
@@ -51,4 +52,8 @@ function ApplicationResumes({ resume }) {
       <p> {resume.resume} </p>
     </section>
   )
+}
+
+function updateApplicationStatus(status) {
+  // call api to update the status
 }
