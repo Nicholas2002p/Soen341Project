@@ -1,7 +1,8 @@
 @import "../../utils/style";
 
 .history-job-application {
-  @include width-height(100%, 100%);
+  width: 100%;
+  min-height: 100vh;
   background-color: $off-white;
 }
 

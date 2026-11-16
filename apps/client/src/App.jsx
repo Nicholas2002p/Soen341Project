@@ -8,7 +8,6 @@ import Registration from './views/authentication/Registration';
 import Login from './views/authentication/Login';
 import JobSearch from './views/job_search/JobSearch'
 import RecruiterJobPosting from './views/recruiter_job_posting/RecruiterJobPosting';
-import Analytics from './views/analytics/Insights';
 
 
 import { AuthContext } from './utils/Auth';
@@ -41,7 +40,6 @@ function Main() {
         {view === "job-search" && <JobSearch setView={setView} setSelectedJob={setSelectedJob} />} 
         {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} jobs={jobs} /> }
         {view === "job-application" && <JobApplication setView={setView} job={selectedJob}/> }
-        {view === "Analytics" && <Analytics setView={setView} />}
       </div>
     </AuthContext.Provider>
   );

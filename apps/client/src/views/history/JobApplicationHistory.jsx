@@ -3,9 +3,10 @@ import { useAuth } from '../../utils/Auth';
 import HistoryFilters from '../../components/History/HistoryFilters';
 import HistoryJobApplication from '../../components/History/HistoryInfo';
 import Nav from '../../components/Navigation/Nav';
-import './JobApplicationHistory.scss';
-import {GetJobHistory} from '../../utils/Api';
+import { GetJobHistory } from '../../utils/Api';
+import Analytics from '../../components/analytics/Insights';
 
+import './JobApplicationHistory.scss';
 /**
  * Job Application History
  * main page that displays the job application history
@@ -31,6 +32,8 @@ export default function JobApplicationHistory({ setView }) {
   return (
     <section className='history-job-application'>
       <Nav setView={setView} />
+
+      <Analytics />
       
       <main className='history'>
         <HistoryFilters history={history} setFilterHistory={setFilterHistory} />

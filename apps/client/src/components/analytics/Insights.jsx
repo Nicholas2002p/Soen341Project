@@ -1,23 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../utils/Auth';
-import Nav from '../../components/Navigation/Nav';
 import {GetAnalyticsApi} from '../../utils/Api';
+import { Pie, PieChart } from 'recharts';
 
-import {
-  Pie,
-  PieChart
-} from 'recharts';
+import './Insight.scss';
 
-/**
- * Job Application History
- * main page that displays the job application history
- * 
- * @param {Function} setView - changes the view inside of the nav 
- * @returns Job Application History Component
- */
-export default function Analytics({ setView }) {
+export default function Analytics({}) {
   const [analytics, setAnalytics] = useState(null);
-  
   const { token } = useAuth();
 
   useEffect(() => {
@@ -31,23 +20,8 @@ export default function Analytics({ setView }) {
   
   return (
     <section className='analytics'>
-      <Nav setView={setView} />
-      
-      <main className='main_analytics'>
+      <main className='main-analytics'>
         {analytics && <JobApplicationAnalytics byStatus={analytics.byStatus} />}
-
-         {analytics && (
-        <>
-          <div>Total: {analytics.total}</div>
-          <div>Pending: {analytics.pending}</div>
-          <div>Applied: {analytics.byStatus?.Applied}</div>
-          <div>Under Review: {analytics.byStatus?.Under_Review}</div>
-          <div>Interview: {analytics.byStatus?.Interview}</div>
-          <div>Offered: {analytics.byStatus?.Offered}</div>
-          <div>Rejected: {analytics.byStatus?.Rejected}</div>
-          <div>Interview Rate: {analytics.interviewRate}</div>
-          <div>Submitted Over Time: {analytics.submittedOverTime?.length} entries</div>
-        </>)}
       </main>
     </section>
   );
@@ -58,7 +32,7 @@ export default function Analytics({ setView }) {
  * from: https://recharts.github.io/en-US/examples/PieChartWithCustomizedLabel/
  * @param {*} param0 
  */
-function JobApplicationAnalytics({ byStatus = {} }) {
+function JobApplicationAnalytics({ byStatus }) {
   const statuses = [
     { name: 'Applied', key: 'Applied', color: '#0088FE' },
     { name: 'Under Review', key: 'Under_Review', color: '#00C49F' },
