@@ -5,7 +5,7 @@ import { Pie, PieChart } from 'recharts';
 
 import './Insight.scss';
 
-export default function Analytics({}) {
+export default function Analytics() {
   const [analytics, setAnalytics] = useState(null);
   const { token } = useAuth();
 
