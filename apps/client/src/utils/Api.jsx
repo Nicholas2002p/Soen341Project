@@ -887,3 +887,168 @@ export async function GetCompaniesApi() {
         return [];
     }
 }
+
+/**
+ * gets array of all jobs that been archived
+ * @returns all ArchivedJobs
+ */
+export async function GetArchivedJobsApi(token) {
+    try {
+        const response = await fetch(getApiUrl("/api/jobs/archived"), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+        return data.jobs;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+export async function GetSavedJobsApi(token) {
+    try {
+        const response = await fetch(getApiUrl("/api/saved-jobs"), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+        return data.jobs;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+/**
+ * toggels a job from archived to not archived and vice verse
+ * @param {*} jobId 
+ * @returns the updated job 
+ */
+export async function ArchivedJobsApi(jobId, token, archive) {
+    try {
+        const response = await fetch(getApiUrl(`/api/jobs/${jobId}/archive`), {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                 Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ archive }),
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return data.job;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+/** 
+ * 
+ * @param {*} jobId 
+ * @param {*} token 
+ * @returns 
+ */
+export async function SaveJobApi(jobId, token) {
+    try {
+        const response = await fetch(
+            getApiUrl(`/api/saved-jobs/${encodeURIComponent(jobId)}`),
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                
+            }
+        );
+
+        if (!response.ok) {
+            return { success: false, status: response.status };
+        }
+
+        const data = await response.json();
+        return { success: true, status: response.status, data };
+    } catch (error) {
+        console.error(error);
+        return { success: false, status: 0 };
+    }
+}
+
+/**
+ * 
+ * @param {*} jobId 
+ * @param {*} token 
+ * @returns 
+ */
+export async function RemoveSavedJobApi(jobId, token) {
+    try {
+        const response = await fetch(
+            getApiUrl(`/api/saved-jobs/${encodeURIComponent(jobId)}`),
+            {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                
+            }
+        );
+
+        if (!response.ok) {
+            return { success: false, status: response.status };
+        }
+
+        return { success: true, status: response.status };
+    } catch (error) {
+        console.error(error);
+        return { success: false, status: 0 };
+    }
+}
+
+/**
+ * gets all analytics for user
+ * @returns a list of analytics
+ */
+export async function GetAnalyticsApi(token) {
+    try {
+        const response = await fetch(getApiUrl("/api/applications/analytics"), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();;
+        return data.analytics;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}

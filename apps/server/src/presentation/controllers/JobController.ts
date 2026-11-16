@@ -212,6 +212,73 @@ export class JobController {
     }
 
     /**
+    * HTTP requests to retrieve the archived jobs of the current recruiter
+    * 
+    * @param {Request} req - request object
+    * @param {Response} res - response object
+    * @returns {Promise<void>} resolves when the request is sent
+    */
+    async getArchived(_req: Request, res: Response): Promise<void> {
+        const user = res.locals.user as PublicUser;
+
+        try {
+            const jobs = await jobService.getArchived(user);
+            res.status(200).json({ jobs });
+        } catch (error) {
+            res.status(403).json({
+                message: error instanceof Error ? error.message : 'Not allowed.',
+            });
+        }
+    }
+
+    /**
+    * HTTP requests to archive or unarchive a job
+    * 
+    * @param {Request} req - request object
+    * @param {Response} res - response object
+    * @returns {Promise<void>} resolves when the request is sent
+    */
+    async setArchive(req: Request, res: Response): Promise<void> {
+        const user = res.locals.user as PublicUser;
+        const jobId = Number(req.params.jobId);
+
+        if (!Number.isInteger(jobId) || jobId <= 0) {
+            res.status(400).json({
+                message: 'A valid job id is required.',
+            });
+            return;
+        }
+
+        const archive = (req.body as { archive?: unknown } | undefined)?.archive;
+
+        if (typeof archive !== 'boolean') {
+            res.status(400).json({
+                message: 'archive must be true or false.',
+            });
+            return;
+        }
+
+        try {
+            const job = await jobService.setArchive(user, jobId, archive);
+
+            if (!job) {
+                res.status(404).json({
+                    message: 'Job not found.',
+                });
+                return;
+            }
+
+            res.status(200).json({
+                job,
+            });
+        } catch (error) {
+            res.status(403).json({
+                message: error instanceof Error ? error.message : 'Job could not be archived.',
+            });
+        }
+    }
+
+    /**
     * HTTP requests to create a job
     * 
     * @param {Request} req - request object

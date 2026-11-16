@@ -38,7 +38,7 @@ export default function JobApplication({ setView, job }) {
 
         <section className='resume-application'>
           <h2> Resume </h2>
-          <Application handleApply={handleApply} selectedResumeId={selectedResumeId} setSelectedResumeId={setSelectedResumeId} alreadyApplied={alreadyApplied}/>
+          <Application handleApply={handleApply} selectedResumeId={selectedResumeId} setSelectedResumeId={setSelectedResumeId} alreadyApplied={alreadyApplied} jobId={job.jobId}/>
         </section>
 
         <section className='job-display'>

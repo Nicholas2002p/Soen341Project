@@ -44,9 +44,11 @@ export class PrismaSavedJobRepository implements ISavedJobRepository {
             category: savedJob.job.category,
             location: savedJob.job.location,
             salary: savedJob.job.salary,
+            description: savedJob.job.description,
             employmentType: savedJob.job.employmentType as EmploymentType,
             deadline: savedJob.job.deadline,
             createdAt: savedJob.job.createdAt,
+            archive: savedJob.job.archive,
             company: {
                 companyId: savedJob.job.company.companyId,
                 name: savedJob.job.company.name,

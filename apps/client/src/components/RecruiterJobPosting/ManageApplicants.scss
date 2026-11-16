@@ -1,0 +1,90 @@
+@use "../../utils/style" as style;
+
+.recruiter-manage-applicants {
+  position: absolute;
+  background-color: style.$off-white;
+  height: 900px;
+  width: 1300px;
+  border: 1px dashed black;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  align-self: center;
+}
+
+.leave {
+  font-size: 30px;
+  background: none;
+  border: none;
+}
+
+.manage-applicants {
+  border: 1px solid black;
+  flex: 3;
+}
+
+.manage-applicants button {
+  background: none;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.manage-applicants div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 100%;
+}
+
+.recruiter-application-resumes {
+  width: 90%;
+  height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recruiter-application-menu {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.application-menu {
+  height: 400px;
+  width: 90%;
+  border: 1px solid black;
+  border-radius: 5px;
+  
+  display: flex;
+  flex-direction: column;
+  background-color: style.$main-blue;
+}
+
+.application-menu h2 {
+  flex: 1;
+  text-align: center;
+  font-size: 25px;
+}
+
+.application-menu-options {
+  flex: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.application-menu button {
+  margin: 10px;
+  height: 50px;
+  width: 90%;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  cursor: pointer;
+}

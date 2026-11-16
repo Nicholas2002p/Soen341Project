@@ -1,4 +1,5 @@
 import type { ApplyToJobData, IApplicationService } from '../interfaces/services/IApplicationService.js';
+import type { IResumeService, ResumeFile } from '../interfaces/services/IResumeService.js';
 import type { IApplicationRepository } from '../interfaces/repositories/IApplicationRepository.js';
 import type { IResumeRepository } from '../interfaces/repositories/IResumeRepository.js';
 import type { Application, ApplicationDetails, ApplicationJob, ApplicationWithJob } from '../../domain/entities/Application.js';
@@ -56,6 +57,7 @@ export class ApplicationService implements IApplicationService {
         private readonly applicationRepository: IApplicationRepository,
         private readonly resumeRepository: IResumeRepository,
         private readonly notificationService?: Pick<NotificationService, 'create'>,
+        private readonly resumeService?: Pick<IResumeService, 'getFile'>,
     ) {}
 
     // Retrieve a job, throws JobNotFoundError ("Job not found.") if it does not exist
@@ -81,6 +83,11 @@ export class ApplicationService implements IApplicationService {
         // A job without a deadline stays open
         if (job.deadline && job.deadline.getTime() < Date.now()) {
             throw new JobClosedError();
+        }
+
+        // The recruiter archived the job, so it is no longer accepting applications
+        if (job.archived) {
+            throw new JobClosedError('This job is no longer accepting applications.');
         }
 
         // The resume must be one of the applicant's own resumes
@@ -197,6 +204,32 @@ export class ApplicationService implements IApplicationService {
 
         const statusHistory = await this.applicationRepository.getStatusHistory(applicationId);
         return { ...application, statusHistory };
+    }
+
+    //get the resume file submitted with an application, for the applicant or the recruiter of the job.
+    //Anyone else gets ApplicationNotFoundError, same as getById, so the API does not reveal which application ids exist.
+    async getResumeFile(user: PublicUser, applicationId: number): Promise<ResumeFile> {
+        if (!this.resumeService) {
+            throw new Error('ApplicationService needs a resume service to read resume files.');
+        }
+
+        const application = await this.applicationRepository.getById(applicationId);
+
+        if (!application) {
+            throw new ApplicationNotFoundError();
+        }
+
+        if (application.userId !== user.id) {
+            const job = await this.applicationRepository.getJob(application.jobId);
+
+            if (!job || job.recruiterId !== user.id) {
+                throw new ApplicationNotFoundError();
+            }
+        }
+
+        // The resume belongs to the applicant, so it is read as theirs. This reuses the resume checks
+        // (file type, missing file) instead of reading the file storage directly.
+        return this.resumeService.getFile(application.userId, application.resumeId);
     }
 
     //change the status of an application, only the recruiter who posted the job can do this.
