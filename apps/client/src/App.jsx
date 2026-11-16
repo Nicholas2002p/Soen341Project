@@ -9,6 +9,7 @@ import Login from './views/authentication/Login';
 import JobSearch from './views/job_search/JobSearch'
 import RecruiterJobPosting from './views/recruiter_job_posting/RecruiterJobPosting';
 
+
 import { AuthContext } from './utils/Auth';
 
 function Main() {
