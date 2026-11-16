@@ -27,10 +27,14 @@ export default function Analytics() {
   return (
     <section className='analytics'>
       <main className='main-analytics'>
-        {analytics && <JobApplicationAnalytics byStatus={analytics.byStatus} />}
+        {analytics && (
+          <>
+            <JobApplicationAnalytics byStatus={analytics.byStatus} />
 
-        <p> <strong>Interview Rate</strong>: {analytics.interviewRate} </p>
-        <p> <strong>Applications submitted over time</strong>: {analytics.submittedOverTime?.length} </p>
+            <p> <strong>Interview Rate</strong>: {analytics.interviewRate} </p>
+            <p> <strong>Applications submitted over time</strong>: {analytics.submittedOverTime?.length} </p>
+          </>
+        )}
       </main>
     </section>
   );
