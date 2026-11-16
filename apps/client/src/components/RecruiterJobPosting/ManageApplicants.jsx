@@ -7,6 +7,8 @@ export default function ManageApplicants({ jobId, setIsManaging }) {
   const { token } = useAuth();
   const [index, setIndex] = useState(0);
   const [applications, setApplications] = useState([]);
+  const [startDate, setStartDate] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
 
   useEffect(() => {
     console.log(jobId)
@@ -21,7 +23,12 @@ export default function ManageApplicants({ jobId, setIsManaging }) {
     load();
   }, [jobId, token])
 
-  const current = applications[index];
+  const filtered = applications.filter((a) =>
+    (statusFilter === 'All' || a.status === statusFilter) &&
+    (!startDate || new Date(a.appliedAt) >= new Date(`${startDate}T00:00:00`))
+  );
+
+  const current = filtered[index];
 
   const changeStatus = async (applicationId, status) => {
     const updated = await UpdateApplicationStatusApi(applicationId, status, token);
@@ -31,20 +38,13 @@ export default function ManageApplicants({ jobId, setIsManaging }) {
     );
   };
 
-  useEffect(() => {
-  if (current && current.status === 'Applied') {
-    changeStatus(current.id, 'Under Review');
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current?.id]);
-
   const prevResume = () => {
     if (index === 0) return;
     setIndex(index - 1);
   }
 
   const nextResume = () => {
-    if (index === applications.length - 1) return;
+    if (index >= filtered.length - 1) return;
     setIndex(index + 1);
   }
 
@@ -64,25 +64,37 @@ export default function ManageApplicants({ jobId, setIsManaging }) {
         )}
       </section>
 
-      {current && (
-        <ApplicationMenu
-          status={current.status}
-          onChange={(status) => changeStatus(current.id, status)}
+      <div className="application-side">
+        <FilterMenu
+          startDate={startDate}
+          setStartDate={(v) => { setStartDate(v); setIndex(0); }}
+          statusFilter={statusFilter}
+          setStatusFilter={(v) => { setStatusFilter(v); setIndex(0); }}
         />
-      )}
+
+        {current && (
+          <ApplicationMenu
+            status={current.status}
+            onChange={(status) => changeStatus(current.id, status)}
+          />
+        )}
+      </div>
     </section>
   );
 }
 
 function ApplicationMenu({ status, onChange }) {
+  const isFinal = status === 'Offered' || status === 'Rejected';
+
   return (
     <section className='recruiter-application-menu'>
       <div className='application-menu'>
         <h2> Application menu </h2>
         <div className='application-menu-options'>
-          <button disabled={status === 'offered'} onClick={() => onChange("Offered")}> <div className='status offered'></div> Accept </button>
-          <button disabled={status === 'interview'} onClick={() => onChange("Interview")}> <div className='status interview'></div> Interview </button>
-          <button disabled={status === 'rejected'} onClick={() => onChange("Rejected")}> <div className='status rejected'></div> Reject </button>
+          <button disabled={isFinal || status === 'Offered'} onClick={() => onChange("Offered")}> <div className='status offered'></div> Accept </button>
+          <button disabled={isFinal || status === 'Under_Review'} onClick={() => onChange("Under_Review")}> <div className='status Under Review'></div> Under Review </button>
+          <button disabled={isFinal || status === 'Interview'} onClick={() => onChange("Interview")}> <div className='status interview'></div> Interview </button>
+          <button disabled={isFinal || status === 'Rejected'} onClick={() => onChange("Rejected")}> <div className='status rejected'></div> Reject </button>
         </div>
       </div>
     </section>
@@ -92,16 +104,37 @@ function ApplicationMenu({ status, onChange }) {
 function ApplicationResumes({ application }) {
   return (
     <section className='recruiter-application-resumes'>
-      <p> {application.applicant?.email} </p>
-      <p> {application.resume?.fileName} </p>
+      <div className='applicant-email'> {application.applicant?.email} </div>
+      <div className='applicant-resume'> {application.resume?.fileName} </div>
+      <div className='applicant-status'> Status: {application.status} </div>
+      <div className='applicant-applied'> Applied: {new Date(application.appliedAt).toLocaleString()} </div>
     </section>
   )
 }
 
-function isManaging_UnderReview() {
-  // call api to update resume status to under review
-}
-
-function updateApplicationStatus(status) {
-  // call api to update the status
+function FilterMenu({ startDate, setStartDate, statusFilter, setStatusFilter }) {
+  return (
+    <section className='recruiter-application-menu'>
+      <div className='application-menu'>
+        <h2> Filters </h2>
+        <div className='application-menu-options'>
+          <label>
+            From:
+            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+          </label>
+          <label>
+            Status:
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+              <option value="All">All</option>
+              <option value="Applied">Applied</option>
+              <option value="Under_Review">Under Review</option>
+              <option value="Interview">Interview</option>
+              <option value="Offered">Offered</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    </section>
+  );
 }
