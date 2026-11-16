@@ -1,7 +1,7 @@
 import { useState , useEffect} from 'react';
 import { useAuth } from "../../utils/Auth";
 import './AddJobOpening.scss';
-import {CreateJobApi, GetCompaniesApi} from '../../utils/Api';
+import {CreateJobApi, GetCompaniesApi,  UpdateJobApi, ArchivedJobsApi} from '../../utils/Api';
 
 /**
  * Add Job Opening
@@ -26,7 +26,7 @@ export function AddJobOpening({ setIsAdding, setCurrentJob }) {
  * @param {Function} setIsAdding 
  * @returns Add Job Opening Page
  */
-export function AddJobOpeningPage({ setIsAdding, currentJob }) {
+export function AddJobOpeningPage({ setIsAdding, currentJob, handleJobSaved }) {
   const {token} = useAuth();
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");
@@ -40,16 +40,26 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
   // employment type: on_site, hybrid, remote
   const [type, setType] = useState(""); 
 
-  const [archived, setArchived] = useState(false);
+  const [archived, setArchived] = useState(currentJob?.archive ?? false);
 
   useEffect(() => {
     const getCompany = async () => {
       const data = await GetCompaniesApi();
+      console.log(data);
       if (!data) return;
       setListCompany(data);
     };
     getCompany();
   }, []);
+
+  //calls api and toggles Archive
+  const handleArchiveToggle = async () => {
+    const updated = await ArchivedJobsApi(currentJob.jobId, token, !archived,);
+    if (!updated) return;
+
+    setArchived((prev) => !prev);
+    handleJobSaved?.(updated, true);
+  };
 
   const setPlaceholder = (input) => {
     if (!Object.keys(currentJob).length > 0) return;
@@ -84,7 +94,7 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
 
         <label className='add-job-inputs' htmlFor="job-company">
           Company:
-          <select onChange={(e) => { setCompany(e.target.value); }} id="job-company" name="job-company" value={setPlaceholder("company")} >
+          <select onChange={(e) => { setCompany(e.target.value); }} id="job-company" name="job-company" value={company || setPlaceholder("company") || ""} >
             <option value="">--Select a company--</option>
             {listCompany.map((c) => (
               <option key={c.companyId} value={c.companyId}>
@@ -96,7 +106,7 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
 
         <label className='add-job-inputs' htmlFor="job-employ-type">
           Employment Type: 
-          <select onChange={(e) => { setType(e.target.value); }} name="employ-type" id="employ-type" value={setPlaceholder("employmentType")}>
+          <select onChange={(e) => { setType(e.target.value); }} name="employ-type" id="employ-type" value={type || setPlaceholder("employmentType") || ""}>
             <option value="">--Select the employment type--</option>
             <option value="on_site" >On Site</option>
             <option value="hybrid">Hybrid</option>
@@ -141,20 +151,12 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
 
         {Object.keys(currentJob).length > 0 && (
           <div className='archive'>
-            Archive:
-            <div>
-              <input type="radio" id="archive-yes" name="archive" value="yes" checked={archived} onChange={() => { setArchived(true); }} />
-              <label htmlFor="archive-yes"> Yes </label>
-            </div>
-
-            <div>
-              <input type="radio" id="archive-no" name="archive" value="no" checked={!archived} onChange={() => { setArchived(false); }} />
-              <label htmlFor="archive-no"> No </label>
-            </div>
+            <label htmlFor="archive-toggle"> Archive: </label>
+            <input type="checkbox" id="archive-toggle" checked={archived} onChange={handleArchiveToggle} />
           </div>
         )}
 
-        <button onClick={() => { postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token); }}> Done </button>
+        <button onClick={() => { postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token, currentJob, handleJobSaved); }}> Done </button>
       </section>
       
     </section>
@@ -162,20 +164,43 @@ export function AddJobOpeningPage({ setIsAdding, currentJob }) {
 }
 
 // Post Job is a function that will call the api to post the job after clicking on the Post button
-async function postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token) {
-  // call api to post the job
+async function postJob(title, company, location, description, salary, deadline, type, category, setIsAdding, token, currentJob, handleJobSaved) {
+
+  const editing = Boolean(currentJob?.jobId);
   setIsAdding(true);
+  console.log(currentJob.company?.companyId);
+  if (editing){
+    const jobEdit = {
+      companyId: company || currentJob.company?.companyId,
+      title: title || currentJob.title,
+      category: category || currentJob.category,
+      location: location || currentJob.location,
+      description: description || currentJob.description,
+      salary: salary || currentJob.salary,
+      employmentType: type || currentJob.employmentType,
+      deadline: deadline || currentJob.deadline
+    };
+    console.log(jobEdit);
+
+    const updated = await UpdateJobApi(currentJob.jobId, jobEdit, token);
+    if (updated) handleJobSaved?.(updated, true);
+
+  }
+  else{
     const job = {
-    companyId: company,
-    title,
-    category,
-    location,
-    description,
-    salary,
-    employmentType: type,
-    deadline
-  };
-  const newJob = await CreateJobApi(job, token)
-  console.log(newJob);
+      companyId: company,
+      title,
+      category,
+      location,
+      description,
+      salary,
+      employmentType: type,
+      deadline
+    };
+   const created = await CreateJobApi(job, token);
+    if (created) handleJobSaved?.(created, false);
+
+  }
+
   setIsAdding(false);
 }

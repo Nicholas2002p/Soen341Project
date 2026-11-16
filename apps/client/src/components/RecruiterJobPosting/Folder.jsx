@@ -1,7 +1,9 @@
-import { useState, useMemo} from "react";
+import { useState, useMemo, useEffect} from "react";
+import { useAuth } from "../../utils/Auth";
 
 import { AddJobOpening } from "./AddJobOpening";
 import Job from "../Job/Job";
+import { GetArchivedJobsApi } from "../../utils/Api";
 
 import './Folder.scss';
 
@@ -13,10 +15,18 @@ import './Folder.scss';
  * @param {Function} setIsAdding 
  * @returns the Folder Component
  */
-export default function Folder({ setIsAdding, jobs, setCurrentJob }) {
+export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete }) {
   const [folderView, setFolderView] = useState("all");
+  const [archivedJobs, setArchivedJobs] = useState([]);
+  const {token} = useAuth();
+  
+  useEffect(() => {
+    if (folderView === "archive") {
+      GetArchivedJobsApi(token).then(setArchivedJobs);
+    }
+  }, [folderView, token]);
 
-    const filteredJobs = useMemo(() => {
+  const filteredJobs = useMemo(() => {
     const now = new Date();
     const isClosed = (job) => new Date(job.deadline) < now;
 
@@ -28,21 +38,21 @@ export default function Folder({ setIsAdding, jobs, setCurrentJob }) {
       case "applicants": {
         return jobs;
       }
-      case "archived": {
-        return jobs;
+      case "archive": {
+        return archivedJobs;
       }
       case "all":
       default:
         return jobs;
     }
-  }, [folderView, jobs]);
+  }, [folderView, jobs, archivedJobs]);
 
   return (
     <section className="folder">
       <FolderTabs folderView={folderView} setFolderView={setFolderView} />
 
       <section className="folder-content">
-        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={jobs} setCurrentJob={setCurrentJob} />
+        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={filteredJobs} setCurrentJob={setCurrentJob} onDelete={onDelete}/>
       </section>    
 
     </section>
@@ -81,14 +91,14 @@ function FolderTabs({ folderView, setFolderView }) {
  * @param {Function} setIsAdding 
  * @returns Display Job Openings
  */
-function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob }) {
+function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob, onDelete }) {
 
   return (
     <section className="folder-job-openings">
       <AddJobOpening setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
 
       {jobs.map((job, index) => (
-        <Job page={""} key={index} job={job} setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
+        <Job page={""} key={index} job={job} setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} onDelete={onDelete}/>
       ))}
     </section>
   );

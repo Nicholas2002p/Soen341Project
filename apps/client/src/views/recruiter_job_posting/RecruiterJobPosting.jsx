@@ -23,19 +23,31 @@ export default function RecruiterJobPosting({ setView }) {
       const getMyJobs = async () => {
         const data = await GetMyJobsApi(token);
         if (!data) return;
+        console.log(data);
         setJobs(data);
       };
       getMyJobs();
-    }, []);
+    }, [token]);
 
+  const handleJobDeleted = (jobId) => {
+    setJobs((prev) => prev.filter((j) => j.jobId !== jobId));
+  };
+
+  const handleJobSaved = (savedJob, isEdit) => {
+    setJobs((prev) =>
+      isEdit
+        ? prev.map((j) => (j.jobId === savedJob.jobId ? { ...j, ...savedJob } : j))
+        : [...prev, savedJob]
+    );
+  };
   return (
     <section>
       <Nav setView={setView} /> 
 
       <main className="recruiter-job-posting">
         <h2> Job Posting </h2>
-        <Folder setIsAdding={setIsAdding} jobs={jobs} setCurrentJob={setCurrentJob} />
-        { isAdding && <AddJobOpeningPage setIsAdding={setIsAdding} currentJob={currentJob} /> }
+        <Folder setIsAdding={setIsAdding} jobs={jobs} setCurrentJob={setCurrentJob} onDelete={handleJobDeleted} />
+        { isAdding && <AddJobOpeningPage setIsAdding={setIsAdding} currentJob={currentJob} handleJobSaved ={handleJobSaved}/> }
       </main>
     </section>
   );
