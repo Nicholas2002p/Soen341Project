@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-// import JobApplicationHistory from './views/history/JobApplicationHistory';
+import JobApplicationHistory from './views/history/JobApplicationHistory';
 // import JobApplication from './views/application/JobApplication';
 // import Home from './views/home/Home';
 // import Profile from './views/profile/Profile';
@@ -8,6 +8,7 @@ import './App.css';
 // import Login from './views/authentication/Login';
 // import JobSearch from './views/job_search/JobSearch'
 // import RecruiterJobPosting from './views/recruiter_job_posting/RecruiterJobPosting';
+import ManageApplicants from './components/RecruiterJobPosting/ManageApplicants';
 
 import { AuthContext } from './utils/Auth';
 // import { GetJobsApi } from "./utils/Api";
@@ -40,7 +41,7 @@ function Main() {
         {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} /> }
         {view === "job-application" && <JobApplication setView={setView} job={selectedJob}/> } */}
 
-        
+        <ManageApplicants />
       </div>
     </AuthContext.Provider>
   );
