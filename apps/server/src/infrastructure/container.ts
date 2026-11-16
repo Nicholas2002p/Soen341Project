@@ -60,7 +60,7 @@ const authService = new AuthService(
 );
 const profileService = new ProfileService(profileRepository, userRepository);
 const resumeService = new ResumeService(resumeRepository, resumeStorage);
-const applicationService = new ApplicationService(applicationRepository, resumeRepository, notificationService);
+const applicationService = new ApplicationService(applicationRepository, resumeRepository, notificationService, resumeService);
 const savedJobRepository = new PrismaSavedJobRepository(prisma);
 const savedJobService = new SavedJobService(savedJobRepository, jobRepository, notificationService);
 
