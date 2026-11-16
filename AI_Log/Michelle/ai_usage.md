@@ -1,12 +1,16 @@
 # AI Usage
-
+Sprint 1
 I didn't use AI for this sprint. 
 My references for the entire sprint 1 came from:
   - MDN Web Docs
   - Sass Documentation
 
 No AI was used for this sprint
-Sprint 2 references:
+
+
+Sprint 2
+I didn't use AI for this sprint 
+references:
 - MDN Web Docs
 - Sass Documentation
 - Codepen
