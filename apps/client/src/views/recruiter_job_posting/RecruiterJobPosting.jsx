@@ -3,6 +3,8 @@ import { useAuth } from "../../utils/Auth";
 import Nav from "../../components/Navigation/Nav";
 import Folder from "../../components/RecruiterJobPosting/Folder";
 import { AddJobOpeningPage } from "../../components/RecruiterJobPosting/AddJobOpening";
+import ManageApplicants from "../../components/RecruiterJobPosting/ManageApplicants";
+
 import {GetMyJobsApi} from '../../utils/Api';
 import './RecruiterJobPosting.scss';
 
@@ -15,6 +17,7 @@ import './RecruiterJobPosting.scss';
  */
 export default function RecruiterJobPosting({ setView }) {
   const [isAdding, setIsAdding] = useState(false);
+  const [isManaging, setIsManaging] = useState(false);
   const [jobs, setJobs] = useState([]);
   const { token} = useAuth();
   const [currentJob, setCurrentJob] = useState({});
@@ -46,8 +49,9 @@ export default function RecruiterJobPosting({ setView }) {
 
       <main className="recruiter-job-posting">
         <h2> Job Posting </h2>
-        <Folder setIsAdding={setIsAdding} jobs={jobs} setCurrentJob={setCurrentJob} onDelete={handleJobDeleted} />
+        <Folder setIsAdding={setIsAdding} jobs={jobs} setCurrentJob={setCurrentJob} onDelete={handleJobDeleted} setIsManaging={setIsManaging} />
         { isAdding && <AddJobOpeningPage setIsAdding={setIsAdding} currentJob={currentJob} handleJobSaved ={handleJobSaved}/> }
+        { isManaging && <ManageApplicants jobId={currentJob.jobId}  setIsManaging={setIsManaging} />}
       </main>
     </section>
   );
