@@ -1,6 +1,7 @@
 import type { Application, ApplicationDetails, ApplicationStatus, ApplicationWithJob } from '../../../domain/entities/Application.js';
 import type { ApplicationAnalytics } from '../../../domain/entities/ApplicationAnalytics.js';
 import type { PublicUser } from '../../../domain/entities/PublicUser.js';
+import type { ResumeFile } from './IResumeService.js';
 
 export interface ApplyToJobData {
     jobId: number; // Job to apply to
@@ -27,6 +28,9 @@ export interface IApplicationService {
 
     //get one application with its status history, for the applicant or the recruiter of the job
     getById(user: PublicUser, applicationId: number): Promise<ApplicationDetails>;
+
+    //get the resume file submitted with an application, for the applicant or the recruiter of the job
+    getResumeFile(user: PublicUser, applicationId: number): Promise<ResumeFile>;
 
     //change the status of an application, only the recruiter who posted the job can do this
     updateStatus(user: PublicUser, applicationId: number, status: ApplicationStatus): Promise<Application>;
