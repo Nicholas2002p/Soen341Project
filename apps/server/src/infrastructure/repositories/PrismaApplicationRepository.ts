@@ -21,8 +21,9 @@ import type {
 import type { EmploymentType } from '../../domain/entities/EmploymentType.js';
 import type { PublicUser } from '../../domain/entities/PublicUser.js';
 import type { PublicResume } from '../../domain/entities/Resume.js';
-import { getResumeFileType } from '../../domain/validation/ResumeFile.js';
+import { getResumeFileType, ResumeFileType } from '../../domain/validation/ResumeFile.js';
 import { DuplicateApplicationError } from '../../domain/errors/ApplicationErrors.js';
+import { UserRole } from '../../domain/entities/User.js';
 
 // Job fields loaded with an application
 const jobSummarySelect = {
@@ -96,21 +97,26 @@ export class PrismaApplicationRepository implements IApplicationRepository {
     }
 
     // Convert a Prisma User record to a PublicUser (never include the password hash)
-    private toPublicUser(record: PrismaUser): PublicUser {
-        return {
-            id: record.userId,
-            // TODO: copy the exact fields from your existing PublicUser mapping
-        } as PublicUser;
-    }
+// Convert a Prisma User record to a PublicUser (the password hash is never included)
+private toPublicUser(record: PrismaUser): PublicUser {
+    return {
+        id: record.userId,
+        email: record.email,
+        role: record.role as UserRole,
+        createdAt: record.createdAt,
+        updatedAt: record.updatedAt ?? record.createdAt,
+    };
+}
 
-    // Convert a Prisma Resume record to a PublicResume
-    private toPublicResume(record: PrismaResume): PublicResume {
-        return {
-            id: record.resumeId,
-            // TODO: copy the exact fields from your existing PublicResume mapping
-        } as PublicResume;
-    }
-
+// Convert a Prisma Resume record to a PublicResume (the storage key fileURL is only used to work out the file type)
+private toPublicResume(record: PrismaResume): PublicResume {
+    return {
+        id: record.resumeId,
+        fileName: record.fileName,
+        fileType: getResumeFileType(record.fileURL ?? '') as ResumeFileType,
+        createdAt: record.createdAt,
+    };
+}
     // Create an application and its first status history entry in one transaction
     async create(data: CreateApplicationData): Promise<Application> {
         try {
