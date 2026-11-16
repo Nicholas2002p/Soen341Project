@@ -1,9 +1,10 @@
 import { useState, useMemo, useEffect} from "react";
 import { useAuth } from "../../utils/Auth";
-
+import ApplicantJob from "./ApplicantJob";
+import ApplicationsView from "./ApplicationsView";
 import { AddJobOpening } from "./AddJobOpening";
 import Job from "../Job/Job";
-import { GetArchivedJobsApi } from "../../utils/Api";
+import { GetArchivedJobsApi,  GetJobApplicationsApi } from "../../utils/Api";
 
 import './Folder.scss';
 
@@ -19,12 +20,28 @@ export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete }) {
   const [folderView, setFolderView] = useState("all");
   const [archivedJobs, setArchivedJobs] = useState([]);
   const { token} = useAuth();
+  const isApplicantsTab = folderView === "applicants"; 
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [applications, setApplications] = useState([]);
+  const [applicationSearch, setApplicationSearch] = useState("");
   
   useEffect(() => {
     if (folderView === "archive") {
       GetArchivedJobsApi(token).then(setArchivedJobs);
     }
   }, [folderView]);
+
+    useEffect(() => {
+    if (!isApplicantsTab) return;
+    return () => setSelectedJob(null);
+  }, [isApplicantsTab]);
+
+  // load the applications of the clicked job (Applicants tab only)
+  useEffect(() => {
+    if (!isApplicantsTab || !selectedJob) return;
+    setApplicationSearch("");
+    GetJobApplicationsApi(selectedJob.jobId, token).then((data) => setApplications(data || []));
+  }, [isApplicantsTab, selectedJob, token]);
 
   const filteredJobs = useMemo(() => {
     const now = new Date();
@@ -52,9 +69,24 @@ export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete }) {
       <FolderTabs folderView={folderView} setFolderView={setFolderView} />
 
       <section className="folder-content">
-        <DisplayJobOpenings setIsAdding={setIsAdding} jobs={filteredJobs} setCurrentJob={setCurrentJob} onDelete={onDelete}/>
-      </section>    
+        {!isApplicantsTab && (
+          <DisplayJobOpenings setIsAdding={setIsAdding} jobs={filteredJobs} setCurrentJob={setCurrentJob} onDelete={onDelete}/>
+        )}
 
+        {isApplicantsTab && !selectedJob && (
+          <ApplicantJobList jobs={filteredJobs} onSelect={setSelectedJob} />
+        )}
+
+        {isApplicantsTab && selectedJob && (
+          <ApplicationsView
+            job={selectedJob}
+            applications={applications}
+            search={applicationSearch}
+            setSearch={setApplicationSearch}
+            onBack={() => setSelectedJob(null)}
+          />
+        )}
+      </section>
     </section>
   );
 }
@@ -99,6 +131,16 @@ function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob, onDelete }) {
 
       {jobs.map((job, index) => (
         <Job page={""} key={index} job={job} setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} onDelete={onDelete}/>
+      ))}
+    </section>
+  );
+}
+
+function ApplicantJobList({ jobs, onSelect }) {
+  return (
+    <section className="folder-job-openings">
+      {jobs.map((job, index) => (
+        <ApplicantJob key={index} job={job} onSelect={onSelect} />
       ))}
     </section>
   );
