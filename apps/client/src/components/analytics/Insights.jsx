@@ -5,6 +5,12 @@ import { Pie, PieChart } from 'recharts';
 
 import './Insight.scss';
 
+/**
+ * Analytics
+ * Shows pie chart
+ * 
+ * @returns Analytics component
+ */
 export default function Analytics() {
   const [analytics, setAnalytics] = useState(null);
   const { token } = useAuth();
