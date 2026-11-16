@@ -20,3 +20,22 @@ https://github.com/Nicholas2002p/Soen341Project/issues?q=is%3Aissue+assignee%3AA
 - Code reviews: #93 (HTTPS, found the migration order bug and the account deletion crash), #96 (Company API), #99, #100 (tested the resume frontend against the API) (3 hrs)
 
 Total: 14 hrs
+
+
+
+
+## Sprint 3
+
+Commits
+https://github.com/Nicholas2002p/Soen341Project/commits/sprint-3/?author=A-Hareth
+
+### Activities
+- Application analytics API: total, pending, count per status, interview rate and applications per week for the job seeker dashboard (#39, PR #122) (3.5 hrs)
+- Job archive API: recruiter archives/unarchives a job, archived jobs hidden from search and can't be applied to, list of archived jobs (#131, PR #130) (4 hrs)
+- Resume download route: recruiter of the job downloads the resume an applicant applied with (#158, PR #156) (2.5 hrs)
+- Unit and API tests for all of the above (2.5 hrs)
+- Fixing review comments and answering questions on my PRs (1.5 hrs)
+- Code review: #155 (tested it together with my resume route) (1 hr)
+- Writing acceptance tests and setting up my issues (1 hr)
+
+Total: 16 hrs
