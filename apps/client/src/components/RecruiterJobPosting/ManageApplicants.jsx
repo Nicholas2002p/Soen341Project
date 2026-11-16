@@ -1,5 +1,5 @@
 import './ManageApplicants.scss';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function ManageApplicants({ isManaging, setIsManaging }) {
   const [index, setIndex] = useState(0);
@@ -46,12 +46,20 @@ function ApplicationMenu({}) {
   )
 }
 
-function ApplicationResumes({ resume }) {
+function ApplicationResumes({ resume, isManaging }) {
+  if (isManaging) {
+    isManaging_UnderReview(resume);
+  }
+
   return (
     <section className='recruiter-application-resumes'>
       <p> {resume.resume} </p>
     </section>
   )
+}
+
+function isManaging_UnderReview() {
+  // call api to update resume status to under review
 }
 
 function updateApplicationStatus(status) {
