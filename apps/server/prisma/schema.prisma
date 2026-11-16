@@ -50,6 +50,7 @@ model User {
   applications  Application[]
   savedJobs     SavedJob[]
   notifications Notification[]
+  pushInstallations PushInstallation[]
   salt          Salt?
   sessions      Session[]
 
@@ -191,18 +192,51 @@ model SavedJob {
   @@map("SavedJob")
 }
 
-/// A single notification sent to a user
+/// A notification stored for a user and optionally delivered through FCM.
 model Notification {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @map("userId")
-  type      String   @db.VarChar(50)
-  message   String   @db.VarChar(500)
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now()) @map("created_at")
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    Int      @map("user_id")
+  type      String   @db.VarChar(100)
+  title     String   @db.VarChar(255)
+  body      String   @db.Text
+  data      Json     @default("{}")
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now()) @map("created_at")
 
-  user User @relation(fields: [userId], references: [userId])
+  user       User                   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  deliveries NotificationDelivery[]
 
-  @@map("Notification")
+  @@index([userId, createdAt(sort: Desc)], map: "idx_notifications_user_created")
+  @@map("notifications")
+}
+
+model PushInstallation {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         Int      @map("user_id")
+  installationId String   @unique @map("installation_id") @db.Text
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
+  lastSeenAt     DateTime @default(now()) @map("last_seen_at")
+
+  user       User                   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  deliveries NotificationDelivery[]
+
+  @@map("push_installations")
+}
+
+model NotificationDelivery {
+  id                String    @id @default(uuid()) @db.Uuid
+  notificationId    String    @map("notification_id") @db.Uuid
+  installationId   String    @map("installation_id") @db.Text
+  status            String    @default("pending") @db.VarChar(20)
+  providerMessageId String?   @map("provider_message_id") @db.Text
+  errorCode         String?   @map("error_code") @db.Text
+  attemptedAt       DateTime? @default(now()) @map("attempted_at")
+
+  notification Notification      @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  installation PushInstallation  @relation(fields: [installationId], references: [installationId], onDelete: Cascade)
+
+  @@map("notification_deliveries")
 }
 
 ///to see the total history of an application

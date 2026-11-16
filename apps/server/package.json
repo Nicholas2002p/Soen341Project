@@ -28,6 +28,7 @@
     "cors": "^2.8.6",
     "dotenv": "^18.0.2",
     "express": "^5.2.1",
+    "firebase-admin": "^14.5.0",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.4.0",
     "pg": "^8.23.0",

@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../utils/Auth';
+import { GetJobHistory } from '../../utils/Api';
+
 import HistoryFilters from '../../components/History/HistoryFilters';
 import HistoryJobApplication from '../../components/History/HistoryInfo';
-import Nav from '../../components/Navigation/Nav';
-import { GetJobHistory } from '../../utils/Api';
 import Analytics from '../../components/analytics/Insights';
+import Nav from '../../components/Navigation/Nav';
 
 import './JobApplicationHistory.scss';
 /**

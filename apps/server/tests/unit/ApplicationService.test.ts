@@ -15,6 +15,7 @@ import { ResumeNotFoundError } from '../../src/domain/errors/ResumeNotFoundError
 import {
     FakeApplicationRepository,
     application,
+    archivedJob,
     closedJob,
     jobSeeker,
     openJob,
@@ -27,9 +28,24 @@ import { FakeResumeRepository, resume } from '../fakes/ResumeFakes.js';
 // The shared resume fixture belongs to user 1, which is `jobSeeker`
 const otherUsersResume = { ...resume, id: 2, userId: otherJobSeeker.id };
 
-function createService(applications = new FakeApplicationRepository([openJob, closedJob])) {
-    const service = new ApplicationService(applications, new FakeResumeRepository([resume, otherUsersResume]));
-    return { service, applications };
+class DummyNotificationService {
+    notifications: Array<{ userId: number; type: string }> = [];
+
+    async create(userId: number, input: { type: string }): Promise<void> {
+        this.notifications.push({ userId, type: input.type });
+    }
+}
+
+function createService(
+    applications = new FakeApplicationRepository([openJob, closedJob]),
+    notificationService = new DummyNotificationService(),
+) {
+    const service = new ApplicationService(
+        applications,
+        new FakeResumeRepository([resume, otherUsersResume]),
+        notificationService,
+    );
+    return { service, applications, notificationService };
 }
 
 test('apply creates an application with the initial status and a first history entry', async () => {
@@ -41,6 +57,14 @@ test('apply creates an application with the initial status and a first history e
     assert.equal(result.jobId, openJob.id);
     assert.equal(result.status, ApplicationStatus.Applied);
     assert.deepEqual((await applications.getStatusHistory(result.id)).map((entry) => entry.status), [ApplicationStatus.Applied]);
+});
+
+test('apply notifies the recruiter', async () => {
+    const { service, notificationService } = createService();
+
+    await service.apply(jobSeeker, { jobId: openJob.id, resumeId: resume.id });
+
+    assert.deepEqual(notificationService.notifications, [{ userId: recruiter.id, type: 'new_application' }]);
 });
 
 test('apply rejects users who are not job seekers', async () => {
@@ -59,6 +83,13 @@ test('apply rejects a job whose deadline has passed', async () => {
     const { service } = createService();
 
     await assert.rejects(service.apply(jobSeeker, { jobId: closedJob.id, resumeId: resume.id }), JobClosedError);
+});
+
+test('apply rejects a job the recruiter archived', async () => {
+    const { service, applications } = createService(new FakeApplicationRepository([archivedJob]));
+
+    await assert.rejects(service.apply(jobSeeker, { jobId: archivedJob.id, resumeId: resume.id }), JobClosedError);
+    assert.equal(applications.applications.size, 0); // Nothing was created
 });
 
 test('apply rejects a resume that belongs to another user', async () => {
@@ -167,7 +198,7 @@ test('getById hides the application from other users', async () => {
 });
 
 test('updateStatus lets the recruiter change the status and records it in the history', async () => {
-    const { service, applications } = createService(new FakeApplicationRepository([openJob], [application]));
+    const { service, applications, notificationService } = createService(new FakeApplicationRepository([openJob], [application]));
 
     const result = await service.updateStatus(recruiter, application.id, ApplicationStatus.Interview);
 
@@ -176,6 +207,7 @@ test('updateStatus lets the recruiter change the status and records it in the hi
         (await applications.getStatusHistory(application.id)).map((entry) => entry.status),
         [ApplicationStatus.Applied, ApplicationStatus.Interview],
     );
+    assert.deepEqual(notificationService.notifications, [{ userId: jobSeeker.id, type: 'interview_invitation' }]);
 });
 
 test('updateStatus refuses the applicant, who can see the application but not change it', async () => {

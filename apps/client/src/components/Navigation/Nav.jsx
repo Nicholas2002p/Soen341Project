@@ -34,7 +34,7 @@ function NavItems({ setView }) {
       { token && user?.role != "recruiter" && <a onClick={() => { setView("history") }}> History </a>}
       <a onClick={() => { setView("job-search") }}> Jobs </a>
       {token && <a onClick={() => setView("profile")}> Profile </a>}
-      {token && user?.role === "recruiter" ||user?.role === "admin" && (
+      {token && user?.role === "recruiter" && (
       <a onClick={() => setView("recruiter-job-posting")}> Post a Job </a>
     )}
     </ul>

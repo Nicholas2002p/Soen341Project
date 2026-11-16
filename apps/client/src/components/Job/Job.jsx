@@ -1,4 +1,8 @@
 import './Job.scss';
+import './Trash.scss';
+import {DeleteJobApi} from "../../utils/Api";
+import { useAuth } from './../../utils/Auth';
+
 
 /**
  * Job
@@ -8,10 +12,20 @@ import './Job.scss';
  * @param {Object} job - for next PR
  * @returns Job Component
  */
-export default function Job({ page, job }) {
+export default function Job({ page, job, setIsAdding, setCurrentJob, onDelete }) {
   const deadlineDate = new Date(job.deadline).toLocaleDateString();
+  const { token } = useAuth();
+  const editPage = () => {
+    if (page === "application") return;
+    
+    setIsAdding(true);
+    setCurrentJob(job);
+  }
+
   return (
-    <section className={page === "application" ? "job-display-paper" : "job-paper"}>
+    <section onClick={editPage} className={page === "application" ? "job-display-paper" : "job-paper"}>
+      {page !== "application" && <DeleteJob job={job} token={token} onDelete={onDelete}/>}
+
       <div className="job-paper-header">
         <p className="job-paper-title"> {job.title} </p>
         <p className="job-paper-createdAt"> {new Date(job.createdAt).toLocaleDateString()}</p>
@@ -33,4 +47,20 @@ export default function Job({ page, job }) {
       <p className="job-paper-deadline"> Deadline: {deadlineDate} </p>
     </section>
   );
+}
+
+function DeleteJob({ job , token , onDelete}) {
+  return (
+    <div onClick={async (e) => {
+      e.stopPropagation();
+      await deleteJob(job, token, onDelete); }} className='delete-job'>
+      <img src="trash.svg" alt="trash-icon" />
+    </div>
+  )
+}
+
+// API call to delete the job
+async function deleteJob(job, token, onDelete) {
+  const deleted = await DeleteJobApi(job.jobId, token)
+  if (deleted) onDelete?.(job.jobId);
 }

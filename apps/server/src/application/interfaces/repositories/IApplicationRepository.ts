@@ -5,6 +5,8 @@ import type {
     ApplicationStatus,
     ApplicationStatusChange,
     ApplicationWithJob,
+    ApplicationWithApplicant,
+    ApplicationWithJobAndApplicant
 } from '../../../domain/entities/Application.js';
 
 export interface CreateApplicationData {
@@ -19,7 +21,7 @@ export interface IApplicationRepository {
     create(data: CreateApplicationData): Promise<Application>;
 
     //find an application by its id, returns null if not found
-    getById(id: number): Promise<ApplicationWithJob | null>;
+    getById(id: number): Promise<ApplicationWithJobAndApplicant | null>;
 
     //find the application of a user for a job, returns null if they have not applied
     getByUserAndJob(userId: number, jobId: number): Promise<Application | null>;
@@ -35,7 +37,7 @@ export interface IApplicationRepository {
     getHistoryByUserAndJob(userId: number, jobId: number): Promise<ApplicationDetails | null>;
 
     //list all applications submitted to a job, newest first
-    listByJobId(jobId: number): Promise<Application[]>;
+    listByJobId(jobId: number): Promise<ApplicationWithApplicant[]>;
 
     //change the status of an application and add the change to its status history, returns the updated application
     updateStatus(id: number, status: ApplicationStatus): Promise<Application>;

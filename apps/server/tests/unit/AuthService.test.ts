@@ -17,6 +17,14 @@ import {
 import { FakeProfileRepository, profile } from '../fakes/ProfileFakes.js';
 
 console.log('\n=== tests/unit/AuthService.test.ts ===');
+class DummyNotificationService {
+    notifications: Array<{ userId: number; type: string }> = [];
+
+    async create(userId: number, input: { type: string }): Promise<void> {
+        this.notifications.push({ userId, type: input.type });
+    }
+}
+
 function createService(initialUsers: User[] = []) {
     const userRepository = new FakeUserRepository(initialUsers); // Create a fake user repository with optional initial users
     const sessionRepository = new FakeSessionRepository(); // Create a fake session repository
@@ -27,6 +35,7 @@ function createService(initialUsers: User[] = []) {
         'existing-user-token': { email: user.email, firstName: 'Person', lastName: 'Example' },
     });
     const profileRepository = new FakeProfileRepository(); // Create a fake profile repository
+    const notificationService = new DummyNotificationService();
     const service = new AuthService( // Create an instance of AuthService with the fake repositories and hasher
         userRepository,
         sessionRepository,
@@ -35,10 +44,11 @@ function createService(initialUsers: User[] = []) {
         saltRepository,
         googleTokenVerifier,
         profileRepository,
+        notificationService,
     );
 
     // Return the service and the fake repositories for use in tests
-    return { service, userRepository, sessionRepository, passwordHasher, saltRepository, profileRepository };
+    return { service, userRepository, sessionRepository, passwordHasher, saltRepository, profileRepository, notificationService };
 }
 test('register normalizes the email, hashes the password, and creates a session', async () => {
     // Create an AuthService instance with no initial users
@@ -61,6 +71,19 @@ test('register normalizes the email, hashes the password, and creates a session'
     assert.equal(saltRepository.salts.get(result.user.id), 10);
     // Check that the session repository has a session for the user with the hashed token
     assert.ok(sessionRepository.sessions.has('hashed-token:plain-session-token'));
+});
+
+test('register pushes a notification in development mode', async () => {
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+        const { service, notificationService } = createService();
+        const result = await service.register({ email: 'dev-register@example.com', password: 'secret-password' });
+        assert.deepEqual(notificationService.notifications, [{ userId: result.user.id, type: 'registration' }]);
+    } finally {
+        if (previousNodeEnv === undefined) delete process.env.NODE_ENV;
+        else process.env.NODE_ENV = previousNodeEnv;
+    }
 });
 
 test('register rejects an invalid email format', async () => {
@@ -143,6 +166,19 @@ test('login rejects an incorrect password', async () => {
         service.login(user.email, 'wrong-password'),
         InvalidAuthCredentialsError,
     );
+});
+
+test('login pushes a notification in development mode', async () => {
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    try {
+        const { service, notificationService } = createService([{ ...user, passwordHash: 'hashed:secret-password' }]);
+        await service.login(user.email, 'secret-password');
+        assert.deepEqual(notificationService.notifications, [{ userId: user.id, type: 'login' }]);
+    } finally {
+        if (previousNodeEnv === undefined) delete process.env.NODE_ENV;
+        else process.env.NODE_ENV = previousNodeEnv;
+    }
 });
 
 test('login rejects an invalid email format as invalid credentials', async () => {

@@ -25,7 +25,6 @@ export async function RegisterApi(fname, lname, email, password, setErrorMessage
             setErrorMessage("Error Message:", data.message);
             return false;
         }
-
         setToken(data.sessionToken);
         setUser(data.user);
         return await CreateProfileApi(fname, lname, setErrorMessage, data.sessionToken);
@@ -592,6 +591,68 @@ export async function GetJobHistory(token) {
     }
 }
 
+export async function RegisterPushInstallationApi(token, installationId) {
+    const response = await fetch(getApiUrl("/api/notifications/push"), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ installationId }),
+    });
+    if (!response.ok) {
+        let message = `Push registration failed (${response.status}).`;
+        try {
+            const data = await response.json();
+            if (typeof data.message === "string") message = data.message;
+        } catch {
+            // Keep the status-based message when the server does not return JSON.
+        }
+        throw new Error(message);
+    }
+
+    return true;
+}
+
+export async function UnregisterPushInstallationApi(token, installationId) {
+    const response = await fetch(
+        getApiUrl(`/api/notifications/push/${encodeURIComponent(installationId)}`),
+        {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+        },
+    );
+    return response.ok || response.status === 404;
+}
+
+export async function SendTestNotificationApi(token) {
+    const response = await fetch(getApiUrl("/api/notifications"), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            type: "test",
+            title: "Test notification",
+            body: "Your notifications are working.",
+        }),
+    });
+
+    if (!response.ok) {
+        let message = `Test notification failed (${response.status}).`;
+        try {
+            const data = await response.json();
+            if (typeof data.message === "string") message = data.message;
+        } catch {
+            // Keep the status-based message when the server does not return JSON.
+        }
+        throw new Error(message);
+    }
+
+    return true;
+}
+
 /**
  * gets all the job postings of the logged in recruiter
  * @param {*} token
@@ -824,6 +885,145 @@ export async function GetCompaniesApi() {
     } catch (error) {
         console.error(error);
         return [];
+    }
+}
+
+/**
+ * gets array of all jobs that been archived
+ * @returns all ArchivedJobs
+ */
+export async function GetArchivedJobsApi(token) {
+    try {
+        const response = await fetch(getApiUrl("/api/jobs/archived"), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+        return data.jobs;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+export async function GetSavedJobsApi(token) {
+    try {
+        const response = await fetch(getApiUrl("/api/saved-jobs"), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+        return data.jobs;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+/**
+ * toggels a job from archived to not archived and vice verse
+ * @param {*} jobId 
+ * @returns the updated job 
+ */
+export async function ArchivedJobsApi(jobId, token, archive) {
+    try {
+        const response = await fetch(getApiUrl(`/api/jobs/${jobId}/archive`), {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                 Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ archive }),
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return data.job;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+/** 
+ * 
+ * @param {*} jobId 
+ * @param {*} token 
+ * @returns 
+ */
+export async function SaveJobApi(jobId, token) {
+    try {
+        const response = await fetch(
+            getApiUrl(`/api/saved-jobs/${encodeURIComponent(jobId)}`),
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                
+            }
+        );
+
+        if (!response.ok) {
+            return { success: false, status: response.status };
+        }
+
+        const data = await response.json();
+        return { success: true, status: response.status, data };
+    } catch (error) {
+        console.error(error);
+        return { success: false, status: 0 };
+    }
+}
+
+/**
+ * 
+ * @param {*} jobId 
+ * @param {*} token 
+ * @returns 
+ */
+export async function RemoveSavedJobApi(jobId, token) {
+    try {
+        const response = await fetch(
+            getApiUrl(`/api/saved-jobs/${encodeURIComponent(jobId)}`),
+            {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                
+            }
+        );
+
+        if (!response.ok) {
+            return { success: false, status: response.status };
+        }
+
+        return { success: true, status: response.status };
+    } catch (error) {
+        console.error(error);
+        return { success: false, status: 0 };
     }
 }
 
