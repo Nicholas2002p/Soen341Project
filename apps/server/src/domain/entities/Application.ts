@@ -1,6 +1,7 @@
 import type { EmploymentType } from './EmploymentType.js';
 import type { ResumeFileType } from '../validation/ResumeFile.js';
-
+import type { PublicUser } from './PublicUser.js';
+import type { PublicResume } from './Resume.js';
 // This file defines the Application entity, which represents a job seeker applying to a job with one of their resumes.
 
 // Possible statuses of an application. These match the ApplicationStatus enum in the database.
@@ -71,3 +72,11 @@ export interface ApplicationJob {
     deadline: Date | null; // Last day to apply, null if there is no deadline
     archived: boolean; // Archived jobs no longer accept applications
 }
+export interface ApplicationWithApplicant extends Application {
+    applicant: PublicUser;
+    resume: PublicResume;
+}
+export type ApplicationWithJobAndApplicant = Omit<ApplicationWithJob, 'resume'> & {
+    applicant: PublicUser;
+    resume: PublicResume;
+};

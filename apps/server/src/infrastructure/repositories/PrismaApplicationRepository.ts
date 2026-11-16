@@ -1,5 +1,9 @@
 import type { PrismaClient } from '../../generated/prisma/client.js';
-import type { Application as PrismaApplication } from '../../generated/prisma/client.js';
+import type {
+    Application as PrismaApplication,
+    User as PrismaUser,
+    Resume as PrismaResume,
+} from '../../generated/prisma/client.js';
 import type {
     CreateApplicationData,
     IApplicationRepository,
@@ -11,10 +15,15 @@ import type {
     ApplicationStatus,
     ApplicationStatusChange,
     ApplicationWithJob,
+    ApplicationWithApplicant,
+    ApplicationWithJobAndApplicant,
 } from '../../domain/entities/Application.js';
 import type { EmploymentType } from '../../domain/entities/EmploymentType.js';
-import { getResumeFileType } from '../../domain/validation/ResumeFile.js';
+import type { PublicUser } from '../../domain/entities/PublicUser.js';
+import type { PublicResume } from '../../domain/entities/Resume.js';
+import { getResumeFileType, type ResumeFileType } from '../../domain/validation/ResumeFile.js';
 import { DuplicateApplicationError } from '../../domain/errors/ApplicationErrors.js';
+import type { UserRole } from '../../domain/entities/User.js';
 
 // Job fields loaded with an application
 const jobSummarySelect = {
@@ -41,6 +50,12 @@ const applicationRelationsInclude = {
 type PrismaApplicationWithJob = PrismaApplication & {
     job: { jobId: number; title: string; location: string | null; employmentType: string; company: { name: string } };
     resume: { resumeId: number; fileName: string; fileURL: string | null };
+};
+
+// Application loaded together with the applicant and the full resume (for recruiters)
+type PrismaApplicationWithApplicant = PrismaApplication & {
+    user: PrismaUser;
+    resume: PrismaResume;
 };
 
 // Prisma error code for a unique constraint violation (here: the same user applying to the same job twice)
@@ -81,6 +96,27 @@ export class PrismaApplicationRepository implements IApplicationRepository {
         };
     }
 
+    // Convert a Prisma User record to a PublicUser (never include the password hash)
+// Convert a Prisma User record to a PublicUser (the password hash is never included)
+private toPublicUser(record: PrismaUser): PublicUser {
+    return {
+        id: record.userId,
+        email: record.email,
+        role: record.role as UserRole,
+        createdAt: record.createdAt,
+        updatedAt: record.updatedAt ?? record.createdAt,
+    };
+}
+
+// Convert a Prisma Resume record to a PublicResume (the storage key fileURL is only used to work out the file type)
+private toPublicResume(record: PrismaResume): PublicResume {
+    return {
+        id: record.resumeId,
+        fileName: record.fileName,
+        fileType: getResumeFileType(record.fileURL ?? '') as ResumeFileType,
+        createdAt: record.createdAt,
+    };
+}
     // Create an application and its first status history entry in one transaction
     async create(data: CreateApplicationData): Promise<Application> {
         try {
@@ -104,14 +140,26 @@ export class PrismaApplicationRepository implements IApplicationRepository {
         }
     }
 
-    // Find an application by its ID, returns null if not found
-    async getById(id: number): Promise<ApplicationWithJob | null> {
+    // Find an application by its ID with its job, the applicant and the full resume, returns null if not found
+    async getById(id: number): Promise<ApplicationWithJobAndApplicant | null> {
         const application = await this.prisma.application.findUnique({
             where: { applicationId: id },
-            include: applicationRelationsInclude,
+            include: {
+                job: { select: jobSummarySelect },
+                user: true,
+                resume: true,
+            },
         });
 
-        return application ? this.toDomainApplicationWithJob(application) : null;
+        if (!application) {
+            return null;
+        }
+
+        return {
+            ...this.toDomainApplicationWithJob(application),
+            applicant: this.toPublicUser(application.user),
+            resume: this.toPublicResume(application.resume),
+        };
     }
 
     // Find the application of a user for a job, returns null if they have not applied
@@ -174,14 +222,19 @@ export class PrismaApplicationRepository implements IApplicationRepository {
         return application ? this.toDomainApplicationDetails(application) : null;
     }
 
-    // List all applications submitted to a job, newest first
-    async listByJobId(jobId: number): Promise<Application[]> {
-        const applications = await this.prisma.application.findMany({
+    // List all applications submitted to a job with the applicant and the full resume, newest first
+    async listByJobId(jobId: number): Promise<ApplicationWithApplicant[]> {
+        const applications: PrismaApplicationWithApplicant[] = await this.prisma.application.findMany({
             where: { jobId },
+            include: { user: true, resume: true },
             orderBy: { appliedAt: 'desc' },
         });
 
-        return applications.map((application) => this.toDomainApplication(application));
+        return applications.map((application) => ({
+            ...this.toDomainApplication(application),
+            applicant: this.toPublicUser(application.user),
+            resume: this.toPublicResume(application.resume),
+        }));
     }
 
     // Change the status of an application and add the change to its status history in one transaction
