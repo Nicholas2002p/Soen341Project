@@ -54,7 +54,7 @@ export default function ResumeUpload() {
 
   return (
     <section className="resume-upload">
-      <h2>Resume Upload</h2>
+      <h2> RESUME UPLOAD </h2>
 
       <input
         key={inputKey}

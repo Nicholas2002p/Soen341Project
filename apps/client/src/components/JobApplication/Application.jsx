@@ -2,12 +2,13 @@ import './Application.scss';
 import { GetResumesApi } from '../../utils/Api';
 import {useState, useEffect} from 'react';
 import { useAuth } from '../../utils/Auth';
+import { useSavedJobs } from './ToggleSaveJob';
 
-export default function Application({ handleApply, selectedResumeId, setSelectedResumeId, alreadyApplied }) {
-   
-   const [resumes, setResumes] = useState([]);
-   const [errorMessage, setErrorMessage] = useState('');
-   const { token } = useAuth();
+export default function Application({ handleApply, selectedResumeId, setSelectedResumeId, alreadyApplied, jobId }) {
+  const [resumes, setResumes] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+  const { token } = useAuth();
+  const { isSaved, toggleSave } = useSavedJobs(jobId);
 
     useEffect(() => {
       const getResumes = async () => {
@@ -19,7 +20,7 @@ export default function Application({ handleApply, selectedResumeId, setSelected
       getResumes();
     }, [alreadyApplied, setResumes, token]);
 
-    
+      
 
 return (
     <div className="application">
@@ -37,7 +38,12 @@ return (
       <div className='application-already-applied'>
         {errorMessage && <p className="resume-error">{errorMessage}</p>}
         {alreadyApplied && <p className='applied-resume'> You've applied to this job! </p>}
-        <button disabled={alreadyApplied} onClick={() => { handleApply(); }}>Apply</button>
+        <button disabled={alreadyApplied || !selectedResumeId} onClick={() => { handleApply(); }}>Apply</button>
+      
+        <p onClick={toggleSave} className='save-job'>
+          <div class={`left ${isSaved ? "saved": ""}`}></div>
+          <div class={`right ${isSaved ? "saved": ""}`}></div>
+        </p>
       </div>
     </div>
   );
