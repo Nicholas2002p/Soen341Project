@@ -23,7 +23,7 @@ export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete }) {
   const isApplicantsTab = folderView === "applicants"; 
   const [selectedJob, setSelectedJob] = useState(null);
   const [applications, setApplications] = useState([]);
-  const [applicationSearch, setApplicationSearch] = useState("");
+ 
   
   useEffect(() => {
     if (folderView === "archive") {
@@ -36,10 +36,8 @@ export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete }) {
     return () => setSelectedJob(null);
   }, [isApplicantsTab]);
 
-  // load the applications of the clicked job (Applicants tab only)
   useEffect(() => {
     if (!isApplicantsTab || !selectedJob) return;
-    setApplicationSearch("");
     GetJobApplicationsApi(selectedJob.jobId, token).then((data) => setApplications(data || []));
   }, [isApplicantsTab, selectedJob, token]);
 
@@ -81,8 +79,6 @@ export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete }) {
           <ApplicationsView
             job={selectedJob}
             applications={applications}
-            search={applicationSearch}
-            setSearch={setApplicationSearch}
             onBack={() => setSelectedJob(null)}
           />
         )}
@@ -136,6 +132,12 @@ function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob, onDelete }) {
   );
 }
 
+/**
+ * displays jobs for applications
+ * @param {*} jobs
+ * @param {object} onSelect
+ * @returns 
+ */
 function ApplicantJobList({ jobs, onSelect }) {
   return (
     <section className="folder-job-openings">
