@@ -51,7 +51,7 @@ export default function RecruiterJobPosting({ setView }) {
         <h2> Job Posting </h2>
         <Folder setIsAdding={setIsAdding} jobs={jobs} setCurrentJob={setCurrentJob} onDelete={handleJobDeleted} setIsManaging={setIsManaging} />
         { isAdding && <AddJobOpeningPage setIsAdding={setIsAdding} currentJob={currentJob} handleJobSaved ={handleJobSaved}/> }
-        { isManaging && <ManageApplicants isManaging={isManaging} setIsManaging={setIsManaging} />}
+        { isManaging && <ManageApplicants jobId={currentJob.jobId}  setIsManaging={setIsManaging} />}
       </main>
     </section>
   );

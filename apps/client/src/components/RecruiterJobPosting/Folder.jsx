@@ -97,7 +97,19 @@ function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob, onDelete, folder
       <AddJobOpening setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
 
       {jobs.map((job, index) => (
-        <Job page={""} key={index} job={job} setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} onDelete={onDelete} folderView={folderView} setIsManaging={setIsManaging} />
+        <Job
+          page={""}
+          key={index}
+          job={job}
+          setIsAdding={setIsAdding}
+          setCurrentJob={setCurrentJob}
+          onDelete={onDelete}
+          folderView={folderView}
+          setIsManaging={(value) => {
+            setCurrentJob(job);
+            setIsManaging(value);
+          }}
+        />
       ))}
     </section>
   );
