@@ -18,13 +18,13 @@ import './Folder.scss';
 export default function Folder({ setIsAdding, jobs, setCurrentJob, onDelete }) {
   const [folderView, setFolderView] = useState("all");
   const [archivedJobs, setArchivedJobs] = useState([]);
-  const { token} = useAuth();
+  const {token} = useAuth();
   
   useEffect(() => {
     if (folderView === "archive") {
       GetArchivedJobsApi(token).then(setArchivedJobs);
     }
-  }, [folderView]);
+  }, [folderView, token]);
 
   const filteredJobs = useMemo(() => {
     const now = new Date();
