@@ -21,6 +21,7 @@ export interface CreateJobData {
 }
 
 export interface UpdateJobData {
+    companyId: number;
     title: string;
     category: string;
     location?: string | null;

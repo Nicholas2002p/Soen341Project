@@ -112,6 +112,7 @@ export class PrismaJobRepository implements IJobRepository {
             category: job.category,
             location: job.location,
             salary: job.salary,
+            description: job.description,
             employmentType: job.employmentType as EmploymentType,
             deadline: job.deadline,
             createdAt: job.createdAt,
@@ -354,6 +355,7 @@ export class PrismaJobRepository implements IJobRepository {
                 jobId,
             },
             data: {
+                companyId: data.companyId,
                 title: data.title,
                 category: data.category,
                 location: data.location,
@@ -429,6 +431,7 @@ export class PrismaJobRepository implements IJobRepository {
             category: job.category,
             location: job.location,
             salary: job.salary,
+            description: job.description,
             employmentType: job.employmentType as EmploymentType,
             deadline: job.deadline,
             createdAt: job.createdAt,

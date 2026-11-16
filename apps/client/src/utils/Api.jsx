@@ -889,10 +889,31 @@ export async function GetCompaniesApi() {
 }
 
 /**
- * 
- * @param {*} token 
- * @returns 
+ * gets array of all jobs that been archived
+ * @returns all ArchivedJobs
  */
+export async function GetArchivedJobsApi(token) {
+    try {
+        const response = await fetch(getApiUrl("/api/jobs/archived"), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const data = await response.json();
+        return data.jobs;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
 export async function GetSavedJobsApi(token) {
     try {
         const response = await fetch(getApiUrl("/api/saved-jobs"), {
@@ -901,7 +922,6 @@ export async function GetSavedJobsApi(token) {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            
         });
 
         if (!response.ok) {
@@ -917,6 +937,34 @@ export async function GetSavedJobsApi(token) {
 }
 
 /**
+ * toggels a job from archived to not archived and vice verse
+ * @param {*} jobId 
+ * @returns the updated job 
+ */
+export async function ArchivedJobsApi(jobId, token, archive) {
+    try {
+        const response = await fetch(getApiUrl(`/api/jobs/${jobId}/archive`), {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                 Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ archive }),
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return data.job;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+/** 
  * 
  * @param {*} jobId 
  * @param {*} token 

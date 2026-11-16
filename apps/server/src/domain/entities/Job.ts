@@ -8,6 +8,7 @@ export interface JobSummary {
     location: string | null;
     salary: number;
     employmentType: EmploymentType;
+    description: string | null;
     deadline: Date;
     createdAt: Date;
     archive: boolean; // archived jobs are hidden from job seekers and cannot be applied to
