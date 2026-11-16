@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../utils/Auth';
-import { GetProfileApi, SendTestNotificationApi }from '../../utils/Api';
-
+import { GetProfileApi, GetSavedJobsApi, SendTestNotificationApi }from '../../utils/Api';
 import ProfileCard from '../../components/Profile/ProfileCard';
 import ProfileEdit from '../../components/Profile/ProfileEdit';
 import ResumeUpload from '../../components/Profile/ResumeUpload';
+import SavedJobs from '../../components/Profile/SaveJob';
 import Nav from '../../components/Navigation/Nav';
 
 import './Profile.scss';
@@ -18,6 +18,7 @@ import './Profile.scss';
 export default function Profile({ setView }) {
   const { token, user } = useAuth();
   const [data, setData] = useState({});
+  const [savedJobs, setSaveJobs] = useState([]); 
  
   const [fname, setFName] = useState('');
   const [lname, setLName] = useState('');
@@ -41,8 +42,14 @@ export default function Profile({ setView }) {
       setProfileURL(profile.profileURL);
       setDesc(profile.bio);
     };
+
+    async function getSavedJobs() {
+      const saved = await GetSavedJobsApi(token);
+      setSaveJobs(saved);
+    }
+
     getProfile();
-    
+    getSavedJobs();
   }, [token, user?.role]);
 
   const sendTestNotification = async () => {
@@ -79,6 +86,9 @@ export default function Profile({ setView }) {
             setDesc={setDesc} 
             setProfileURL={setProfileURL}
           />
+
+          { user?.role === "jobseeker" ? <SavedJobs savedJobs={savedJobs} /> : ""}
+          
           <ResumeUpload />
           <section className="notification-test">
             <h2>Notifications</h2>

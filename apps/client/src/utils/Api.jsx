@@ -888,13 +888,9 @@ export async function GetCompaniesApi() {
     }
 }
 
-/**
- * gets array of all jobs that been archived
- * @returns all ArchivedJobs
- */
-export async function GetArchivedJobsApi(token) {
+export async function GetSavedJobsApi(token) {
     try {
-        const response = await fetch(getApiUrl("/api/jobs/archived"), {
+        const response = await fetch(getApiUrl("/api/saved-jobs"), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -939,5 +935,68 @@ export async function ArchivedJobsApi(jobId, token, archive) {
     } catch (error) {
         console.error(error);
         return null;
+    }
+}
+
+/** 
+ * 
+ * @param {*} jobId 
+ * @param {*} token 
+ * @returns 
+ */
+export async function SaveJobApi(jobId, token) {
+    try {
+        const response = await fetch(
+            getApiUrl(`/api/saved-jobs/${encodeURIComponent(jobId)}`),
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                
+            }
+        );
+
+        if (!response.ok) {
+            return { success: false, status: response.status };
+        }
+
+        const data = await response.json();
+        return { success: true, status: response.status, data };
+    } catch (error) {
+        console.error(error);
+        return { success: false, status: 0 };
+    }
+}
+
+/**
+ * 
+ * @param {*} jobId 
+ * @param {*} token 
+ * @returns 
+ */
+export async function RemoveSavedJobApi(jobId, token) {
+    try {
+        const response = await fetch(
+            getApiUrl(`/api/saved-jobs/${encodeURIComponent(jobId)}`),
+            {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                
+            }
+        );
+
+        if (!response.ok) {
+            return { success: false, status: response.status };
+        }
+
+        return { success: true, status: response.status };
+    } catch (error) {
+        console.error(error);
+        return { success: false, status: 0 };
     }
 }
