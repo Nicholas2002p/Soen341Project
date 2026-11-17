@@ -129,6 +129,37 @@ export async function LogOutApi(token) {
 }
 
 /**
+ * Gets the user that owns the session token, used to restore the session after a page refresh
+ * @param {*} token - the saved session token
+ * @returns the user, null if the session is no longer valid, or undefined if the server could not be reached
+ */
+export async function GetCurrentUserApi(token) {
+    try {
+        const response = await fetch(getApiUrl("/api/auth/me"), {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        // 401 means the session expired or was removed
+        if (response.status === 401) {
+            return null;
+        }
+
+        // Any other error (server starting, crash): keep the session and try again later
+        if (!response.ok) {
+            return undefined;
+        }
+
+        const data = await response.json();
+        return data.user ?? null;
+    } catch (error) {
+        console.error(error);
+        // The server could not be reached: keep the session and try again later
+        return undefined;
+    }
+}
+/**
  * Creates a bar minimum profile for the user
  * need to implement a way to delete User if profile creation fails
  * @param {*} fname 
@@ -263,11 +294,11 @@ export async function GetProfileApi(token) {
  * @param {*} token 
  * @returns all jobs that match filter and are not past deadline
  */
-export async function JobFilter (filterField,  searchQuery){
-    
+export async function JobFilter(filterField, searchQuery) {
+
     try {
         const response = await fetch(
-            getApiUrl(`/api/jobs?available=true&${filterField}=${encodeURIComponent(searchQuery)}`), 
+            getApiUrl(`/api/jobs?available=true&${filterField}=${encodeURIComponent(searchQuery)}`),
             {
                 method: 'GET',
                 headers: {
@@ -292,9 +323,9 @@ export async function JobFilter (filterField,  searchQuery){
  * @returns all jobs that are not past deadline
  */
 export async function GetJobsApi() {
-        try {
+    try {
         const response = await fetch(
-            getApiUrl("/api/jobs/available"), 
+            getApiUrl("/api/jobs/available"),
             {
                 method: 'GET',
                 headers: {
@@ -320,9 +351,9 @@ export async function GetJobsApi() {
  * @returns job with that id
  */
 export async function GetJobApi(jobId) {
-        try {
+    try {
         const response = await fetch(
-            getApiUrl(`/api/jobs/${jobId}`), 
+            getApiUrl(`/api/jobs/${jobId}`),
             {
                 method: 'GET',
                 headers: {
@@ -353,7 +384,7 @@ export async function UploadResumeApi(file, setErrorMessage, token) {
     formData.append("resume", file);
 
     try {
-            const response = await fetch(getApiUrl("/api/resumes"), {
+        const response = await fetch(getApiUrl("/api/resumes"), {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -520,10 +551,10 @@ export async function ApplyForJob(jobId, resumeId, token) {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ 
-                jobId: Number(jobId), 
-                resumeId: Number(resumeId) 
-            }), 
+            body: JSON.stringify({
+                jobId: Number(jobId),
+                resumeId: Number(resumeId)
+            }),
         });
         const data = await response.json();
 
@@ -545,10 +576,10 @@ export async function ApplyForJob(jobId, resumeId, token) {
  * @returns  the application for the job
  */
 export async function GetSpecificJobHistory(jobId, token) {
-     try {
-       
+    try {
+
         const response = await fetch(
-            getApiUrl(`/api/applications/history?jobId=${jobId}`), 
+            getApiUrl(`/api/applications/history?jobId=${jobId}`),
             {
                 method: 'GET',
                 headers: {
@@ -570,7 +601,7 @@ export async function GetSpecificJobHistory(jobId, token) {
 }
 
 export async function GetJobHistory(token) {
-      try {
+    try {
         const response = await fetch(getApiUrl(`/api/applications/history`), {
             method: "GET",
             headers: {
@@ -947,7 +978,7 @@ export async function ArchivedJobsApi(jobId, token, archive) {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                 Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ archive }),
         });
@@ -980,7 +1011,7 @@ export async function SaveJobApi(jobId, token) {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                
+
             }
         );
 
@@ -1012,7 +1043,7 @@ export async function RemoveSavedJobApi(jobId, token) {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                
+
             }
         );
 
