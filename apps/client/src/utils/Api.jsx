@@ -614,12 +614,13 @@ export async function RegisterPushInstallationApi(token, installationId) {
     return true;
 }
 
-export async function UnregisterPushInstallationApi(token, installationId) {
+export async function UnregisterPushInstallationApi(token, installationId, options = {}) {
     const response = await fetch(
         getApiUrl(`/api/notifications/push/${encodeURIComponent(installationId)}`),
         {
             method: "DELETE",
             headers: { Authorization: `Bearer ${token}` },
+            ...options,
         },
     );
     return response.ok || response.status === 404;

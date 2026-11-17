@@ -15,6 +15,41 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 const notificationBuild = "fcm-diagnostics-2026-11-10";
+const installationStorageKey = "career-connect-push-installation";
+
+function getStoredInstallation(token) {
+  try {
+    const stored = JSON.parse(sessionStorage.getItem(installationStorageKey) ?? "null");
+    return stored?.token === token && typeof stored.installationId === "string"
+      ? stored.installationId
+      : "";
+  } catch {
+    return "";
+  }
+}
+
+function storeInstallation(token, installationId) {
+  sessionStorage.setItem(installationStorageKey, JSON.stringify({ token, installationId }));
+}
+
+function clearStoredInstallation(token) {
+  if (getStoredInstallation(token)) {
+    sessionStorage.removeItem(installationStorageKey);
+  }
+}
+
+export async function UnregisterStoredPushInstallation(token) {
+  const installationId = getStoredInstallation(token);
+  if (!installationId) return;
+
+  try {
+    await UnregisterPushInstallationApi(token, installationId, { keepalive: true });
+  } catch (reason) {
+    console.error("Push installation cleanup failed:", reason);
+  } finally {
+    clearStoredInstallation(token);
+  }
+}
 
 function hasFirebaseConfig() {
   return Object.values(firebaseConfig).every(Boolean) && Boolean(import.meta.env.VITE_FIREBASE_VAPID_KEY);
@@ -69,9 +104,22 @@ async function registerInstallation() {
 }
 
 export default function NotificationToggle({ token }) {
-  const [enabled, setEnabled] = useState(false);
-  const [installationId, setInstallationId] = useState("");
+  const [installationId, setInstallationId] = useState(() => getStoredInstallation(token));
+  const [enabled, setEnabled] = useState(() => Boolean(getStoredInstallation(token)));
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!token || !installationId) return undefined;
+
+    const unregisterOnPageClose = () => {
+      void UnregisterPushInstallationApi(token, installationId, { keepalive: true }).catch((reason) => {
+        console.error("Push installation cleanup failed:", reason);
+      });
+      clearStoredInstallation(token);
+    };
+    window.addEventListener("pagehide", unregisterOnPageClose);
+    return () => window.removeEventListener("pagehide", unregisterOnPageClose);
+  }, [installationId, token]);
 
   useEffect(() => {
     if (!enabled || !hasFirebaseConfig()) return undefined;
@@ -93,6 +141,7 @@ export default function NotificationToggle({ token }) {
     if (installationId) {
       await UnregisterPushInstallationApi(token, installationId);
     }
+    clearStoredInstallation(token);
     setEnabled(false);
     setInstallationId("");
     setError("");
@@ -108,6 +157,7 @@ export default function NotificationToggle({ token }) {
           return RegisterPushInstallationApi(token, id).then((registered) => {
             if (!registered) throw new Error("Could not register notifications.");
             setInstallationId(id);
+            storeInstallation(token, id);
             setEnabled(true);
           });
         })

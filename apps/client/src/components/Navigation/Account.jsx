@@ -1,7 +1,9 @@
 import { useAuth } from "../../utils/Auth";
 import { googleLogout } from "@react-oauth/google";
 import { LogOutApi } from "../../utils/Api";
-import NotificationToggle from "../Notifications/NotificationToggle";
+import NotificationToggle, {
+  UnregisterStoredPushInstallation,
+} from "../Notifications/NotificationToggle";
 
 /**
  * Account
@@ -50,7 +52,13 @@ function SignedIn({ setView, setToken, token }) {
   return (
     <>
       <NotificationToggle token={token} />
-      <a onClick={async () => { await LogOutApi(token); googleLogout(); setView("home"); setToken(null) }}> Logout </a>
+      <a onClick={async () => {
+        await UnregisterStoredPushInstallation(token);
+        await LogOutApi(token);
+        googleLogout();
+        setView("home");
+        setToken(null);
+      }}> Logout </a>
     </>
   )
 }
