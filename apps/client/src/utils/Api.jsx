@@ -626,6 +626,32 @@ export async function UnregisterPushInstallationApi(token, installationId, optio
     return response.ok || response.status === 404;
 }
 
+export async function GetNotificationsApi(token) {
+    const response = await fetch(getApiUrl("/api/notifications"), {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!response.ok) return [];
+
+    const data = await response.json();
+    return Array.isArray(data.notifications) ? data.notifications : [];
+}
+
+export async function MarkNotificationReadApi(token, notificationId) {
+    const response = await fetch(
+        getApiUrl(`/api/notifications/${encodeURIComponent(notificationId)}`),
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ read: true }),
+        },
+    );
+    return response.ok;
+}
+
 export async function SendTestNotificationApi(token) {
     const response = await fetch(getApiUrl("/api/notifications"), {
         method: "POST",

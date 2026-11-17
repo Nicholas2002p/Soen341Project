@@ -4,6 +4,7 @@ import { LogOutApi } from "../../utils/Api";
 import NotificationToggle, {
   UnregisterStoredPushInstallation,
 } from "../Notifications/NotificationToggle";
+import NotificationCenter from "../Notifications/NotificationCenter";
 
 /**
  * Account
@@ -51,6 +52,7 @@ function SignIn({ setView }) {
 function SignedIn({ setView, setToken, token }) {
   return (
     <>
+      <NotificationCenter token={token} />
       <NotificationToggle token={token} />
       <a onClick={async () => {
         await UnregisterStoredPushInstallation(token);
