@@ -2,12 +2,12 @@ import { useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { GoogleLogInApi } from "../../utils/Api";
 
-export default function GoogleSignIn({ setToken, setUser, setView }) {
+export default function GoogleSignIn({ setToken, setUser, setView, role }) {
   const [error, setError] = useState(null);
 
- const handleLogin = async (googleData) => {
+  const handleLogin = async (googleData) => {
     setError(null);
-    const allGood = await GoogleLogInApi(googleData.credential, setError, setToken, setUser);
+    const allGood = await GoogleLogInApi(googleData.credential, setError, setToken, setUser, role);
     if (allGood) setView("profile");
   };
 

@@ -221,7 +221,12 @@ export class AuthService implements IAuthService {
         }
     }
 
-    async loginWithGoogle(idToken: string): Promise<AuthenticationResult> {
+    async loginWithGoogle(idToken: string, role?: UserRole): Promise<AuthenticationResult> {
+        // Same rule as the normal registration: nobody can sign up as an admin
+        if (role === UserRole.Admin) {
+            throw new UnauthorizedUserActionError('New accounts cannot be created with the admin role.');
+        }
+
         // Verify the Google token and get the user's email
         const profile = await this.googleTokenVerifier.verify(idToken);
         const email = normalizeEmail(profile.email);
@@ -234,7 +239,8 @@ export class AuthService implements IAuthService {
             const saltRounds = this.passwordHasher.getDefaultSaltRounds();
             const passwordHash = await this.passwordHasher.hash(randomPassword, saltRounds);
 
-            user = await this.userRepository.create({ email, passwordHash });
+            // The chosen role is only used here, when the account is created
+            user = await this.userRepository.create({ email, passwordHash, role: role ?? UserRole.JobSeeker });
             await this.saltRepository.save(user.id, saltRounds);
         }
 
