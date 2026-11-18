@@ -279,3 +279,31 @@ test('loginWithGoogle does not overwrite an existing profile', async () => {
 
     assert.equal(profileRepository.upsertedData, undefined);
 });
+
+test('loginWithGoogle creates a recruiter when that role is chosen on first login', async () => {
+    const { service, userRepository } = createService();
+
+    const result = await service.loginWithGoogle('new-user-token', UserRole.Recruiter);
+
+    assert.equal(userRepository.createdData?.role, UserRole.Recruiter);
+    assert.equal(result.user.role, UserRole.Recruiter);
+});
+
+test('loginWithGoogle keeps the existing role when a role is sent again', async () => {
+    const { service, userRepository } = createService([user]);
+
+    const result = await service.loginWithGoogle('existing-user-token', UserRole.Recruiter);
+
+    assert.equal(result.user.role, user.role);
+    assert.ok(!userRepository.createdData);
+});
+
+test('loginWithGoogle refuses to create an admin account', async () => {
+    const { service, userRepository } = createService();
+
+    await assert.rejects(
+        service.loginWithGoogle('new-user-token', UserRole.Admin),
+        { name: 'UnauthorizedUserActionError' },
+    );
+    assert.ok(!userRepository.createdData);
+});
