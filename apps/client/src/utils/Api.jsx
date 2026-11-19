@@ -614,15 +614,96 @@ export async function RegisterPushInstallationApi(token, installationId) {
     return true;
 }
 
-export async function UnregisterPushInstallationApi(token, installationId) {
+export async function UnregisterPushInstallationApi(token, installationId, options = {}) {
     const response = await fetch(
         getApiUrl(`/api/notifications/push/${encodeURIComponent(installationId)}`),
         {
             method: "DELETE",
             headers: { Authorization: `Bearer ${token}` },
+            ...options,
         },
     );
     return response.ok || response.status === 404;
+}
+
+export async function GetNotificationsApi(token) {
+    const response = await fetch(getApiUrl("/api/notifications"), {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!response.ok) return [];
+
+    const data = await response.json();
+    return Array.isArray(data.notifications) ? data.notifications : [];
+}
+
+export async function CreateNotificationStreamTicketApi(token) {
+    const response = await fetch(getApiUrl("/api/notifications/stream-ticket"), {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error(`Could not open notification stream (${response.status}).`);
+    return response.json();
+}
+
+export function GetNotificationStreamUrl(ticket) {
+    const streamUrl = new URL(getApiUrl("/api/notifications/stream"));
+    streamUrl.searchParams.set("ticket", ticket);
+    return streamUrl.toString();
+}
+
+export async function MarkNotificationReadApi(token, notificationId) {
+    const response = await fetch(
+        getApiUrl(`/api/notifications/${encodeURIComponent(notificationId)}`),
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ read: true }),
+        },
+    );
+    return response.ok;
+}
+
+export async function GetUserPreferenceApi(token, key) {
+    const response = await fetch(
+        getApiUrl(`/api/preferences/${encodeURIComponent(key)}`),
+        { headers: { Authorization: `Bearer ${token}` } },
+    );
+    if (response.status === 404) return null;
+    if (!response.ok) throw new Error(`Could not load preference (${response.status}).`);
+
+    const data = await response.json();
+    return data.preference?.value ?? null;
+}
+
+export async function SetUserPreferenceApi(token, key, value) {
+    const response = await fetch(
+        getApiUrl(`/api/preferences/${encodeURIComponent(key)}`),
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ value }),
+        },
+    );
+    if (!response.ok) {
+        let message = `Could not update preference (${response.status}).`;
+        try {
+            const data = await response.json();
+            if (typeof data.message === "string") message = data.message;
+        } catch {
+            // Keep the status-based message when the server does not return JSON.
+        }
+        throw new Error(message);
+    }
+
+    const data = await response.json();
+    return data.preference?.value ?? null;
 }
 
 export async function SendTestNotificationApi(token) {

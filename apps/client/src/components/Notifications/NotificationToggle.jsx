@@ -4,6 +4,8 @@ import { getMessaging, getToken, isSupported, onMessage } from "firebase/messagi
 import {
   RegisterPushInstallationApi,
   UnregisterPushInstallationApi,
+  GetUserPreferenceApi,
+  SetUserPreferenceApi,
 } from "../../utils/Api";
 
 const firebaseConfig = {
@@ -15,6 +17,41 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 const notificationBuild = "fcm-diagnostics-2026-11-10";
+const installationStorageKey = "career-connect-push-installation";
+
+function getStoredInstallation(token) {
+  try {
+    const stored = JSON.parse(sessionStorage.getItem(installationStorageKey) ?? "null");
+    return stored?.token === token && typeof stored.installationId === "string"
+      ? stored.installationId
+      : "";
+  } catch {
+    return "";
+  }
+}
+
+function storeInstallation(token, installationId) {
+  sessionStorage.setItem(installationStorageKey, JSON.stringify({ token, installationId }));
+}
+
+function clearStoredInstallation(token) {
+  if (getStoredInstallation(token)) {
+    sessionStorage.removeItem(installationStorageKey);
+  }
+}
+
+export async function UnregisterStoredPushInstallation(token) {
+  const installationId = getStoredInstallation(token);
+  if (!installationId) return;
+
+  try {
+    await UnregisterPushInstallationApi(token, installationId, { keepalive: true });
+  } catch (reason) {
+    console.error("Push installation cleanup failed:", reason);
+  } finally {
+    clearStoredInstallation(token);
+  }
+}
 
 function hasFirebaseConfig() {
   return Object.values(firebaseConfig).every(Boolean) && Boolean(import.meta.env.VITE_FIREBASE_VAPID_KEY);
@@ -69,9 +106,49 @@ async function registerInstallation() {
 }
 
 export default function NotificationToggle({ token }) {
+  const [installationId, setInstallationId] = useState(() => getStoredInstallation(token));
   const [enabled, setEnabled] = useState(false);
-  const [installationId, setInstallationId] = useState("");
+  const [loadedToken, setLoadedToken] = useState(null);
   const [error, setError] = useState("");
+  const loadingPreference = Boolean(token) && loadedToken !== token;
+
+  useEffect(() => {
+    if (!token) {
+      return;
+    }
+
+    let active = true;
+    GetUserPreferenceApi(token, "push_notifications")
+      .then((value) => {
+        if (active) setEnabled(value === true);
+      })
+      .catch((reason) => {
+        if (active) {
+          console.error("Push preference load failed:", reason);
+          setError(reason instanceof Error ? reason.message : "Could not load notification preference.");
+        }
+      })
+      .finally(() => {
+        if (active) setLoadedToken(token);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [token]);
+
+  useEffect(() => {
+    if (!token || !installationId) return undefined;
+
+    const unregisterOnPageClose = () => {
+      void UnregisterPushInstallationApi(token, installationId, { keepalive: true }).catch((reason) => {
+        console.error("Push installation cleanup failed:", reason);
+      });
+      clearStoredInstallation(token);
+    };
+    window.addEventListener("pagehide", unregisterOnPageClose);
+    return () => window.removeEventListener("pagehide", unregisterOnPageClose);
+  }, [installationId, token]);
 
   useEffect(() => {
     if (!enabled || !hasFirebaseConfig()) return undefined;
@@ -82,6 +159,7 @@ export default function NotificationToggle({ token }) {
         if (document.visibilityState === "visible" && notification?.title && notification?.body) {
           new Notification(notification.title, { body: notification.body });
         }
+        window.dispatchEvent(new Event("notification-refresh"));
       });
     } catch (reason) {
       console.error("Firebase foreground messaging setup failed:", reason);
@@ -90,12 +168,19 @@ export default function NotificationToggle({ token }) {
   }, [enabled]);
 
   const disable = async () => {
-    if (installationId) {
-      await UnregisterPushInstallationApi(token, installationId);
+    try {
+      await SetUserPreferenceApi(token, "push_notifications", false);
+      if (installationId) {
+        await UnregisterPushInstallationApi(token, installationId);
+      }
+      clearStoredInstallation(token);
+      setEnabled(false);
+      setInstallationId("");
+      setError("");
+    } catch (reason) {
+      console.error("Could not disable push notifications:", reason);
+      setError(reason instanceof Error ? reason.message : "Could not disable notifications.");
     }
-    setEnabled(false);
-    setInstallationId("");
-    setError("");
   };
 
   const toggle = () => {
@@ -107,8 +192,14 @@ export default function NotificationToggle({ token }) {
           if (!id) throw new Error("Firebase did not return an installation ID.");
           return RegisterPushInstallationApi(token, id).then((registered) => {
             if (!registered) throw new Error("Could not register notifications.");
-            setInstallationId(id);
-            setEnabled(true);
+            return SetUserPreferenceApi(token, "push_notifications", true).then(() => {
+              setInstallationId(id);
+              storeInstallation(token, id);
+              setEnabled(true);
+            }).catch(async (reason) => {
+              await UnregisterPushInstallationApi(token, id);
+              throw reason;
+            });
           });
         })
         .catch((reason) => {
@@ -125,7 +216,7 @@ export default function NotificationToggle({ token }) {
         type="checkbox"
         checked={enabled}
         onChange={toggle}
-        disabled={!token}
+        disabled={!token || loadingPreference}
       />
       Notifications
       {error && <span role="alert">{error}</span>}
