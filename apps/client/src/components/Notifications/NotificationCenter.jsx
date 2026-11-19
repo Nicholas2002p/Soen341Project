@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import {
   GetNotificationsApi,
   MarkNotificationReadApi,
+  CreateNotificationStreamTicketApi,
+  GetNotificationStreamUrl,
 } from "../../utils/Api";
 import "./NotificationCenter.scss";
 
@@ -32,8 +34,36 @@ export default function NotificationCenter({ token }) {
     };
 
     void loadNotifications();
+    let stream;
+    let streamFallback;
+    const openStream = async () => {
+      try {
+        const { ticket } = await CreateNotificationStreamTicketApi(token);
+        if (!active) return;
+        stream = new EventSource(GetNotificationStreamUrl(ticket));
+        stream.addEventListener("notification", () => {
+          void loadNotifications();
+        });
+      } catch (reason) {
+        console.error("Notification stream setup failed:", reason);
+      }
+    };
+
+    void openStream();
+    streamFallback = window.setInterval(() => {
+      void loadNotifications();
+    }, 60_000);
+
+    const refreshNotification = () => {
+      void loadNotifications();
+    };
+    window.addEventListener("notification-refresh", refreshNotification);
+
     return () => {
       active = false;
+      stream?.close();
+      window.clearInterval(streamFallback);
+      window.removeEventListener("notification-refresh", refreshNotification);
     };
   }, [token]);
 
@@ -91,12 +121,6 @@ export default function NotificationCenter({ token }) {
 
       {open && (
         <>
-          <button
-            type="button"
-            className="notification-overlay"
-            aria-label="Close notifications"
-            onClick={() => setOpen(false)}
-          />
           <aside className="notification-sidebar" aria-label="Notifications">
             <header className="notification-sidebar-header">
               <h2>Notifications</h2>

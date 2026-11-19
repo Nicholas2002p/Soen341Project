@@ -7,6 +7,26 @@ function userId(res: Response): number {
 }
 
 export class NotificationController {
+    async createStreamTicket(_req: Request, res: Response): Promise<void> {
+        const ticket = notificationService.createStreamTicket(userId(res));
+        res.status(201).json(ticket);
+    }
+
+    async stream(req: Request, res: Response): Promise<void> {
+        const ticket = req.query.ticket;
+        if (typeof ticket !== 'string' || !notificationService.subscribeStream(ticket, res)) {
+            res.status(401).json({ message: 'Invalid or expired stream ticket' });
+            return;
+        }
+
+        res.status(200);
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache, no-transform');
+        res.setHeader('Connection', 'keep-alive');
+        res.flushHeaders();
+        res.write(': connected\n\n');
+    }
+
     async list(_req: Request, res: Response): Promise<void> {
         res.status(200).json({ notifications: await notificationService.list(userId(res)) });
     }
