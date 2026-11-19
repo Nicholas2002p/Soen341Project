@@ -12,6 +12,8 @@ import {
     FakeSessionTokenGenerator,
     FakeUserRepository,
     FakeGoogleTokenVerifier,
+    FakePasswordResetTokenRepository,
+    FakeEmailService,
     user,
 } from '../fakes/AuthFakes.js';
 import { FakeProfileRepository, profile } from '../fakes/ProfileFakes.js';
@@ -36,6 +38,8 @@ function createService(initialUsers: User[] = []) {
     });
     const profileRepository = new FakeProfileRepository(); // Create a fake profile repository
     const notificationService = new DummyNotificationService();
+    const passwordResetTokenRepository = new FakePasswordResetTokenRepository();
+    const emailService = new FakeEmailService();
     const service = new AuthService( // Create an instance of AuthService with the fake repositories and hasher
         userRepository,
         sessionRepository,
@@ -45,10 +49,22 @@ function createService(initialUsers: User[] = []) {
         googleTokenVerifier,
         profileRepository,
         notificationService,
+        passwordResetTokenRepository,
+        emailService,
     );
 
     // Return the service and the fake repositories for use in tests
-    return { service, userRepository, sessionRepository, passwordHasher, saltRepository, profileRepository, notificationService };
+    return {
+        service,
+        userRepository,
+        sessionRepository,
+        passwordHasher,
+        saltRepository,
+        profileRepository,
+        notificationService,
+        passwordResetTokenRepository,
+        emailService,
+    };
 }
 test('register normalizes the email, hashes the password, and creates a session', async () => {
     // Create an AuthService instance with no initial users
@@ -228,6 +244,45 @@ test('authenticate removes expired sessions and returns no user', async () => {
 
     assert.equal(result, null);
     assert.deepEqual(sessionRepository.deletedSessionIds, [1]);
+});
+
+test('password reset requests send a reset link only for existing users', async () => {
+    const { service, emailService, passwordResetTokenRepository } = createService([user]);
+
+    await service.requestPasswordReset(user.email);
+
+    assert.equal(emailService.messages.length, 1);
+    assert.equal(emailService.messages[0]?.template, 'PasswordResetEmail');
+    assert.equal(passwordResetTokenRepository.tokens.size, 1);
+});
+
+test('password reset requests do not reveal unknown email addresses', async () => {
+    const { service, emailService, passwordResetTokenRepository } = createService();
+
+    await service.requestPasswordReset('unknown@example.com');
+
+    assert.equal(emailService.messages.length, 0);
+    assert.equal(passwordResetTokenRepository.tokens.size, 0);
+});
+
+test('resetPassword updates the password and invalidates existing sessions', async () => {
+    const { service, userRepository, sessionRepository, passwordResetTokenRepository, emailService } =
+        createService([user]);
+
+    await sessionRepository.create(user.id, 'hashed-token:existing-session', new Date(Date.now() + 60_000));
+    await service.requestPasswordReset(user.email);
+
+    const resetUrl = emailService.messages[0]?.props.resetUrl;
+    assert.equal(typeof resetUrl, 'string');
+    const token = new URL(resetUrl as string).searchParams.get('token');
+    assert.ok(token);
+
+    await service.resetPassword(token, 'new-password');
+
+    const updatedUser = await userRepository.getById(user.id);
+    assert.equal(updatedUser?.passwordHash, 'hashed:new-password:rounds:10');
+    assert.equal(passwordResetTokenRepository.tokens.size, 0);
+    assert.equal(sessionRepository.sessions.size, 0);
 });
 
 test('loginWithGoogle creates a user and a session on first Google login', async () => {

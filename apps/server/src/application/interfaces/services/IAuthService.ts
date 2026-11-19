@@ -44,4 +44,8 @@ export interface IAuthService {
 
     //authenticate a user by their session token, returns the user or null if not found
     authenticate(sessionToken: string): Promise<PublicUser | null>;
+
+    requestPasswordReset(email: string): Promise<void>;
+
+    resetPassword(token: string, password: string): Promise<void>;
 }
