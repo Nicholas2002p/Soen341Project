@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../utils/Auth';
-import { GetProfileApi, GetSavedJobsApi, SendTestNotificationApi }from '../../utils/Api';
+import {
+  GetProfileApi,
+  GetSavedJobsApi,
+  RequestPasswordResetApi,
+  SendTestEmailApi,
+  SendTestNotificationApi,
+} from '../../utils/Api';
 import ProfileCard from '../../components/Profile/ProfileCard';
 import ProfileEdit from '../../components/Profile/ProfileEdit';
 import ResumeUpload from '../../components/Profile/ResumeUpload';
@@ -27,6 +33,9 @@ export default function Profile({ setView }) {
   const [desc, setDesc] = useState(null);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [sendingNotification, setSendingNotification] = useState(false);
+  const [emailMessage, setEmailMessage] = useState('');
+  const [sendingPasswordReset, setSendingPasswordReset] = useState(false);
+  const [sendingTestEmail, setSendingTestEmail] = useState(false);
   
   useEffect(() => {
     if (!token) return;
@@ -68,6 +77,34 @@ export default function Profile({ setView }) {
     }
   };
 
+  const sendPasswordResetEmail = async () => {
+    setSendingPasswordReset(true);
+    setEmailMessage('');
+    try {
+      await RequestPasswordResetApi(user?.email);
+      setEmailMessage('A password reset email has been requested.');
+    } catch (error) {
+      console.error('Password reset email failed:', error);
+      setEmailMessage(error instanceof Error ? error.message : 'Password reset email could not be sent.');
+    } finally {
+      setSendingPasswordReset(false);
+    }
+  };
+
+  const sendTestEmail = async () => {
+    setSendingTestEmail(true);
+    setEmailMessage('');
+    try {
+      await SendTestEmailApi(token);
+      setEmailMessage('A test email has been sent.');
+    } catch (error) {
+      console.error('Test email failed:', error);
+      setEmailMessage(error instanceof Error ? error.message : 'Test email could not be sent.');
+    } finally {
+      setSendingTestEmail(false);
+    }
+  };
+
   return (
     <main className="profilepage">
       <Nav setView={setView} profileURL={profileURL} />
@@ -96,6 +133,16 @@ export default function Profile({ setView }) {
               {sendingNotification ? 'Sending...' : 'Send test notification'}
             </button>
             {notificationMessage && <p role="status">{notificationMessage}</p>}
+          </section>
+          <section className="email-actions">
+            <h2>Email</h2>
+            <button type="button" onClick={sendPasswordResetEmail} disabled={sendingPasswordReset || !user?.email}>
+              {sendingPasswordReset ? 'Sending...' : 'Send password reset email'}
+            </button>
+            <button type="button" onClick={sendTestEmail} disabled={sendingTestEmail}>
+              {sendingTestEmail ? 'Sending...' : 'Send generic test email'}
+            </button>
+            {emailMessage && <p role="status">{emailMessage}</p>}
           </section>
         </section>
       </section>

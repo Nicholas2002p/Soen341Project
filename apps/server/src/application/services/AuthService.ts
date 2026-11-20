@@ -35,7 +35,7 @@ export class AuthService implements IAuthService {
         private readonly notificationService?: Pick<NotificationService, 'create'>,
         private readonly passwordResetTokenRepository?: IPasswordResetTokenRepository,
         private readonly emailService?: IEmailService,
-        private readonly passwordResetUrl = `${(process.env.PUBLIC_SERVER_URL ?? 'http://localhost:5173').replace(/\/+$/, '')}/reset-password`,
+        private readonly passwordResetUrl = `${(process.env.PUBLIC_CLIENT_URL ?? 'http://localhost:5173').replace(/\/+$/, '')}/reset-password`,
     ) { }
 
     private toPublicUser(user: User): PublicUser {
@@ -90,6 +90,45 @@ export class AuthService implements IAuthService {
             user: this.toPublicUser(newUser),
             sessionToken,
         };
+    }
+
+    async sendWelcomeEmail(email: string): Promise<void> {
+        if (!this.emailService) {
+            return;
+        }
+
+        const normalizedEmail = normalizeEmail(email);
+        if (!isValidEmail(normalizedEmail)) {
+            throw new InvalidEmailError();
+        }
+
+        const firstName = normalizedEmail.split('@')[0] || 'CareerConnect member';
+        await this.emailService.send({
+            to: normalizedEmail,
+            subject: 'Welcome to CareerConnect',
+            template: 'WelcomeEmail',
+            props: { firstName },
+        });
+    }
+
+    async sendTestEmail(email: string): Promise<void> {
+        if (!this.emailService) {
+            return;
+        }
+
+        const normalizedEmail = normalizeEmail(email);
+        if (!isValidEmail(normalizedEmail)) {
+            throw new InvalidEmailError();
+        }
+
+        await this.emailService.send({
+            to: normalizedEmail,
+            subject: 'CareerConnect test email',
+            template: 'TestEmail',
+            props: {
+                message: 'This is a test email from CareerConnect.',
+            },
+        });
     }
 
     async updateUser(

@@ -253,6 +253,10 @@ test('password reset requests send a reset link only for existing users', async 
 
     assert.equal(emailService.messages.length, 1);
     assert.equal(emailService.messages[0]?.template, 'PasswordResetEmail');
+    assert.match(
+        String(emailService.messages[0]?.props.resetUrl),
+        /^http:\/\/localhost:5173\/reset-password\?token=.+$/,
+    );
     assert.equal(passwordResetTokenRepository.tokens.size, 1);
 });
 
@@ -263,6 +267,26 @@ test('password reset requests do not reveal unknown email addresses', async () =
 
     assert.equal(emailService.messages.length, 0);
     assert.equal(passwordResetTokenRepository.tokens.size, 0);
+});
+
+test('sendWelcomeEmail sends the welcome template', async () => {
+    const { service, emailService } = createService();
+
+    await service.sendWelcomeEmail('person@example.com');
+
+    assert.equal(emailService.messages.length, 1);
+    assert.equal(emailService.messages[0]?.template, 'WelcomeEmail');
+    assert.equal(emailService.messages[0]?.subject, 'Welcome to CareerConnect');
+});
+
+test('sendTestEmail sends the test template', async () => {
+    const { service, emailService } = createService();
+
+    await service.sendTestEmail('person@example.com');
+
+    assert.equal(emailService.messages.length, 1);
+    assert.equal(emailService.messages[0]?.template, 'TestEmail');
+    assert.equal(emailService.messages[0]?.subject, 'CareerConnect test email');
 });
 
 test('resetPassword updates the password and invalidates existing sessions', async () => {

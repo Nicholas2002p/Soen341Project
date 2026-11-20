@@ -649,8 +649,55 @@ export async function SendTestNotificationApi(token) {
         }
         throw new Error(message);
     }
-
     return true;
+}
+
+export async function RequestPasswordResetApi(email) {
+    const response = await fetch(getApiUrl("/api/auth/forgot-password"), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(data.message || "Password reset email could not be sent.");
+    }
+    return data.message;
+}
+
+export async function SendTestEmailApi(token) {
+    const response = await fetch(getApiUrl("/api/auth/test-email"), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(data.message || "Test email could not be sent.");
+    }
+    return data.message;
+}
+
+export async function ResetPasswordApi(token, password) {
+    const response = await fetch(getApiUrl("/api/auth/reset-password"), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token, password }),
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(data.message || "Password could not be reset.");
+    }
+    return data.message;
 }
 
 /**

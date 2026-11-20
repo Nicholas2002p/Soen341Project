@@ -40,6 +40,12 @@ export class AuthController {
         return;
       }
 
+      try {
+        await authService.sendWelcomeEmail(result.user.email);
+      } catch (error: unknown) {
+        console.error('Welcome email could not be sent:', error);
+      }
+
       // Return a 201 Created response with the user and session token
       res.status(201).json({
         user: result.user,
@@ -229,6 +235,21 @@ export class AuthController {
     } catch (error: unknown) {
       if (error instanceof InvalidAuthCredentialsError) {
         res.status(400).json({ message: 'The password reset token is invalid or expired.' });
+        return;
+      }
+      throw error;
+    }
+  }
+
+  async sendTestEmail(req: Request, res: Response): Promise<void> {
+    const authenticatedUser = res.locals.user as PublicUser;
+
+    try {
+      await authService.sendTestEmail(authenticatedUser.email);
+      res.status(200).json({ message: 'A test email has been sent.' });
+    } catch (error: unknown) {
+      if (error instanceof InvalidEmailError) {
+        res.status(400).json({ message: 'A valid email address is required.' });
         return;
       }
       throw error;

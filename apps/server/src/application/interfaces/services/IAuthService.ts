@@ -48,4 +48,8 @@ export interface IAuthService {
     requestPasswordReset(email: string): Promise<void>;
 
     resetPassword(token: string, password: string): Promise<void>;
+
+    sendWelcomeEmail(email: string): Promise<void>;
+
+    sendTestEmail(email: string): Promise<void>;
 }

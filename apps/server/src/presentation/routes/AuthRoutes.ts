@@ -24,6 +24,8 @@ authRoutes.post('/forgot-password', authController.requestPasswordReset.bind(aut
 
 authRoutes.post('/reset-password', authController.resetPassword.bind(authController));
 
+authRoutes.post('/test-email', authMiddleware, authController.sendTestEmail.bind(authController));
+
 // Google login route
 authRoutes.post('/google', authController.googleLogin.bind(authController));
 
