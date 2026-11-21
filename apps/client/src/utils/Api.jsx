@@ -1052,3 +1052,36 @@ export async function GetAnalyticsApi(token) {
         return [];
     }
 }
+/**
+ * Returns the resume of the application
+ * /api/applications/:id/resume id of the application
+ * @returns a resume
+ */
+export async function GetResumeAsRecruiterApi(token, id) {
+    try {
+        const response = await fetch(getApiUrl(`/api/applications/${encodeURIComponent(id)}/resume`), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const blob = await response.blob();
+        return { url: URL.createObjectURL(blob), type: blob.type };
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+//const blob = await response.blob();
+        // const url = URL.createObjectURL(blob);
+        // const link = document.createElement("a");
+        // link.href = url;
+        // link.download = resume.fileName;
+        // link.click();
+        // URL.revokeObjectURL(url);
