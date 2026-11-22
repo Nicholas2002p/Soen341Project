@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Password from '../../components/Registration/Password';
 import { useAuth } from '../../utils/Auth';
 import { RegisterApi } from '../../utils/Api';
+import GoogleSignIn from '../../components/Registration/google';
 
 import "./Registration.scss";
 
@@ -62,6 +63,7 @@ export default function Registration({ setView }) {
                     </span>
                 
                     <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken, setView, checked, setUser) } }> Register </button>
+                    <GoogleSignIn setToken={setToken} setUser={setUser} setView={setView} role={checked ? "recruiter" : "jobseeker"} />
                 </section>
             </main>
         </section>

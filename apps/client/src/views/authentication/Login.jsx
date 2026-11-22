@@ -16,8 +16,6 @@ export default function Login({ setView }) {
     const [errorMessage, setErrorMessage] = useState('');
     const [passwordType, setPasswordType] = useState(true);
     const [passwordType2, setPasswordType2] = useState(true);
-    // Role used only when this Google account logs in for the first time
-    const [googleRecruiter, setGoogleRecruiter] = useState(false);
     const { setToken, setUser } = useAuth();
 
     return (
@@ -43,11 +41,7 @@ export default function Login({ setView }) {
                     </span>
 
                     <button className="register-btn" onClick={() => { RegisterUser(password, setErrorMessage, email, setToken, setView, setUser) }}> Log in </button>
-                    <div className='password'>
-                        <label htmlFor="google-role">First time with Google? Sign up as a recruiter:</label>
-                        <input type="checkbox" id="google-role" name="google-role" checked={googleRecruiter} onChange={() => setGoogleRecruiter(prev => !prev)} />
-                    </div>
-                    <GoogleSignIn setToken={setToken} setUser={setUser} setView={setView} role={googleRecruiter ? "recruiter" : "jobseeker"} />
+                    <GoogleSignIn setToken={setToken} setUser={setUser} setView={setView} />
                 </section>
             </main>
         </section>
