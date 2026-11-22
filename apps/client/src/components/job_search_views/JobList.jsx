@@ -13,10 +13,11 @@ import {  GetJobApi } from '../../utils/Api';
 export default function JobList({ jobs, setView, setSelectedJob }) {
   const { token, user } = useAuth();
   const [page, setPage] = useState(1);
-  const startIndex = (page - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentJobs = jobs.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(jobs.length / ITEMS_PER_PAGE);
+
+  const totalPages = Math.max(1, Math.ceil(jobs.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
+  const currentJobs = jobs.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   /**
    * handles the onclick befor going to job application screen and gets the job data 
@@ -24,7 +25,7 @@ export default function JobList({ jobs, setView, setSelectedJob }) {
    * @returns 
    */
   const handleSelectJob = async (job) => {
-    if (token && user?.role != "recruiter"){
+    if (token && user?.role !== "recruiter"){
     const jobData = await GetJobApi(job.jobId);
     setSelectedJob(jobData);
     setView("job-application");
@@ -37,8 +38,8 @@ export default function JobList({ jobs, setView, setSelectedJob }) {
       <Stack className="stack">
         <Pagination 
           count={totalPages} 
-          page={page} 
-          onChange={(value) => {setPage(value)}} 
+          page={safePage} 
+          onChange={(_, value) => {setPage(value)}} 
           color="primary" 
           variant="outlined" 
           shape="rounded"

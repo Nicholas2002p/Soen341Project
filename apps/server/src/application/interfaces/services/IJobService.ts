@@ -41,6 +41,22 @@ export interface IJobService {
     getMine(user: PublicUser): Promise<JobSummary[]>;
 
     /**
+     * retrieves the current recruiter's archived jobs
+     * @param user - the current logged in recruiter
+     * @returns a promise that resolves to a job array
+     */
+    getArchived(user: PublicUser): Promise<JobSummary[]>;
+
+    /**
+     * archives or unarchives one of the recruiter's jobs
+     * @param user - the current logged in recruiter
+     * @param jobId - the id of the job to change
+     * @param archive - true to archive the job, false to make it visible again
+     * @returns a promise that resolves to the updated job or null if it does not exist
+     */
+    setArchive(user: PublicUser, jobId: number, archive: boolean): Promise<JobDetails | null>;
+
+    /**
      * creates a new job
      * @param user - the current logged in recruiter
      * @param data - data to create a new promise

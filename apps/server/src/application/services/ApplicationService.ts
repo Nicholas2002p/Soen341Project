@@ -1,8 +1,10 @@
 import type { ApplyToJobData, IApplicationService } from '../interfaces/services/IApplicationService.js';
+import type { IResumeService, ResumeFile } from '../interfaces/services/IResumeService.js';
 import type { IApplicationRepository } from '../interfaces/repositories/IApplicationRepository.js';
 import type { IResumeRepository } from '../interfaces/repositories/IResumeRepository.js';
-import type { Application, ApplicationDetails, ApplicationJob, ApplicationStatus, ApplicationWithJob } from '../../domain/entities/Application.js';
-import { INITIAL_APPLICATION_STATUS } from '../../domain/entities/Application.js';
+import type { Application, ApplicationDetails, ApplicationJob, ApplicationWithJob } from '../../domain/entities/Application.js';
+import { ApplicationStatus, INITIAL_APPLICATION_STATUS } from '../../domain/entities/Application.js';
+import type { ApplicationAnalytics, WeeklyApplicationCount } from '../../domain/entities/ApplicationAnalytics.js';
 import type { PublicUser } from '../../domain/entities/PublicUser.js';
 import { UserRole } from '../../domain/entities/User.js';
 import {
@@ -16,11 +18,46 @@ import {
 } from '../../domain/errors/ApplicationErrors.js';
 import { ResumeNotFoundError } from '../../domain/errors/ResumeNotFoundError.js';
 import { canChangeStatus } from '../../domain/validation/ApplicationStatusChange.js';
+import type { NotificationService } from './NotificationService.js';
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+const WEEK_MS = 7 * DAY_MS;
+
+// Monday 00:00 (UTC) of the week the date is in
+function startOfWeek(date: Date): Date {
+    const day = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+    const daysSinceMonday = (day.getUTCDay() + 6) % 7; // getUTCDay() is 0 for Sunday
+    return new Date(day.getTime() - daysSinceMonday * DAY_MS);
+}
+
+// Count the applications submitted each week, from the week of the first one to the week of the last one.
+// Weeks with no applications are included with a count of 0 so the client can draw the chart directly.
+function countPerWeek(appliedDates: Date[]): WeeklyApplicationCount[] {
+    if (appliedDates.length === 0) {
+        return [];
+    }
+
+    const counts = new Map<number, number>();
+    for (const date of appliedDates) {
+        const week = startOfWeek(date).getTime();
+        counts.set(week, (counts.get(week) ?? 0) + 1);
+    }
+
+    const weeks = [...counts.keys()];
+    const result: WeeklyApplicationCount[] = [];
+    for (let week = Math.min(...weeks); week <= Math.max(...weeks); week += WEEK_MS) {
+        result.push({ weekStart: new Date(week).toISOString().slice(0, 10), count: counts.get(week) ?? 0 });
+    }
+
+    return result;
+}
 
 export class ApplicationService implements IApplicationService {
     constructor(
         private readonly applicationRepository: IApplicationRepository,
         private readonly resumeRepository: IResumeRepository,
+        private readonly notificationService?: Pick<NotificationService, 'create'>,
+        private readonly resumeService?: Pick<IResumeService, 'getFile'>,
     ) {}
 
     // Retrieve a job, throws JobNotFoundError ("Job not found.") if it does not exist
@@ -48,6 +85,11 @@ export class ApplicationService implements IApplicationService {
             throw new JobClosedError();
         }
 
+        // The recruiter archived the job, so it is no longer accepting applications
+        if (job.archived) {
+            throw new JobClosedError('This job is no longer accepting applications.');
+        }
+
         // The resume must be one of the applicant's own resumes
         const resume = await this.resumeRepository.getById(data.resumeId);
         if (!resume || resume.userId !== user.id) {
@@ -59,12 +101,19 @@ export class ApplicationService implements IApplicationService {
             throw new DuplicateApplicationError();
         }
 
-        return this.applicationRepository.create({
+        const application = await this.applicationRepository.create({
             userId: user.id,
             jobId: data.jobId,
             resumeId: data.resumeId,
             status: INITIAL_APPLICATION_STATUS,
         });
+        await this.notificationService?.create(job.recruiterId, {
+            type: 'new_application',
+            title: 'New application',
+            body: `A new application was submitted for job ${job.id}.`,
+            data: { applicationId: String(application.id), jobId: String(job.id) },
+        });
+        return application;
     }
 
     //list the applications of a job seeker.
@@ -105,6 +154,37 @@ export class ApplicationService implements IApplicationService {
         return application;
     }
 
+    //get the numbers for the job seeker's dashboard, calculated from their applications and status history.
+    //Only job seekers have applications, so other roles get a clear error (same as listMine).
+    async getAnalytics(user: PublicUser): Promise<ApplicationAnalytics> {
+        if (user.role !== UserRole.JobSeeker) {
+            throw new ApplicationNotAllowedError('Only job seekers have application analytics.');
+        }
+
+        const applications = await this.applicationRepository.listHistoryByUserId(user.id);
+
+        const byStatus = Object.fromEntries(Object.values(ApplicationStatus).map((status) => [status, 0])) as Record<ApplicationStatus, number>;
+        for (const application of applications) {
+            byStatus[application.status] += 1;
+        }
+
+        // The history is used instead of the current status, so an application rejected or offered after its interview still counts.
+        // An offer made without an interview (Applied straight to Offered) is not counted.
+        const reachedInterview = applications.filter((application) =>
+            application.statusHistory.some((change) => change.status === ApplicationStatus.Interview),
+        ).length;
+
+        const total = applications.length;
+
+        return {
+            total,
+            pending: byStatus[ApplicationStatus.Applied] + byStatus[ApplicationStatus.UnderReview],
+            byStatus,
+            interviewRate: total === 0 ? 0 : Math.round((reachedInterview / total) * 100) / 100,
+            submittedOverTime: countPerWeek(applications.map((application) => application.appliedAt)),
+        };
+    }
+
     //get one application with its status history, for the applicant or the recruiter of the job.
     //Anyone else gets ApplicationNotFoundError so the API does not reveal which application ids exist.
     async getById(user: PublicUser, applicationId: number): Promise<ApplicationDetails> {
@@ -124,6 +204,32 @@ export class ApplicationService implements IApplicationService {
 
         const statusHistory = await this.applicationRepository.getStatusHistory(applicationId);
         return { ...application, statusHistory };
+    }
+
+    //get the resume file submitted with an application, for the applicant or the recruiter of the job.
+    //Anyone else gets ApplicationNotFoundError, same as getById, so the API does not reveal which application ids exist.
+    async getResumeFile(user: PublicUser, applicationId: number): Promise<ResumeFile> {
+        if (!this.resumeService) {
+            throw new Error('ApplicationService needs a resume service to read resume files.');
+        }
+
+        const application = await this.applicationRepository.getById(applicationId);
+
+        if (!application) {
+            throw new ApplicationNotFoundError();
+        }
+
+        if (application.userId !== user.id) {
+            const job = await this.applicationRepository.getJob(application.jobId);
+
+            if (!job || job.recruiterId !== user.id) {
+                throw new ApplicationNotFoundError();
+            }
+        }
+
+        // The resume belongs to the applicant, so it is read as theirs. This reuses the resume checks
+        // (file type, missing file) instead of reading the file storage directly.
+        return this.resumeService.getFile(application.userId, application.resumeId);
     }
 
     //change the status of an application, only the recruiter who posted the job can do this.
@@ -155,7 +261,14 @@ export class ApplicationService implements IApplicationService {
             throw new InvalidStatusChangeError(`An application that is ${application.status} cannot be changed to ${status}.`);
         }
 
-        return this.applicationRepository.updateStatus(applicationId, status);
+        const updated = await this.applicationRepository.updateStatus(applicationId, status);
+        await this.notificationService?.create(application.userId, {
+            type: status === 'Interview' ? 'interview_invitation' : 'application_update',
+            title: status === 'Interview' ? 'Interview invitation' : 'Application updated',
+            body: `Your application for job ${job.id} is now ${status}.`,
+            data: { applicationId: String(applicationId), status },
+        });
+        return updated;
     }
 
     //withdraw (delete) an application, only the applicant can do this

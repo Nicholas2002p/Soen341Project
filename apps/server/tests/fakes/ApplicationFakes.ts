@@ -23,10 +23,13 @@ export const recruiter: PublicUser = { id: 10, email: 'recruiter@example.com', r
 export const otherRecruiter: PublicUser = { id: 11, email: 'other-recruiter@example.com', role: UserRole.Recruiter, createdAt, updatedAt: createdAt };
 
 // A job posted by `recruiter` with no deadline
-export const openJob: ApplicationJob = { id: 100, recruiterId: recruiter.id, deadline: null };
+export const openJob: ApplicationJob = { id: 100, recruiterId: recruiter.id, deadline: null, archived: false };
 
 // A job whose deadline has already passed
-export const closedJob: ApplicationJob = { id: 101, recruiterId: recruiter.id, deadline: new Date('2020-01-01') };
+export const closedJob: ApplicationJob = { id: 101, recruiterId: recruiter.id, deadline: new Date('2020-01-01'), archived: false };
+
+// A job the recruiter archived, with no deadline
+export const archivedJob: ApplicationJob = { id: 102, recruiterId: recruiter.id, deadline: null, archived: true };
 
 // An existing application by `jobSeeker` to `openJob`
 export const application: Application = {

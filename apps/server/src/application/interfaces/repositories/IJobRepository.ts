@@ -21,6 +21,7 @@ export interface CreateJobData {
 }
 
 export interface UpdateJobData {
+    companyId: number;
     title: string;
     category: string;
     location?: string | null;
@@ -64,6 +65,21 @@ export interface IJobRepository {
      * @returns a promise that resolves to a job
      */
     getByRecruiterId(recruiterId: number): Promise<JobSummary[]>;
+
+    /**
+     * gets the archived jobs of a recruiter
+     * @param recruiterId - the current logged in recruiter
+     * @returns a promise that resolves to a job array
+     */
+    getArchivedByRecruiterId(recruiterId: number): Promise<JobSummary[]>;
+
+    /**
+     * archives or unarchives a job
+     * @param jobId - the job id to change
+     * @param archive - true to archive the job, false to make it visible again
+     * @returns a promise that resolves to the updated job or null if it does not exist
+     */
+    setArchive(jobId: number, archive: boolean): Promise<JobDetails | null>;
 
     /**
      * creates a new job entity

@@ -18,6 +18,7 @@ const APPLICATION_ERROR_STATUS: Record<string, number> = {
   ApplicationNotFoundError: 404,
   JobNotFoundError: 404,
   ResumeNotFoundError: 404,
+  ResumeFileMissingError: 404,
   DuplicateApplicationError: 409,
   InvalidStatusChangeError: 409,
 };
@@ -126,6 +127,18 @@ export class ApplicationController {
         }
     }
 
+    async getAnalytics(req: Request, res: Response): Promise<void> {
+        try {
+            const user = res.locals.user as PublicUser;
+
+            // Return a 200 OK response with the numbers for the job seeker's dashboard
+            const analytics = await applicationService.getAnalytics(user);
+            res.status(200).json({ analytics });
+        } catch (error: unknown) {
+            handleApplicationError(error, res, 'Your application analytics could not be loaded. Please try again.');
+        }
+    }
+
     async getById(req: Request, res: Response): Promise<void> {
         try {
             const user = res.locals.user as PublicUser;
@@ -136,6 +149,21 @@ export class ApplicationController {
             res.status(200).json({ application });
         } catch (error: unknown) {
             handleApplicationError(error, res, 'The application could not be loaded. Please try again.');
+        }
+    }
+
+    async downloadResume(req: Request, res: Response): Promise<void> {
+        try {
+            const user = res.locals.user as PublicUser;
+            const applicationId = parseId(req.params.id);
+            const file = await applicationService.getResumeFile(user, applicationId);
+
+            // Send the file with its original name so the browser downloads it correctly (same as the resume download)
+            res.attachment(file.resume.fileName);
+            res.type(file.mimeType);
+            res.status(200).send(file.content);
+        } catch (error: unknown) {
+            handleApplicationError(error, res, 'The resume could not be downloaded. Please try again.');
         }
     }
 
