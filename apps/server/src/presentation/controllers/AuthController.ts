@@ -40,12 +40,6 @@ export class AuthController {
         return;
       }
 
-      try {
-        await authService.sendWelcomeEmail(result.user.email);
-      } catch (error: unknown) {
-        console.error('Welcome email could not be sent:', error);
-      }
-
       // Return a 201 Created response with the user and session token
       res.status(201).json({
         user: result.user,

@@ -77,6 +77,12 @@ export class AuthService implements IAuthService {
             this.sessionTokenGenerator.hash(sessionToken),
             this.getSessionExpiration());
 
+        try {
+            await this.sendWelcomeEmail(newUser.email);
+        } catch (error: unknown) {
+            console.error('Welcome email could not be sent:', error);
+        }
+
         if (process.env.NODE_ENV === 'development') {
             console.log('Sending registration notification for user:', newUser.id);
             await this.notificationService?.create(newUser.id, {

@@ -102,6 +102,16 @@ test('register pushes a notification in development mode', async () => {
     }
 });
 
+test('register sends a welcome email after creating the account', async () => {
+    const { service, emailService } = createService();
+
+    await service.register({ email: 'welcome@example.com', password: 'secret-password' });
+
+    assert.equal(emailService.messages.length, 1);
+    assert.equal(emailService.messages[0]?.template, 'WelcomeEmail');
+    assert.equal(emailService.messages[0]?.to, 'welcome@example.com');
+});
+
 test('register rejects an invalid email format', async () => {
     // The service should reject malformed emails before creating a user.
     const { service } = createService();

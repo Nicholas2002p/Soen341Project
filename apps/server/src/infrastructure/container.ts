@@ -37,7 +37,9 @@ const sessionRepository = new PrismaSessionRepository();
 const passwordHasher = new BcryptPasswordHasher();
 const sessionTokenGenerator = new SessionTokenGenerator();
 const passwordResetTokenRepository = new PrismaPasswordResetTokenRepository();
-const emailService = process.env.SENDGRID_API_KEY && emailConfig.from
+const emailService = process.env.NODE_ENV !== 'test'
+  && process.env.SENDGRID_API_KEY
+  && emailConfig.from
   ? new SendGridEmailService(new FileEmailTemplateLoader(emailConfig.templatesDirectory, emailConfig.templateExtension), emailConfig.from)
   : new NoopEmailService();
 const saltRepository = new PrismaSaltRepository(prisma);
