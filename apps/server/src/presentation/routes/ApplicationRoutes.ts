@@ -13,6 +13,9 @@ applicationRoutes.use(authMiddleware);
 // Apply to a job (JSON body: { jobId, resumeId })
 applicationRoutes.post('/', applicationController.apply.bind(applicationController));
 
+// Let the AI compare a PDF resume with the open jobs and apply to the best matches (JSON body: { resumeId })
+applicationRoutes.post('/auto-apply', applicationController.autoApply.bind(applicationController));
+
 // List the applications of the logged in job seeker
 applicationRoutes.get('/', applicationController.listMine.bind(applicationController));
 

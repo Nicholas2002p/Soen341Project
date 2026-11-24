@@ -27,6 +27,9 @@ import { SavedJobService } from '../application/services/SavedJobService.js';
 import { PdfTextExtractionService } from '../application/services/PdfTextExtractionService.js';
 import { GeminiAiService } from './ai/GeminiAiService.js';
 import { notificationService } from '../application/services/NotificationService.js';
+import { ResumeAnalysisService } from '../application/services/ResumeAnalysisService.js';
+import { JobMatchingService } from '../application/services/JobMatchingService.js';
+import { AutoApplyService } from '../application/services/AutoApplyService.js';
 
 // Initialize repositories, services, and other dependencies
 const userRepository = new PrismaUserRepository(prisma);
@@ -67,6 +70,16 @@ const savedJobRepository = new PrismaSavedJobRepository(prisma);
 const pdfTextExtractionService = new PdfTextExtractionService();
 const aiService = new GeminiAiService();
 const savedJobService = new SavedJobService(savedJobRepository, jobRepository, notificationService);
+const resumeAnalysisService = new ResumeAnalysisService(aiService);
+const jobMatchingService = new JobMatchingService(aiService);
+const autoApplyService = new AutoApplyService(
+  resumeService,
+  pdfTextExtractionService,
+  resumeAnalysisService,
+  jobService,
+  jobMatchingService,
+  applicationService,
+);
 
 // Export the initialized services for use in other parts of the application
 export {
@@ -82,4 +95,5 @@ export {
   pdfTextExtractionService,
   aiService,
   notificationService,
+  autoApplyService,
 };

@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
-import { applicationService } from '../../infrastructure/container.js';
+import { applicationService, autoApplyService } from '../../infrastructure/container.js';
+import { AiServiceError } from '../../domain/errors/AiServiceError.js';
 import type { PublicUser } from '../../domain/entities/PublicUser.js';
 import {
     InvalidApplicationIdError,
@@ -13,6 +14,8 @@ const APPLICATION_ERROR_STATUS: Record<string, number> = {
   InvalidApplicationIdError: 400,
   InvalidApplicationRequestError: 400,
   InvalidApplicationStatusError: 400,
+  InvalidResumeFileError: 400,
+  PdfTextExtractionError: 400,
   JobClosedError: 400,
   ApplicationNotAllowedError: 403,
   ApplicationNotFoundError: 404,
@@ -90,6 +93,33 @@ export class ApplicationController {
             res.status(201).json({ application });
         } catch (error: unknown) {
             handleApplicationError(error, res, 'Your application could not be submitted. Please try again.');
+        }
+    }
+
+    async autoApply(req: Request, res: Response): Promise<void> {
+        try {
+            // Retrieve the authenticated user from res.locals set by authMiddleware
+            const user = res.locals.user as PublicUser;
+            const { resumeId } = req.body ?? {};
+
+            if (!isPositiveInteger(resumeId)) {
+                res.status(400).json({ message: 'resumeId is required and must be a positive integer.' });
+                return;
+            }
+
+            const result = await autoApplyService.autoApply(user, resumeId);
+
+            // Return a 200 OK response with the jobs that were applied to and how many applications were made
+            res.status(200).json(result);
+        } catch (error: unknown) {
+            // Never send AI or configuration details to the client
+            if (error instanceof AiServiceError) {
+                console.error(error);
+                res.status(502).json({ message: 'The AI service is not available right now. Please try again later.' });
+                return;
+            }
+
+            handleApplicationError(error, res, 'Auto apply failed. Please try again.');
         }
     }
 
