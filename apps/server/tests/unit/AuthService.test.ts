@@ -104,8 +104,14 @@ test('register pushes a notification in development mode', async () => {
 
 test('register sends a welcome email after creating the account', async () => {
     const { service, emailService } = createService();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
 
-    await service.register({ email: 'welcome@example.com', password: 'secret-password' });
+    try {
+        await service.register({ email: 'welcome@example.com', password: 'secret-password' });
+    } finally {
+        process.env.NODE_ENV = previousNodeEnv;
+    }
 
     assert.equal(emailService.messages.length, 1);
     assert.equal(emailService.messages[0]?.template, 'WelcomeEmail');
@@ -281,18 +287,44 @@ test('password reset requests do not reveal unknown email addresses', async () =
 
 test('sendWelcomeEmail sends the welcome template', async () => {
     const { service, emailService } = createService();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
 
-    await service.sendWelcomeEmail('person@example.com');
+    try {
+        await service.sendWelcomeEmail('person@example.com');
+    } finally {
+        process.env.NODE_ENV = previousNodeEnv;
+    }
 
     assert.equal(emailService.messages.length, 1);
     assert.equal(emailService.messages[0]?.template, 'WelcomeEmail');
     assert.equal(emailService.messages[0]?.subject, 'Welcome to CareerConnect');
 });
 
+test('sendWelcomeEmail does not send during test environment', async () => {
+    const { service, emailService } = createService();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'test';
+
+    try {
+        await service.sendWelcomeEmail('person@example.com');
+    } finally {
+        process.env.NODE_ENV = previousNodeEnv;
+    }
+
+    assert.equal(emailService.messages.length, 0);
+});
+
 test('sendTestEmail sends the test template', async () => {
     const { service, emailService } = createService();
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
 
-    await service.sendTestEmail('person@example.com');
+    try {
+        await service.sendTestEmail('person@example.com');
+    } finally {
+        process.env.NODE_ENV = previousNodeEnv;
+    }
 
     assert.equal(emailService.messages.length, 1);
     assert.equal(emailService.messages[0]?.template, 'TestEmail');

@@ -99,6 +99,9 @@ export class AuthService implements IAuthService {
     }
 
     async sendWelcomeEmail(email: string): Promise<void> {
+        if (process.env.NODE_ENV === 'test') {
+            return;
+        }
         if (!this.emailService) {
             return;
         }
@@ -118,6 +121,9 @@ export class AuthService implements IAuthService {
     }
 
     async sendTestEmail(email: string): Promise<void> {
+        if (process.env.NODE_ENV === 'test') {
+            return;
+        }
         if (!this.emailService) {
             return;
         }

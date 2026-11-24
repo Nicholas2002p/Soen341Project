@@ -3,7 +3,6 @@ import { useAuth } from '../../utils/Auth';
 import {
   GetProfileApi,
   GetSavedJobsApi,
-  RequestPasswordResetApi,
   SendTestEmailApi,
   SendTestNotificationApi,
 } from '../../utils/Api';
@@ -34,7 +33,6 @@ export default function Profile({ setView }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [sendingNotification, setSendingNotification] = useState(false);
   const [emailMessage, setEmailMessage] = useState('');
-  const [sendingPasswordReset, setSendingPasswordReset] = useState(false);
   const [sendingTestEmail, setSendingTestEmail] = useState(false);
   
   useEffect(() => {
@@ -74,20 +72,6 @@ export default function Profile({ setView }) {
       setNotificationMessage('Test notification could not be sent.');
     } finally {
       setSendingNotification(false);
-    }
-  };
-
-  const sendPasswordResetEmail = async () => {
-    setSendingPasswordReset(true);
-    setEmailMessage('');
-    try {
-      await RequestPasswordResetApi(user?.email);
-      setEmailMessage('A password reset email has been requested.');
-    } catch (error) {
-      console.error('Password reset email failed:', error);
-      setEmailMessage(error instanceof Error ? error.message : 'Password reset email could not be sent.');
-    } finally {
-      setSendingPasswordReset(false);
     }
   };
 
@@ -136,9 +120,6 @@ export default function Profile({ setView }) {
           </section>
           <section className="email-actions">
             <h2>Email</h2>
-            <button type="button" onClick={sendPasswordResetEmail} disabled={sendingPasswordReset || !user?.email}>
-              {sendingPasswordReset ? 'Sending...' : 'Send password reset email'}
-            </button>
             <button type="button" onClick={sendTestEmail} disabled={sendingTestEmail}>
               {sendingTestEmail ? 'Sending...' : 'Send generic test email'}
             </button>

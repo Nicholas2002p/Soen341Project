@@ -10,6 +10,7 @@
     "dev": "concurrently \"npm run dev --workspace=apps/server\" \"npm run dev --workspace=apps/client\"",
     "dev:client": "npm run dev --workspace=apps/client",
     "dev:server": "npm run dev --workspace=apps/server",
+    "prisma:generate": "npm run prisma:generate --workspace=apps/server",
     "build": "npm run build --workspace=apps/server && npm run build --workspace=apps/client",
     "lint": "npm run lint --workspaces --if-present"
   },
