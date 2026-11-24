@@ -30,3 +30,41 @@ test('push registration validates installationId', async () => {
         await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
     }
 });
+
+test('preference routes require authentication', async () => {
+    const server = app.listen(0);
+    try {
+        const address = server.address();
+        assert(address && typeof address !== 'string');
+        const response = await fetch(`http://127.0.0.1:${address.port}/api/preferences/push_notifications`);
+        assert.equal(response.status, 401);
+    } finally {
+        await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+    }
+});
+
+test('notification stream ticket requires authentication', async () => {
+    const server = app.listen(0);
+    try {
+        const address = server.address();
+        assert(address && typeof address !== 'string');
+        const response = await fetch(`http://127.0.0.1:${address.port}/api/notifications/stream-ticket`, {
+            method: 'POST',
+        });
+        assert.equal(response.status, 401);
+    } finally {
+        await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+    }
+});
+
+test('notification stream rejects an invalid ticket', async () => {
+    const server = app.listen(0);
+    try {
+        const address = server.address();
+        assert(address && typeof address !== 'string');
+        const response = await fetch(`http://127.0.0.1:${address.port}/api/notifications/stream?ticket=invalid`);
+        assert.equal(response.status, 401);
+    } finally {
+        await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+    }
+});
