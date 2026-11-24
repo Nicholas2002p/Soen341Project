@@ -28,7 +28,7 @@ export default function PasswordReset({ setView }) {
         setSubmitting(true);
         try {
             await ResetPasswordApi(token, password);
-            setMessage('Your password has been reset successfully.');
+            window.location.assign('/login');
         } catch (error) {
             setMessage(error instanceof Error ? error.message : 'Password could not be reset.');
         } finally {

@@ -28,7 +28,11 @@ function readStoredToken() {
 
 function Main() {
   const [view, setView] = useState(
-    window.location.pathname === '/reset-password' ? 'reset-password' : 'home'
+    window.location.pathname === '/reset-password'
+      ? 'reset-password'
+      : window.location.pathname === '/login'
+        ? 'sign-in'
+        : 'home'
   );
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(readStoredToken);
