@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Bell } from "lucide-react";
 import {
   GetNotificationsApi,
   MarkNotificationReadApi,
@@ -114,8 +115,9 @@ export default function NotificationCenter({ token }) {
         onClick={openSidebar}
         aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ""}`}
         aria-expanded={open}
+        title="Open notification center"
       >
-        <span aria-hidden="true">🔔</span>
+        <Bell aria-hidden="true" />
         {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
       </button>
 
@@ -124,7 +126,12 @@ export default function NotificationCenter({ token }) {
           <aside className="notification-sidebar" aria-label="Notifications">
             <header className="notification-sidebar-header">
               <h2>Notifications</h2>
-              <button type="button" onClick={() => setOpen(false)} aria-label="Close notifications">
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close notifications"
+                title="Close notification center"
+              >
                 &times;
               </button>
             </header>

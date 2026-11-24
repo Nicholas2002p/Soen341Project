@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { getApps, initializeApp } from "firebase/app";
 import { getMessaging, getToken, isSupported, onMessage } from "firebase/messaging";
+import { Alert, Snackbar } from "@mui/material";
+import { BellOff, BellRing } from "lucide-react";
 import {
   RegisterPushInstallationApi,
   UnregisterPushInstallationApi,
   GetUserPreferenceApi,
   SetUserPreferenceApi,
 } from "../../utils/Api";
+import "./NotificationToggle.scss";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -16,7 +19,6 @@ const firebaseConfig = {
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
-const notificationBuild = "fcm-diagnostics-2026-11-10";
 const installationStorageKey = "career-connect-push-installation";
 
 function getStoredInstallation(token) {
@@ -55,6 +57,11 @@ export async function UnregisterStoredPushInstallation(token) {
 
 function hasFirebaseConfig() {
   return Object.values(firebaseConfig).every(Boolean) && Boolean(import.meta.env.VITE_FIREBASE_VAPID_KEY);
+}
+
+function showNotificationError(setError, reason, fallbackMessage) {
+  console.error(fallbackMessage, reason);
+  setError(reason instanceof Error ? reason.message : fallbackMessage);
 }
 
 async function registerInstallation() {
@@ -124,8 +131,7 @@ export default function NotificationToggle({ token }) {
       })
       .catch((reason) => {
         if (active) {
-          console.error("Push preference load failed:", reason);
-          setError(reason instanceof Error ? reason.message : "Could not load notification preference.");
+          showNotificationError(setError, reason, "Could not load notification preference.");
         }
       })
       .finally(() => {
@@ -162,7 +168,7 @@ export default function NotificationToggle({ token }) {
         window.dispatchEvent(new Event("notification-refresh"));
       });
     } catch (reason) {
-      console.error("Firebase foreground messaging setup failed:", reason);
+      showNotificationError(setError, reason, "Could not set up foreground notifications.");
       return undefined;
     }
   }, [enabled]);
@@ -178,8 +184,7 @@ export default function NotificationToggle({ token }) {
       setInstallationId("");
       setError("");
     } catch (reason) {
-      console.error("Could not disable push notifications:", reason);
-      setError(reason instanceof Error ? reason.message : "Could not disable notifications.");
+      showNotificationError(setError, reason, "Could not disable notifications.");
     }
   };
 
@@ -203,23 +208,42 @@ export default function NotificationToggle({ token }) {
           });
         })
         .catch((reason) => {
-          console.error("Firebase notification registration failed:", reason);
-          const message = reason instanceof Error ? reason.message : String(reason);
-          setError(`${message} (${notificationBuild})`);
+          showNotificationError(setError, reason, "Could not enable notifications.");
         });
     }
   };
 
   return (
-    <label>
-      <input
-        type="checkbox"
-        checked={enabled}
-        onChange={toggle}
+    <>
+      <button
+        type="button"
+        className={`notification-toggle ${enabled ? "notification-toggle-enabled" : ""}`}
+        onClick={toggle}
         disabled={!token || loadingPreference}
-      />
-      Notifications
-      {error && <span role="alert">{error}</span>}
-    </label>
+        aria-label={enabled ? "Disable notifications" : "Enable notifications"}
+        aria-pressed={enabled}
+        title={enabled ? "Notifications enabled" : "Notifications disabled"}
+      >
+        {enabled ? <BellRing aria-hidden="true" /> : <BellOff aria-hidden="true" />}
+      </button>
+
+      <Snackbar
+        open={Boolean(error)}
+        autoHideDuration={6000}
+        onClose={(_event, reason) => {
+          if (reason !== "clickaway") setError("");
+        }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          severity="error"
+          variant="filled"
+          onClose={() => setError("")}
+          sx={{ width: "100%" }}
+        >
+          {error}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }

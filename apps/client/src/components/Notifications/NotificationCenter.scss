@@ -1,10 +1,26 @@
 .notification-bell {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   border: 0;
   background: transparent;
   font: inherit;
   cursor: pointer;
   color: black;
+}
+
+.notification-bell:hover {
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.notification-bell svg {
+  width: 22px;
+  height: 22px;
 }
 
 .notification-badge {
