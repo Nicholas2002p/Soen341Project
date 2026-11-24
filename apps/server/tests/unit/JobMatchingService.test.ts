@@ -34,6 +34,8 @@ function job(jobId: number, title: string, skills: string[]): JobSummary {
         employmentType: EmploymentType.Remote,
         deadline: new Date('2030-01-01'),
         createdAt: new Date('2026-01-01'),
+        description: null,
+        archive: false,
         company: { companyId: 1, name: 'Acme' },
         skills,
     };
