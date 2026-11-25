@@ -129,6 +129,37 @@ export async function LogOutApi(token) {
 }
 
 /**
+ * Gets the user that owns the session token, used to restore the session after a page refresh
+ * @param {*} token - the saved session token
+ * @returns the user, null if the session is no longer valid, or undefined if the server could not be reached
+ */
+export async function GetCurrentUserApi(token) {
+    try {
+        const response = await fetch(getApiUrl("/api/auth/me"), {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        // 401 means the session expired or was removed
+        if (response.status === 401) {
+            return null;
+        }
+
+        // Any other error (server starting, crash): keep the session and try again later
+        if (!response.ok) {
+            return undefined;
+        }
+
+        const data = await response.json();
+        return data.user ?? null;
+    } catch (error) {
+        console.error(error);
+        // The server could not be reached: keep the session and try again later
+        return undefined;
+    }
+}
+/**
  * Creates a bar minimum profile for the user
  * need to implement a way to delete User if profile creation fails
  * @param {*} fname 
@@ -263,11 +294,11 @@ export async function GetProfileApi(token) {
  * @param {*} token 
  * @returns all jobs that match filter and are not past deadline
  */
-export async function JobFilter (filterField,  searchQuery){
-    
+export async function JobFilter(filterField, searchQuery) {
+
     try {
         const response = await fetch(
-            getApiUrl(`/api/jobs?available=true&${filterField}=${encodeURIComponent(searchQuery)}`), 
+            getApiUrl(`/api/jobs?available=true&${filterField}=${encodeURIComponent(searchQuery)}`),
             {
                 method: 'GET',
                 headers: {
@@ -292,9 +323,9 @@ export async function JobFilter (filterField,  searchQuery){
  * @returns all jobs that are not past deadline
  */
 export async function GetJobsApi() {
-        try {
+    try {
         const response = await fetch(
-            getApiUrl("/api/jobs/available"), 
+            getApiUrl("/api/jobs/available"),
             {
                 method: 'GET',
                 headers: {
@@ -320,9 +351,9 @@ export async function GetJobsApi() {
  * @returns job with that id
  */
 export async function GetJobApi(jobId) {
-        try {
+    try {
         const response = await fetch(
-            getApiUrl(`/api/jobs/${jobId}`), 
+            getApiUrl(`/api/jobs/${jobId}`),
             {
                 method: 'GET',
                 headers: {
@@ -353,7 +384,7 @@ export async function UploadResumeApi(file, setErrorMessage, token) {
     formData.append("resume", file);
 
     try {
-            const response = await fetch(getApiUrl("/api/resumes"), {
+        const response = await fetch(getApiUrl("/api/resumes"), {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -520,10 +551,10 @@ export async function ApplyForJob(jobId, resumeId, token) {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ 
-                jobId: Number(jobId), 
-                resumeId: Number(resumeId) 
-            }), 
+            body: JSON.stringify({
+                jobId: Number(jobId),
+                resumeId: Number(resumeId)
+            }),
         });
         const data = await response.json();
 
@@ -545,10 +576,10 @@ export async function ApplyForJob(jobId, resumeId, token) {
  * @returns  the application for the job
  */
 export async function GetSpecificJobHistory(jobId, token) {
-     try {
-       
+    try {
+
         const response = await fetch(
-            getApiUrl(`/api/applications/history?jobId=${jobId}`), 
+            getApiUrl(`/api/applications/history?jobId=${jobId}`),
             {
                 method: 'GET',
                 headers: {
@@ -570,7 +601,7 @@ export async function GetSpecificJobHistory(jobId, token) {
 }
 
 export async function GetJobHistory(token) {
-      try {
+    try {
         const response = await fetch(getApiUrl(`/api/applications/history`), {
             method: "GET",
             headers: {
@@ -614,15 +645,96 @@ export async function RegisterPushInstallationApi(token, installationId) {
     return true;
 }
 
-export async function UnregisterPushInstallationApi(token, installationId) {
+export async function UnregisterPushInstallationApi(token, installationId, options = {}) {
     const response = await fetch(
         getApiUrl(`/api/notifications/push/${encodeURIComponent(installationId)}`),
         {
             method: "DELETE",
             headers: { Authorization: `Bearer ${token}` },
+            ...options,
         },
     );
     return response.ok || response.status === 404;
+}
+
+export async function GetNotificationsApi(token) {
+    const response = await fetch(getApiUrl("/api/notifications"), {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!response.ok) return [];
+
+    const data = await response.json();
+    return Array.isArray(data.notifications) ? data.notifications : [];
+}
+
+export async function CreateNotificationStreamTicketApi(token) {
+    const response = await fetch(getApiUrl("/api/notifications/stream-ticket"), {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error(`Could not open notification stream (${response.status}).`);
+    return response.json();
+}
+
+export function GetNotificationStreamUrl(ticket) {
+    const streamUrl = new URL(getApiUrl("/api/notifications/stream"));
+    streamUrl.searchParams.set("ticket", ticket);
+    return streamUrl.toString();
+}
+
+export async function MarkNotificationReadApi(token, notificationId) {
+    const response = await fetch(
+        getApiUrl(`/api/notifications/${encodeURIComponent(notificationId)}`),
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ read: true }),
+        },
+    );
+    return response.ok;
+}
+
+export async function GetUserPreferenceApi(token, key) {
+    const response = await fetch(
+        getApiUrl(`/api/preferences/${encodeURIComponent(key)}`),
+        { headers: { Authorization: `Bearer ${token}` } },
+    );
+    if (response.status === 404) return null;
+    if (!response.ok) throw new Error(`Could not load preference (${response.status}).`);
+
+    const data = await response.json();
+    return data.preference?.value ?? null;
+}
+
+export async function SetUserPreferenceApi(token, key, value) {
+    const response = await fetch(
+        getApiUrl(`/api/preferences/${encodeURIComponent(key)}`),
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ value }),
+        },
+    );
+    if (!response.ok) {
+        let message = `Could not update preference (${response.status}).`;
+        try {
+            const data = await response.json();
+            if (typeof data.message === "string") message = data.message;
+        } catch {
+            // Keep the status-based message when the server does not return JSON.
+        }
+        throw new Error(message);
+    }
+
+    const data = await response.json();
+    return data.preference?.value ?? null;
 }
 
 export async function SendTestNotificationApi(token) {
@@ -947,7 +1059,7 @@ export async function ArchivedJobsApi(jobId, token, archive) {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                 Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ archive }),
         });
@@ -980,7 +1092,7 @@ export async function SaveJobApi(jobId, token) {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                
+
             }
         );
 
@@ -1012,7 +1124,7 @@ export async function RemoveSavedJobApi(jobId, token) {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                
+
             }
         );
 
