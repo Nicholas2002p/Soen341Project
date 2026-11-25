@@ -139,9 +139,14 @@ function ApplicationResumes({ application }) {
   return (
     <section className="recruiter-application-resumes">
       <div className="applicant-info">
-        <div className="applicant-email"> {application.applicant?.email} </div>
+        <div className="applicant-email"> Applicant's email: {application.applicant?.email} </div>
         <div className="applicant-status"> Status: {application.status} </div>
-        <div className="applicant-applied"> Applied: {new Date(application.appliedAt).toLocaleString()} </div>
+        <div className="applicant-applied">
+          Date of application: {new Date(application.appliedAt).toLocaleString('en-US', {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+          })}
+        </div>
       </div>
         <div className="applicant-resume-preview">
           {loading && <p> Loading resume</p>}
