@@ -1,12 +1,12 @@
 export const employmentTypes = [
-  { value: "on_site", label: "on site" },
-  { value: "hybrid", label: "hybrid" },
-  { value: "remote", label: "remote" },
+  { value: "on_site", label: "On site" },
+  { value: "hybrid", label: "Hybrid" },
+  { value: "remote", label: "Remote" },
 ];
 
 export const orderBy = [
 { id: "recent", name: "Most recent" },
-{ id: "salaryDesc", name: "Salary: high to low" },
-{ id: "salaryAsc", name: "Salary: low to high" },
+{ id: "salaryDesc", name: "Salary: High to Low" },
+{ id: "salaryAsc", name: "Salary: Low to High" },
 { id: "titleAsc", name: "Title A-Z" }
 ];
