@@ -92,25 +92,39 @@ function FolderTabs({ folderView, setFolderView }) {
  * @returns Display Job Openings
  */
 function DisplayJobOpenings({ setIsAdding, jobs, setCurrentJob, onDelete, folderView, setIsManaging }) {
+  const canAdd = !["applicants", "archive", "closed"].includes(folderView);
+
+  const emptyMessages = {
+    all: "",
+    open: "",
+    applicants: "No job postings have applicants yet.",
+    closed: "No closed job postings.",
+    archive: "No archived job postings.",
+  };
   return (
     <section className="folder-job-openings">
-      <AddJobOpening setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
-
-      {jobs.map((job, index) => (
-        <Job
-          page={""}
-          key={index}
-          job={job}
-          setIsAdding={setIsAdding}
-          setCurrentJob={setCurrentJob}
-          onDelete={onDelete}
-          folderView={folderView}
-          setIsManaging={(value) => {
-            setCurrentJob(job);
-            setIsManaging(value);
-          }}
-        />
-      ))}
+      {canAdd && (
+        <AddJobOpening setIsAdding={setIsAdding} setCurrentJob={setCurrentJob} />
+      )}
+      {jobs.length > 0 ? (
+        jobs.map((job, index) => (
+          <Job
+            page={""}
+            key={job.jobId ?? index}
+            job={job}
+            setIsAdding={setIsAdding}
+            setCurrentJob={setCurrentJob}
+            onDelete={onDelete}
+            folderView={folderView}
+            setIsManaging={(value) => {
+              setCurrentJob(job);
+              setIsManaging(value);
+            }}
+          />
+        ))
+      ) : (
+       <p className="no-jobs">{emptyMessages[folderView]}</p>
+      )}
     </section>
   );
 }
