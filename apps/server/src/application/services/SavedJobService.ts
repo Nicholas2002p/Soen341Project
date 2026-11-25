@@ -10,7 +10,7 @@ export class SavedJobService implements ISavedJobService {
     constructor(
         private readonly savedJobRepository: ISavedJobRepository,
         private readonly jobRepository: Pick<IJobRepository, 'getById'>,
-        private readonly notificationService?: Pick<NotificationService, 'create'>,
+        private readonly notificationService?: Pick<NotificationService, 'createOnce'>,
     ) { }
 
     /**
@@ -33,7 +33,7 @@ export class SavedJobService implements ISavedJobService {
                 const deadline = job.deadline.getTime();
                 return deadline >= now && deadline <= reminderDeadline;
             })
-            .map((job) => this.notificationService?.create(user.id, {
+            .map((job) => this.notificationService?.createOnce(user.id, {
                 type: 'deadline_reminder',
                 title: 'Saved job deadline approaching',
                 body: `${job.title} closes within ${reminderDays} day${reminderDays === 1 ? '' : 's'}.`,

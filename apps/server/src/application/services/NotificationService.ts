@@ -160,6 +160,18 @@ export class NotificationService {
         return notification;
     }
 
+    async createOnce(userId: number, input: CreateNotificationInput) {
+        const existing = await prisma.notification.findFirst({
+            where: {
+                userId,
+                type: input.type,
+                data: { equals: input.data ?? {} },
+            },
+        });
+
+        return existing ?? this.create(userId, input);
+    }
+
     async markRead(userId: number, notificationId: string, read: boolean) {
         const result = await prisma.notification.updateMany({
             where: { id: notificationId, userId },
