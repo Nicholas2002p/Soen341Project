@@ -1,3 +1,5 @@
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import './Password.scss';
 /**
  * Password
  * the password field in the form
@@ -20,8 +22,15 @@ export default function Password({labelName, passwordType, passwordType2, setPas
         <div className='password'>
             <label htmlFor="password"> {labelName} </label>
             <div className="password-display">
-                <input className='registration-input' type={password_type ? "password": "text" } name="password" maxLength="50" onChange={(e) => { set_password(e.target.value) }} />
-                <button className="eye" onClick={() => { set_password_type(!password_type)}}>p</button>
+                <input className='registration-input' type={password_type ? "password" : "text"} name="password" maxLength="50" onChange={(e) => { set_password(e.target.value) }} />
+                <button
+                    type="button"
+                    className="eye"
+                    onClick={() => { set_password_type(!password_type) }}
+                    aria-label={password_type ? "Show password" : "Hide password"}
+                >
+                    {password_type ? <FaEyeSlash/> : <FaEye/>}
+                </button>
             </div>
         </div>
     );
