@@ -73,16 +73,17 @@ export async function LogInApi(email, password, setErrorMessage, setToken, setUs
  * @param {*} setErrorMessage
  * @param {*} setToken
  * @param {*} setUser
+ * @param {*} role - "jobseeker" or "recruiter", only used the first time this Google account logs in
  * @returns true if response ok
  */
-export async function GoogleLogInApi(credential, setErrorMessage, setToken, setUser) {
+export async function GoogleLogInApi(credential, setErrorMessage, setToken, setUser, role) {
     try {
         const response = await fetch(getApiUrl("/api/auth/google"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ token: credential }),
+            body: JSON.stringify({ token: credential, role }),
         });
 
         const data = await response.json();

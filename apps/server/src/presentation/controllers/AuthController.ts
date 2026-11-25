@@ -278,15 +278,21 @@ export class AuthController {
   async googleLogin(req: Request, res: Response): Promise<void> {
     try {
       // Validate request body
-      const { token } = req.body ?? {};
+      const { token, role } = req.body ?? {};
 
       if (!token || typeof token !== 'string') {
         res.status(400).json({ message: 'A Google token is required.' });
         return;
       }
 
+      // The role is optional and only used for a first Google login
+      if (role !== undefined && ![UserRole.JobSeeker, UserRole.Recruiter].includes(role)) {
+        res.status(400).json({ message: 'A new account role must be jobseeker or recruiter.' });
+        return;
+      }
+
       // Call the authService to log in the user with Google
-      const result = await authService.loginWithGoogle(token);
+      const result = await authService.loginWithGoogle(token, role);
 
       // Return a 200 OK response with the user and session token
       res.status(200).json({
@@ -296,6 +302,11 @@ export class AuthController {
     } catch (error: unknown) {
       if (error instanceof InvalidGoogleTokenError) {
         res.status(401).json({ message: 'The Google token is invalid.' });
+        return;
+      }
+
+      if (error instanceof UnauthorizedUserActionError) {
+        res.status(400).json({ message: 'A new account role must be jobseeker or recruiter.' });
         return;
       }
 

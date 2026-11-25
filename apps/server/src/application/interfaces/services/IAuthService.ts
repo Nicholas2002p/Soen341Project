@@ -33,8 +33,8 @@ export interface IAuthService {
     //login a user, returns the user and a session token
     login(email: string, password: string): Promise<AuthenticationResult>;
 
-    //login or register a user with a Google ID token, returns the user and a session token
-    loginWithGoogle(idToken: string): Promise<AuthenticationResult>;
+    //the role is only used when the Google account logs in for the first time (jobseeker by default)
+    loginWithGoogle(idToken: string, role?: UserRole): Promise<AuthenticationResult>;
 
     //logout a user, invalidates the session token
     logout(sessionToken: string): Promise<void>;
