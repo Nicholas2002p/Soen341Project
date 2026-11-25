@@ -54,4 +54,8 @@ export class PrismaSessionRepository implements ISessionRepository {
             where: { tokenHash },
         });
     }
+
+    async deleteByUserId(userId: number): Promise<void> {
+        await prisma.session.deleteMany({ where: { userId } });
+    }
 }

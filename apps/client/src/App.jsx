@@ -8,6 +8,7 @@ import Registration from './views/authentication/Registration';
 import Login from './views/authentication/Login';
 import JobSearch from './views/job_search/JobSearch'
 import RecruiterJobPosting from './views/recruiter_job_posting/RecruiterJobPosting';
+import PasswordReset from './views/authentication/PasswordReset';
 
 
 import { AuthContext } from './utils/Auth';
@@ -26,7 +27,13 @@ function readStoredToken() {
 }
 
 function Main() {
-  const [view, setView] = useState("home");
+  const [view, setView] = useState(
+    window.location.pathname === '/reset-password'
+      ? 'reset-password'
+      : window.location.pathname === '/login'
+        ? 'sign-in'
+        : 'home'
+  );
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(readStoredToken);
   const [selectedJob, setSelectedJob] = useState(null);
@@ -75,12 +82,13 @@ function Main() {
       <div id="app">
         {view === "home" && <Home setView={setView} setSelectedJob={setSelectedJob} />}
         {view === "profile" && <Profile setView={setView} />}
-        {view === "registration" && <Registration setView={setView} />}
-        {view === "sign-in" && <Login setView={setView} />}
-        {view === "history" && <JobApplicationHistory setView={setView} />}
-        {view === "job-search" && <JobSearch setView={setView} setSelectedJob={setSelectedJob} />}
-        {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} />}
-        {view === "job-application" && <JobApplication setView={setView} job={selectedJob} />}
+        {view === "registration" && <Registration setView={setView} />} 
+        {view === "sign-in" && <Login setView={setView} />} 
+        {view === "history" && <JobApplicationHistory setView={setView}/>}
+        {view === "job-search" && <JobSearch setView={setView} setSelectedJob={setSelectedJob} />} 
+        {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} /> }
+        {view === "job-application" && <JobApplication setView={setView} job={selectedJob}/> }
+        {view === "reset-password" && <PasswordReset setView={setView} />}
       </div>
     </AuthContext.Provider>
   );

@@ -1137,68 +1137,63 @@ async function main() {
       {
         userId: alice.userId,
         type: "application_update",
-        message:
-          "Your application for Full-Stack Intern has been accepted.",
-        read: false,
+        title: "Application accepted",
+        body: "Your application for Full-Stack Intern has been accepted.",
         createdAt: new Date("2026-09-24T09:05:00"),
       },
       {
         userId: alice.userId,
         type: "deadline_reminder",
-        message:
-          "Junior Backend Developer application deadline is approaching.",
-        read: true,
+        title: "Application deadline approaching",
+        body: "Junior Backend Developer application deadline is approaching.",
+        readAt: new Date("2026-09-25T08:30:00"),
         createdAt: new Date("2026-09-25T08:00:00"),
       },
 
       {
         userId: marc.userId,
         type: "application_update",
-        message:
-          "Your application for Full-Stack Intern was not selected.",
-        read: false,
+        title: "Application update",
+        body: "Your application for Full-Stack Intern was not selected.",
         createdAt: new Date("2026-09-23T14:35:00"),
       },
       {
         userId: marc.userId,
         type: "deadline_reminder",
-        message:
-          "Frontend Developer application deadline is October 20.",
-        read: false,
+        title: "Application deadline",
+        body: "Frontend Developer application deadline is October 20.",
         createdAt: new Date("2026-09-24T08:00:00"),
       },
 
       {
         userId: sophia.userId,
         type: "application_update",
-        message:
-          "Your application for Junior Data Analyst has been accepted.",
-        read: false,
+        title: "Application accepted",
+        body: "Your application for Junior Data Analyst has been accepted.",
         createdAt: new Date("2026-09-25T10:20:00"),
       },
       {
         userId: sophia.userId,
         type: "job_recommendation",
-        message:
-          "A new Machine Learning Intern position matches your skills.",
-        read: true,
+        title: "New job recommendation",
+        body: "A new Machine Learning Intern position matches your skills.",
+        readAt: new Date("2026-09-20T12:30:00"),
         createdAt: new Date("2026-09-20T12:00:00"),
       },
 
       {
         userId: emily.userId,
         type: "new_application",
-        message:
-          "Alice Chen applied for Junior Backend Developer.",
-        read: false,
+        title: "New application",
+        body: "Alice Chen applied for Junior Backend Developer.",
         createdAt: new Date("2026-09-18T10:21:00"),
       },
       {
         userId: emily.userId,
         type: "new_application",
-        message:
-          "Marc Tremblay applied for Frontend Developer.",
-        read: true,
+        title: "New application",
+        body: "Marc Tremblay applied for Frontend Developer.",
+        readAt: new Date("2026-09-20T10:00:00"),
         createdAt: new Date("2026-09-20T09:31:00"),
       },
     ],
