@@ -17,9 +17,12 @@ import { UserRole } from '../../domain/entities/User.js';
 import { UserNotFoundError } from '../../domain/errors/UserNotFoundError.js';
 import { UnauthorizedUserActionError } from '../../domain/errors/UnauthorizedUserActionError.js';
 import type { NotificationService } from './NotificationService.js';
+import type { IPasswordResetTokenRepository } from '../interfaces/repositories/IPasswordResetTokenRepository.js';
+import type { IEmailService } from '../interfaces/infrastructure/IEmailService.js';
 
 export class AuthService implements IAuthService {
     private static readonly SESSION_EXPIRATION_DAYS = 30; // Session expires in 30 days
+    private static readonly PASSWORD_RESET_EXPIRATION_MINUTES = 30;
 
     constructor(
         private readonly userRepository: IUserRepository,
@@ -30,6 +33,9 @@ export class AuthService implements IAuthService {
         private readonly googleTokenVerifier: IGoogleTokenVerifier,
         private readonly profileRepository: IProfileRepository,
         private readonly notificationService?: Pick<NotificationService, 'create'>,
+        private readonly passwordResetTokenRepository?: IPasswordResetTokenRepository,
+        private readonly emailService?: IEmailService,
+        private readonly passwordResetUrl = `${(process.env.PUBLIC_CLIENT_URL ?? 'http://localhost:5173').replace(/\/+$/, '')}/reset-password`,
     ) { }
 
     private toPublicUser(user: User): PublicUser {
@@ -71,6 +77,12 @@ export class AuthService implements IAuthService {
             this.sessionTokenGenerator.hash(sessionToken),
             this.getSessionExpiration());
 
+        try {
+            await this.sendWelcomeEmail(newUser.email);
+        } catch (error: unknown) {
+            console.error('Welcome email could not be sent:', error);
+        }
+
         if (process.env.NODE_ENV === 'development') {
             console.log('Sending registration notification for user:', newUser.id);
             await this.notificationService?.create(newUser.id, {
@@ -84,6 +96,51 @@ export class AuthService implements IAuthService {
             user: this.toPublicUser(newUser),
             sessionToken,
         };
+    }
+
+    async sendWelcomeEmail(email: string): Promise<void> {
+        if (process.env.NODE_ENV === 'test') {
+            return;
+        }
+        if (!this.emailService) {
+            return;
+        }
+
+        const normalizedEmail = normalizeEmail(email);
+        if (!isValidEmail(normalizedEmail)) {
+            throw new InvalidEmailError();
+        }
+
+        const firstName = normalizedEmail.split('@')[0] || 'CareerConnect member';
+        await this.emailService.send({
+            to: normalizedEmail,
+            subject: 'Welcome to CareerConnect',
+            template: 'WelcomeEmail',
+            props: { firstName },
+        });
+    }
+
+    async sendTestEmail(email: string): Promise<void> {
+        if (process.env.NODE_ENV === 'test') {
+            return;
+        }
+        if (!this.emailService) {
+            return;
+        }
+
+        const normalizedEmail = normalizeEmail(email);
+        if (!isValidEmail(normalizedEmail)) {
+            throw new InvalidEmailError();
+        }
+
+        await this.emailService.send({
+            to: normalizedEmail,
+            subject: 'CareerConnect test email',
+            template: 'TestEmail',
+            props: {
+                message: 'This is a test email from CareerConnect.',
+            },
+        });
     }
 
     async updateUser(
@@ -311,6 +368,68 @@ export class AuthService implements IAuthService {
         // If the session is valid, retrieve the user associated with the session
         const user = await this.userRepository.getById(session.userId);
         return user ? this.toPublicUser(user) : null;
+    }
+
+    async requestPasswordReset(email: string): Promise<void> {
+        if (!this.passwordResetTokenRepository || !this.emailService) {
+            throw new Error('Password reset dependencies are not configured.');
+        }
+
+        const normalizedEmail = normalizeEmail(email);
+        if (!isValidEmail(normalizedEmail)) {
+            throw new InvalidEmailError();
+        }
+
+        const user = await this.userRepository.getByEmail(normalizedEmail);
+        if (!user) {
+            return;
+        }
+
+        await this.passwordResetTokenRepository.deleteByUserId(user.id);
+        const token = randomBytes(32).toString('hex');
+        const expiresAt = new Date(Date.now() + AuthService.PASSWORD_RESET_EXPIRATION_MINUTES * 60 * 1000);
+        await this.passwordResetTokenRepository.create(
+            user.id,
+            this.sessionTokenGenerator.hash(token),
+            expiresAt,
+        );
+
+        await this.emailService.send({
+            to: user.email,
+            subject: 'Reset your CareerConnect password',
+            template: 'PasswordResetEmail',
+            props: {
+                resetUrl: `${this.passwordResetUrl}?token=${encodeURIComponent(token)}`,
+                expiresInMinutes: AuthService.PASSWORD_RESET_EXPIRATION_MINUTES,
+            },
+        });
+    }
+
+    async resetPassword(token: string, password: string): Promise<void> {
+        if (!this.passwordResetTokenRepository) {
+            throw new Error('Password reset dependencies are not configured.');
+        }
+
+        const tokenRecord = await this.passwordResetTokenRepository.getByTokenHash(
+            this.sessionTokenGenerator.hash(token),
+        );
+        if (!tokenRecord || tokenRecord.expiresAt <= new Date()) {
+            if (tokenRecord) {
+                await this.passwordResetTokenRepository.deleteById(tokenRecord.id);
+            }
+            throw new InvalidAuthCredentialsError();
+        }
+
+        const saltRounds = this.passwordHasher.getDefaultSaltRounds();
+        const passwordHash = await this.passwordHasher.hash(password, saltRounds);
+        const updatedUser = await this.userRepository.update(tokenRecord.userId, { passwordHash });
+        if (!updatedUser) {
+            throw new UserNotFoundError();
+        }
+
+        await this.saltRepository.save(tokenRecord.userId, saltRounds);
+        await this.sessionRepository.deleteByUserId(tokenRecord.userId);
+        await this.passwordResetTokenRepository.deleteByUserId(tokenRecord.userId);
     }
 
     private getSessionExpiration(): Date {

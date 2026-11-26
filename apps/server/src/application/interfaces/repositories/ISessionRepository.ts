@@ -10,4 +10,5 @@ export interface ISessionRepository {
     getByTokenHash(tokenHash: string): Promise<session | null>;
     delete(sessionId: number): Promise<void>;
     deleteTokenByHash(tokenHash: string): Promise<void>;
+    deleteByUserId(userId: number): Promise<void>;
 }
