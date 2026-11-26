@@ -60,11 +60,10 @@
 
     input {
       @include style.width-height(20px, 20px);
+      @include style.flex-align-justify(center, center);
       order: 1;
       flex: none;
       margin: 0 0 0 auto;
-      display: grid;
-      place-items: center;
       appearance: none;
       -webkit-appearance: none;
       border: style.$black-border;

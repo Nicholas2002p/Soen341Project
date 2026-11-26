@@ -1157,7 +1157,7 @@ export async function GetAnalyticsApi(token) {
             return [];
         }
 
-        const data = await response.json();;
+        const data = await response.json();
         return data.analytics;
     } catch (error) {
         console.error(error);
@@ -1190,10 +1190,3 @@ export async function GetResumeAsRecruiterApi(token, id) {
         return null;
     }
 }
-//const blob = await response.blob();
-        // const url = URL.createObjectURL(blob);
-        // const link = document.createElement("a");
-        // link.href = url;
-        // link.download = resume.fileName;
-        // link.click();
-        // URL.revokeObjectURL(url);
