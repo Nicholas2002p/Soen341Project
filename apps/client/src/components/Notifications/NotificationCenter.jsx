@@ -6,13 +6,16 @@ import {
   CreateNotificationStreamTicketApi,
   GetNotificationStreamUrl,
 } from "../../utils/Api";
+import NotificationToggle from "./NotificationToggle";
 import "./NotificationCenter.scss";
 
 export default function NotificationCenter({ token }) {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [markingAllRead, setMarkingAllRead] = useState(false);
   const [error, setError] = useState("");
+  const [actionError, setActionError] = useState("");
 
   useEffect(() => {
     if (!token) {
@@ -95,8 +98,12 @@ export default function NotificationCenter({ token }) {
   const markRead = async (notification) => {
     if (notification.readAt) return;
 
-    const marked = await MarkNotificationReadApi(token, notification.id);
-    if (marked) {
+    try {
+      const marked = await MarkNotificationReadApi(token, notification.id);
+      if (!marked) {
+        setActionError("Could not mark this notification as read.");
+        return;
+      }
       setNotifications((current) =>
         current.map((item) =>
           item.id === notification.id
@@ -104,7 +111,43 @@ export default function NotificationCenter({ token }) {
             : item,
         ),
       );
+    } catch (reason) {
+      setActionError(reason instanceof Error ? reason.message : "Could not mark this notification as read.");
     }
+  };
+
+  const markAllRead = async () => {
+    const unreadNotifications = notifications.filter((notification) => !notification.readAt);
+    if (unreadNotifications.length === 0) return;
+
+    setMarkingAllRead(true);
+    setActionError("");
+    const results = await Promise.allSettled(
+      unreadNotifications.map((notification) =>
+        MarkNotificationReadApi(token, notification.id),
+      ),
+    );
+    const successfulIds = new Set(
+      results.flatMap((result, index) =>
+        result.status === "fulfilled" && result.value
+          ? [unreadNotifications[index].id]
+          : [],
+      ),
+    );
+
+    if (successfulIds.size > 0) {
+      const readAt = new Date().toISOString();
+      setNotifications((current) =>
+        current.map((notification) =>
+          successfulIds.has(notification.id) ? { ...notification, readAt } : notification,
+        ),
+      );
+    }
+
+    if (successfulIds.size !== unreadNotifications.length) {
+      setActionError("Some notifications could not be marked as read. Please try again.");
+    }
+    setMarkingAllRead(false);
   };
 
   return (
@@ -136,7 +179,23 @@ export default function NotificationCenter({ token }) {
               </button>
             </header>
 
+            <div className="notification-sidebar-actions">
+              <div className="notification-push-setting">
+                <span>Push notifications</span>
+                <NotificationToggle token={token} />
+              </div>
+              <button
+                type="button"
+                className="notification-read-all"
+                onClick={() => void markAllRead()}
+                disabled={unreadCount === 0 || markingAllRead || loading}
+              >
+                {markingAllRead ? "Reading..." : "Read all"}
+              </button>
+            </div>
+
             <div className="notification-list">
+              {actionError && <p className="notification-status notification-error" role="alert">{actionError}</p>}
               {loading && <p className="notification-status">Loading notifications...</p>}
               {!loading && error && <p className="notification-status notification-error">{error}</p>}
               {!loading && !error && notifications.length === 0 && (

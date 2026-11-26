@@ -1,9 +1,7 @@
 import { useAuth } from "../../utils/Auth";
 import { googleLogout } from "@react-oauth/google";
 import { LogOutApi } from "../../utils/Api";
-import NotificationToggle, {
-  UnregisterStoredPushInstallation,
-} from "../Notifications/NotificationToggle";
+import { UnregisterStoredPushInstallation } from "../Notifications/NotificationToggle";
 import NotificationCenter from "../Notifications/NotificationCenter";
 
 /**
@@ -53,7 +51,6 @@ function SignedIn({ setView, setToken, token }) {
   return (
     <>
       <NotificationCenter token={token} />
-      <NotificationToggle token={token} />
       <a onClick={async () => {
         await UnregisterStoredPushInstallation(token);
         await LogOutApi(token);
