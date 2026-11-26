@@ -12,10 +12,9 @@ import NotificationCenter from "../Notifications/NotificationCenter";
  * Account
  * component shows the profile picture + name of the signed in user
  * 
- * @param {Function} setView
  * @returns the account component 
  */
-export default function Account({ setView }) {
+export default function Account({ }) {
   const { token, setToken } = useAuth();
 
   return (
@@ -31,7 +30,6 @@ export default function Account({ setView }) {
  * Sign In
  * displays the sign in button for the user to sign in
  * 
- * @param {Function} setView 
  * @returns the sign in component
  */
 function SignIn({ }) {
