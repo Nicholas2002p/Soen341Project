@@ -3,6 +3,8 @@ import { notificationController } from '../controllers/NotificationController.js
 import { authMiddleware } from '../middleware/AuthMiddleware.js';
 
 export const notificationRoutes = Router();
+notificationRoutes.post('/stream-ticket', authMiddleware, notificationController.createStreamTicket.bind(notificationController));
+notificationRoutes.get('/stream', notificationController.stream.bind(notificationController));
 notificationRoutes.use(authMiddleware);
 notificationRoutes.get('/', notificationController.list.bind(notificationController));
 notificationRoutes.post('/', notificationController.create.bind(notificationController));

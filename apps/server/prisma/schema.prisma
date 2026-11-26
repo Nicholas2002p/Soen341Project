@@ -51,8 +51,10 @@ model User {
   savedJobs     SavedJob[]
   notifications Notification[]
   pushInstallations PushInstallation[]
+  preferences   UserPreference[]
   salt          Salt?
   sessions      Session[]
+  passwordResetTokens PasswordResetToken[]
 
   @@map("Users")
   skillOnProfiles SkillOnProfile[]
@@ -70,6 +72,19 @@ model Session {
 
   @@index([userId])
   @@map("Session")
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("userId")
+  tokenHash String   @unique @map("token_hash") @db.VarChar(64)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("PasswordResetToken")
 }
 
 ///To store salt for passwords
@@ -222,6 +237,21 @@ model PushInstallation {
   deliveries NotificationDelivery[]
 
   @@map("push_installations")
+}
+
+/// Flexible key/value preferences owned by an authenticated user.
+model UserPreference {
+  userId    Int      @map("user_id")
+  key       String   @db.VarChar(100)
+  value     Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@id([userId, key])
+  @@index([key])
+  @@map("user_preferences")
 }
 
 model NotificationDelivery {

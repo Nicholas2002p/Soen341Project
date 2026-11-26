@@ -7,6 +7,14 @@ import type { User } from '../../src/domain/entities/User.js';
 import { UserRole } from '../../src/domain/entities/User.js';
 import type { GoogleProfile, IGoogleTokenVerifier } from '../../src/application/interfaces/infrastructure/IGoogleTokenVerifier.js';
 import { InvalidGoogleTokenError } from '../../src/domain/errors/InvalidGoogleTokenError.js';
+import type {
+    IPasswordResetTokenRepository,
+    PasswordResetToken,
+} from '../../src/application/interfaces/repositories/IPasswordResetTokenRepository.js';
+import type {
+    EmailMessage,
+    IEmailService,
+} from '../../src/application/interfaces/infrastructure/IEmailService.js';
 export const user: User = {
     id: 1,
     email: 'person@example.com',
@@ -97,6 +105,14 @@ export class FakeSessionRepository implements ISessionRepository {
         this.deletedTokenHashes.push(tokenHash);
         this.sessions.delete(tokenHash);
     }
+
+    async deleteByUserId(userId: number): Promise<void> {
+        for (const [tokenHash, storedSession] of this.sessions) {
+            if (storedSession.userId === userId) {
+                this.sessions.delete(tokenHash);
+            }
+        }
+    }
 }
 
 // Deterministic password fake that makes hashing and verification assertions simple.
@@ -151,5 +167,45 @@ export class FakeGoogleTokenVerifier implements IGoogleTokenVerifier {
             throw new InvalidGoogleTokenError();
         }
         return profile;
+    }
+}
+
+export class FakePasswordResetTokenRepository implements IPasswordResetTokenRepository {
+    tokens = new Map<string, PasswordResetToken>();
+    deletedUserIds: number[] = [];
+
+    async create(userId: number, tokenHash: string, expiresAt: Date): Promise<PasswordResetToken> {
+        const token = { id: this.tokens.size + 1, userId, tokenHash, expiresAt };
+        this.tokens.set(tokenHash, token);
+        return token;
+    }
+
+    async getByTokenHash(tokenHash: string): Promise<PasswordResetToken | null> {
+        return this.tokens.get(tokenHash) ?? null;
+    }
+
+    async deleteById(id: number): Promise<void> {
+        for (const [tokenHash, token] of this.tokens) {
+            if (token.id === id) {
+                this.tokens.delete(tokenHash);
+            }
+        }
+    }
+
+    async deleteByUserId(userId: number): Promise<void> {
+        this.deletedUserIds.push(userId);
+        for (const [tokenHash, token] of this.tokens) {
+            if (token.userId === userId) {
+                this.tokens.delete(tokenHash);
+            }
+        }
+    }
+}
+
+export class FakeEmailService implements IEmailService {
+    messages: EmailMessage[] = [];
+
+    async send<TProps extends Record<string, unknown>>(message: EmailMessage<TProps>): Promise<void> {
+        this.messages.push(message);
     }
 }

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import "./Registration.scss";
 import Password from '../../components/Registration/Password';
 import { useAuth } from '../../utils/Auth'
-import { LogInApi } from '../../utils/Api';
+import { LogInApi, RequestPasswordResetApi } from '../../utils/Api';
 import GoogleSignIn from '../../components/Registration/google';
 
 /**
@@ -16,7 +16,31 @@ export default function Login({ setView }) {
     const [errorMessage, setErrorMessage] = useState('');
     const [passwordType, setPasswordType] = useState(true);
     const [passwordType2, setPasswordType2] = useState(true);
+    const [forgotPasswordMessage, setForgotPasswordMessage] = useState('');
+    const [sendingForgotPassword, setSendingForgotPassword] = useState(false);
     const { setToken, setUser } = useAuth();
+
+    const requestForgotPassword = async () => {
+        const resetEmail = window.prompt('Enter your email address for a password reset:', email);
+        if (resetEmail === null) return;
+
+        const normalizedEmail = resetEmail.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+            setForgotPasswordMessage('Please enter a valid email address.');
+            return;
+        }
+
+        setSendingForgotPassword(true);
+        setForgotPasswordMessage('');
+        try {
+            await RequestPasswordResetApi(normalizedEmail);
+            setForgotPasswordMessage('If an account exists for that email, a password reset email has been sent.');
+        } catch (error) {
+            setForgotPasswordMessage(error instanceof Error ? error.message : 'Password reset email could not be sent.');
+        } finally {
+            setSendingForgotPassword(false);
+        }
+    };
 
     return (
         <section className="registration">
@@ -35,6 +59,10 @@ export default function Login({ setView }) {
                         Don't have an account?
                         <a className='cursor' onClick={() => { setView("registration") }}> Register </a>
                     </section>
+                    <button type="button" className="cursor" onClick={requestForgotPassword} disabled={sendingForgotPassword}>
+                        {sendingForgotPassword ? 'Sending...' : 'Forgot password?'}
+                    </button>
+                    {forgotPasswordMessage && <span className="error-text" role="status">{forgotPasswordMessage}</span>}
 
                     <span className="error-text">
                         {errorMessage}

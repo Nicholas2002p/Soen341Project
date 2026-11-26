@@ -1,6 +1,9 @@
 import { prisma } from '../../infrastructure/prisma/prisma.js';
 import { cert, getApps, initializeApp, type App } from 'firebase-admin/app';
 import { getMessaging, type Messaging } from 'firebase-admin/messaging';
+import { randomBytes } from 'node:crypto';
+import type { Response } from 'express';
+import type { UserPreferenceService } from './UserPreferenceService.js';
 
 export interface CreateNotificationInput {
     type: string;
@@ -11,6 +14,57 @@ export interface CreateNotificationInput {
 
 export class NotificationService {
     private firebaseApp: App | null | undefined;
+    private preferenceService: Pick<UserPreferenceService, 'pushNotificationsEnabled'> | null = null;
+    private readonly streamTickets = new Map<string, { userId: number; expiresAt: number }>();
+    private readonly streams = new Map<number, Set<Response>>();
+
+    setPreferenceService(preferenceService: Pick<UserPreferenceService, 'pushNotificationsEnabled'>): void {
+        this.preferenceService = preferenceService;
+    }
+
+    createStreamTicket(userId: number): { ticket: string; expiresAt: number } {
+        const ticket = randomBytes(32).toString('base64url');
+        const expiresAt = Date.now() + 30_000;
+        this.streamTickets.set(ticket, { userId, expiresAt });
+        setTimeout(() => {
+            const current = this.streamTickets.get(ticket);
+            if (current?.expiresAt === expiresAt) {
+                this.streamTickets.delete(ticket);
+            }
+        }, 31_000);
+        return { ticket, expiresAt };
+    }
+
+    subscribeStream(ticket: string, res: Response): boolean {
+        const entry = this.streamTickets.get(ticket);
+        if (!entry || entry.expiresAt < Date.now()) {
+            if (entry) this.streamTickets.delete(ticket);
+            return false;
+        }
+
+        this.streamTickets.delete(ticket);
+        const userStreams = this.streams.get(entry.userId) ?? new Set<Response>();
+        userStreams.add(res);
+        this.streams.set(entry.userId, userStreams);
+
+        res.on('close', () => {
+            userStreams.delete(res);
+            if (userStreams.size === 0) this.streams.delete(entry.userId);
+        });
+
+        const heartbeat = setInterval(() => {
+            if (!res.writableEnded) res.write(': heartbeat\n\n');
+        }, 25_000);
+        res.on('close', () => clearInterval(heartbeat));
+        return true;
+    }
+
+    private emit(userId: number, notification: unknown): void {
+        const payload = `event: notification\ndata: ${JSON.stringify(notification)}\n\n`;
+        for (const res of this.streams.get(userId) ?? []) {
+            if (!res.writableEnded) res.write(payload);
+        }
+    }
 
     private getMessaging(): Messaging | null {
         if (this.firebaseApp === null) {
@@ -54,6 +108,15 @@ export class NotificationService {
                 data: input.data ?? {},
             },
         });
+        this.emit(userId, notification);
+
+        if (!this.preferenceService) {
+            return notification;
+        }
+
+        if (!(await this.preferenceService.pushNotificationsEnabled(userId))) {
+            return notification;
+        }
 
         const installations = await prisma.pushInstallation.findMany({
             where: { userId },

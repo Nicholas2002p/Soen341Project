@@ -25,12 +25,25 @@ import { JobService } from '../application/services/JobService.js';
 import { PrismaSavedJobRepository } from './repositories/PrismaSavedJobRepository.js';
 import { SavedJobService } from '../application/services/SavedJobService.js';
 import { notificationService } from '../application/services/NotificationService.js';
+import { PrismaPasswordResetTokenRepository } from './repositories/PrismaPasswordResetTokenRepository.js';
+import { FileEmailTemplateLoader } from './email/FileEmailTemplateLoader.js';
+import { SendGridEmailService } from './email/SendGridEmailService.js';
+import { NoopEmailService } from './email/NoopEmailService.js';
+import { emailConfig } from './email/emailConfig.js';
+import { PrismaUserPreferenceRepository } from './repositories/PrismaUserPreferenceRepository.js';
+import { UserPreferenceService } from '../application/services/UserPreferenceService.js';
 
 // Initialize repositories, services, and other dependencies
 const userRepository = new PrismaUserRepository(prisma);
 const sessionRepository = new PrismaSessionRepository();
 const passwordHasher = new BcryptPasswordHasher();
 const sessionTokenGenerator = new SessionTokenGenerator();
+const passwordResetTokenRepository = new PrismaPasswordResetTokenRepository();
+const emailService = process.env.NODE_ENV !== 'test'
+  && process.env.SENDGRID_API_KEY
+  && emailConfig.from
+  ? new SendGridEmailService(new FileEmailTemplateLoader(emailConfig.templatesDirectory, emailConfig.templateExtension), emailConfig.from)
+  : new NoopEmailService();
 const saltRepository = new PrismaSaltRepository(prisma);
 const resumeRepository = new PrismaResumeRepository(prisma);
 const localStorage = process.env.NODE_ENV === 'test';
@@ -47,6 +60,9 @@ const profileRepository = new PrismaProfileRepository(prisma);
 const jobRepository = new PrismaJobRepository(prisma);
 const jobService = new JobService(jobRepository);
 const applicationRepository = new PrismaApplicationRepository(prisma);
+const userPreferenceRepository = new PrismaUserPreferenceRepository(prisma);
+const userPreferenceService = new UserPreferenceService(userPreferenceRepository);
+notificationService.setPreferenceService(userPreferenceService);
 
 const userService = new UserService(userRepository);
 const authService = new AuthService(
@@ -56,7 +72,10 @@ const authService = new AuthService(
   sessionTokenGenerator,
   saltRepository,
   googleTokenVerifier,
-  profileRepository
+  profileRepository,
+  undefined,
+  passwordResetTokenRepository,
+  emailService,
 );
 const profileService = new ProfileService(profileRepository, userRepository);
 const resumeService = new ResumeService(resumeRepository, resumeStorage);
@@ -76,4 +95,5 @@ export {
   jobService,
   savedJobService,
   notificationService,
+  userPreferenceService,
 };
