@@ -14,6 +14,7 @@ const ITEMS_PER_PAGE = 10;
  * @returns the job search component
  */
 export default function JobList({ jobs, setSelectedJob }) {
+  const navigate = useNavigate();
   const { token, user } = useAuth();
   const [page, setPage] = useState(1);
 
@@ -31,7 +32,7 @@ export default function JobList({ jobs, setSelectedJob }) {
     if (token && user?.role !== "recruiter"){
     const jobData = await GetJobApi(job.jobId);
     setSelectedJob(jobData);
-    useNavigate("/job-application");
+    navigate("/job-application");
 
     // setView("job-application");
     }

@@ -11,6 +11,7 @@ import "./Registration.scss";
  * @returns the registration page
  */
 export default function Registration({  }) {
+    const navigate = useNavigate();
     const [fname, setFName] = useState('');
     const [lname, setLName] = useState('');
     const [email, setEmail] = useState('');
@@ -62,7 +63,7 @@ export default function Registration({  }) {
                         {errorMessage}
                     </span>
                 
-                    <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken, checked, setUser) } }> Register </button>
+                    <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken, checked, setUser, navigate) } }> Register </button>
                 </section>
             </main>
         </section>
@@ -80,8 +81,8 @@ export default function Registration({  }) {
  * @param {string} email 
  * @param {functio} setToken 
  * @param {string} token 
- */          
-async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken, checked, setUser) { 
+ */ 
+async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken, checked, setUser, navigate) { 
     if (email.trim() === "") setErrorMessage("Email is required");
 
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setErrorMessage("Please enter a valid email address");
@@ -101,7 +102,7 @@ async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname
         setErrorMessage("");
         const allGood = await RegisterApi(fname, lname, email, password, setErrorMessage, setToken, role, setUser);
         if(allGood) {
-            useNavigate("/profile");
+            navigate("/profile");
             // setView("profile");
         };
     }

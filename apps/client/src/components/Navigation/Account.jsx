@@ -15,12 +15,13 @@ import NotificationCenter from "../Notifications/NotificationCenter";
  * @returns the account component 
  */
 export default function Account({ }) {
+  const navigate = useNavigate();
   const { token, setToken } = useAuth();
 
   return (
     <section className="account">
       {!token && <SignIn />}
-      {token && <SignedIn setToken={setToken} token={token} />}
+      {token && <SignedIn navigate={navigate} setToken={setToken} token={token} />}
 
     </section>
   );
@@ -50,9 +51,7 @@ function SignIn({ }) {
  * @param {Function} setToken 
  * @returns the signed in component
  */
-function SignedIn({ setToken, token }) {
-  const navigate = useNavigate();
-
+function SignedIn({ navigate, setToken, token }) {
   return (
     <>
       <NotificationCenter token={token} />

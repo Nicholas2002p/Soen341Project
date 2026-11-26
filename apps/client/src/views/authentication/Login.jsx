@@ -13,6 +13,7 @@ import "./Registration.scss";
  * @returns returns the sign in page
  */
 export default function Login({  }) {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -72,7 +73,7 @@ export default function Login({  }) {
                         {errorMessage}
                     </span>
 
-                    <button className="register-btn" onClick={() => { RegisterUser(password, setErrorMessage, email, setToken, setUser) }}> Log in </button>
+                    <button className="register-btn" onClick={() => { RegisterUser(password, setErrorMessage, email, setToken, setUser, navigate) }}> Log in </button>
                     <GoogleSignIn setToken={setToken} setUser={setUser}  />
                 </section>
             </main>
@@ -89,7 +90,7 @@ export default function Login({  }) {
  * @param {string} email 
  * @param {function} setToken 
  */
-async function RegisterUser(password, setErrorMessage, email, setToken, setUser) {
+async function RegisterUser(password, setErrorMessage, email, setToken, setUser, navigate) {
     if (email.trim() === "") {
         setErrorMessage("Email is required");
     }
@@ -105,7 +106,7 @@ async function RegisterUser(password, setErrorMessage, email, setToken, setUser)
     else {
         setErrorMessage("");
         const allGood = await LogInApi(email, password, setErrorMessage, setToken, setUser);
-        if (allGood) useNavigate("/profile");
+        if (allGood) navigate("/profile");
         
         // if (allGood) setView("profile");
     }
