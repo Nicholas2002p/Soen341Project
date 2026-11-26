@@ -1,6 +1,8 @@
+import { Link, useNavigate } from 'react-router';
 import { useAuth } from "../../utils/Auth";
 import { googleLogout } from "@react-oauth/google";
 import { LogOutApi } from "../../utils/Api";
+
 import NotificationToggle, {
   UnregisterStoredPushInstallation,
 } from "../Notifications/NotificationToggle";
@@ -18,8 +20,8 @@ export default function Account({ setView }) {
 
   return (
     <section className="account">
-      {!token && <SignIn setView={setView} />}
-      {token && <SignedIn setView={setView} setToken={setToken} token={token} />}
+      {!token && <SignIn />}
+      {token && <SignedIn setToken={setToken} token={token} />}
 
     </section>
   );
@@ -32,10 +34,12 @@ export default function Account({ setView }) {
  * @param {Function} setView 
  * @returns the sign in component
  */
-function SignIn({ setView }) {
+function SignIn({ }) {
   return (
     <>
-      <a onClick={() => { setView("registration") }}> Sign in </a>
+      <Link to="/registration"> Sign in </Link>
+
+      {/* <a onClick={() => { setView("registration") }}> Sign in </a> */}
     </>
   );
 }
@@ -45,22 +49,26 @@ function SignIn({ setView }) {
  * will show that the user is signed in
  * Name display will be shown in sprint 2
  * 
- * @param {Function} setView
  * @param {Function} setToken 
  * @returns the signed in component
  */
-function SignedIn({ setView, setToken, token }) {
+function SignedIn({ setToken, token }) {
+  const navigate = useNavigate();
+
   return (
     <>
       <NotificationCenter token={token} />
       <NotificationToggle token={token} />
+
       <a onClick={async () => {
         await UnregisterStoredPushInstallation(token);
         await LogOutApi(token);
         googleLogout();
-        setView("home");
         setToken(null);
+        navigate("/");
+        // setView("home");
       }}> Logout </a>
+
     </>
   )
 }
