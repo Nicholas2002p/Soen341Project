@@ -10,3 +10,12 @@ export const orderBy = [
 { id: "salaryAsc", name: "Salary: Low to High" },
 { id: "titleAsc", name: "Title A-Z" }
 ];
+
+export const STATUS_OPTIONS = [
+  { value: 'All', label: 'All' },
+  { value: 'Applied', label: 'Applied' },
+  { value: 'Under_Review', label: 'Under review' },
+  { value: 'Interview', label: 'Interview' },
+  { value: 'Offered', label: 'Offered' },
+  { value: 'Rejected', label: 'Rejected' },
+];

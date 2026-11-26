@@ -46,7 +46,7 @@
     padding: 10px 12px;
     border: style.$black-border;
     border-radius: 8px;
-    background: #fff;
+    background: style.$off-white;
     cursor: pointer;
     transition: background 0.15s;
 
@@ -68,7 +68,7 @@
       -webkit-appearance: none;
       border: style.$black-border;
       border-radius: 6px;
-      background: #fff;
+      background: style.$off-white;
       cursor: pointer;
 
       &::after {

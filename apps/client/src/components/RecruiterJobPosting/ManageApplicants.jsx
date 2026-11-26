@@ -1,6 +1,7 @@
 import './ManageApplicants.scss';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../utils/Auth';
+import {STATUS_OPTIONS} from '../../utils/filterTypes';
 import { GetJobApplicationsApi, UpdateApplicationStatusApi, GetResumeAsRecruiterApi } from '../../utils/Api';
 
 export default function ManageApplicants({ jobId, setIsManaging }) {
@@ -162,14 +163,6 @@ function ApplicationResumes({ application }) {
   );
 }
 
-const STATUS_OPTIONS = [
-  { value: 'All', label: 'All' },
-  { value: 'Applied', label: 'Applied' },
-  { value: 'Under_Review', label: 'Under review' },
-  { value: 'Interview', label: 'Interview' },
-  { value: 'Offered', label: 'Offered' },
-  { value: 'Rejected', label: 'Rejected' },
-];
 
 function FilterMenu({ startDate, setStartDate, statusFilter, setStatusFilter, matchCount, onClear }) {
   return (
