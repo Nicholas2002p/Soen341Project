@@ -1,3 +1,4 @@
+import { Link, useNavigate } from 'react-router';
 import { useState } from 'react';
 import Password from '../../components/Registration/Password';
 import { useAuth } from '../../utils/Auth';
@@ -7,10 +8,9 @@ import "./Registration.scss";
 
 /**
  * Displays the registration for users
- * @param {function} setView 
  * @returns the registration page
  */
-export default function Registration({ setView }) {
+export default function Registration({  }) {
     const [fname, setFName] = useState('');
     const [lname, setLName] = useState('');
     const [email, setEmail] = useState('');
@@ -55,13 +55,14 @@ export default function Registration({ setView }) {
 
                     <section>
                         Already have an account?
-                        <a className='cursor' onClick={() => { setView("sign-in") }}> Sign In </a>
+                        <Link className='cursor' to="/sign-in"> Sign in </Link>
+                        {/* <a className='cursor' onClick={() => { setView("sign-in") }}> Sign In </a> */}
                     </section>
                     <span className="error-text">
                         {errorMessage}
                     </span>
                 
-                    <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken, setView, checked, setUser) } }> Register </button>
+                    <button className="register-btn" onClick={() => {  RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken, checked, setUser) } }> Register </button>
                 </section>
             </main>
         </section>
@@ -79,9 +80,8 @@ export default function Registration({ setView }) {
  * @param {string} email 
  * @param {functio} setToken 
  * @param {string} token 
- * @param {functio} setView 
  */          
-async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken, setView, checked, setUser) { 
+async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname, email, setToken, checked, setUser) { 
     if (email.trim() === "") setErrorMessage("Email is required");
 
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setErrorMessage("Please enter a valid email address");
@@ -101,7 +101,8 @@ async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname
         setErrorMessage("");
         const allGood = await RegisterApi(fname, lname, email, password, setErrorMessage, setToken, role, setUser);
         if(allGood) {
-            setView("profile");
+            useNavigate("/profile");
+            // setView("profile");
         };
     }
 }

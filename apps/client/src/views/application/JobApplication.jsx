@@ -1,11 +1,14 @@
-import Job from '../../components/Job/Job';
-import Application from '../../components/JobApplication/Application';
-import { ApplyForJob, GetSpecificJobHistory } from '../../utils/Api';
 import { useState, useEffect } from 'react';
-import './JobApplication.scss';
+import { Link } from 'react-router';
+import { ApplyForJob, GetSpecificJobHistory } from '../../utils/Api';
 import { useAuth } from '../../utils/Auth';
 
-export default function JobApplication({ setView, job }) {
+import Job from '../../components/Job/Job';
+import Application from '../../components/JobApplication/Application';
+
+import './JobApplication.scss';
+
+export default function JobApplication({ job }) {
   const [selectedResumeId, setSelectedResumeId] = useState(null);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
   const { token } = useAuth();
@@ -34,7 +37,8 @@ export default function JobApplication({ setView, job }) {
     <section className='job-application'>
       <main className='main-job-application'>
         {/* set the view to the search bar */}
-        <p className="exit-main-job-application"onClick={() => {setView('job-search');}}> X </p>
+        <Link className="exit-main-job-application" to="/job-search"> X </Link>
+        {/* <p className="exit-main-job-application" onClick={() => {setView('job-search');}}> X </p> */}
 
         <section className='resume-application'>
           <h2> Resume </h2>

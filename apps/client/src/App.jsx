@@ -1,7 +1,6 @@
 import { Route, Routes } from 'react-router';
-
 import { useEffect, useState } from 'react';
-import './App.css';
+
 import JobApplicationHistory from './views/history/JobApplicationHistory';
 import JobApplication from './views/application/JobApplication';
 import Home from './views/home/Home';
@@ -14,6 +13,8 @@ import PasswordReset from './views/authentication/PasswordReset';
 
 import { AuthContext } from './utils/Auth';
 import { GetCurrentUserApi } from './utils/Api';
+
+import './App.css';
 
 // Key used to keep the session token in the browser
 const SESSION_TOKEN_KEY = 'careerconnect.sessionToken';
@@ -35,7 +36,7 @@ function Main() {
   //       ? 'sign-in'
   //       : 'home'
   // );
-  
+
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(readStoredToken);
   const [selectedJob, setSelectedJob] = useState(null);

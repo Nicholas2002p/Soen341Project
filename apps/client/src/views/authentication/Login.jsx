@@ -1,16 +1,18 @@
+import { Link, useNavigate } from 'react-router';
 import { useState } from 'react';
-import "./Registration.scss";
-import Password from '../../components/Registration/Password';
 import { useAuth } from '../../utils/Auth'
 import { LogInApi, RequestPasswordResetApi } from '../../utils/Api';
+
+import Password from '../../components/Registration/Password';
 import GoogleSignIn from '../../components/Registration/google';
+
+import "./Registration.scss";
 
 /**
  * Displays the sign in for users
- * @param {function} setView
  * @returns returns the sign in page
  */
-export default function Login({ setView }) {
+export default function Login({  }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -57,7 +59,9 @@ export default function Login({ setView }) {
 
                     <section>
                         Don't have an account?
-                        <a className='cursor' onClick={() => { setView("registration") }}> Register </a>
+                        
+                        <Link className="cursor" to='/registration'> Register </Link>
+                        {/* <a className='cursor' onClick={() => { setView("registration") }}> Register </a> */}
                     </section>
                     <button type="button" className="cursor" onClick={requestForgotPassword} disabled={sendingForgotPassword}>
                         {sendingForgotPassword ? 'Sending...' : 'Forgot password?'}
@@ -68,8 +72,8 @@ export default function Login({ setView }) {
                         {errorMessage}
                     </span>
 
-                    <button className="register-btn" onClick={() => { RegisterUser(password, setErrorMessage, email, setToken, setView, setUser) }}> Log in </button>
-                    <GoogleSignIn setToken={setToken} setUser={setUser} setView={setView} />
+                    <button className="register-btn" onClick={() => { RegisterUser(password, setErrorMessage, email, setToken, setUser) }}> Log in </button>
+                    <GoogleSignIn setToken={setToken} setUser={setUser}  />
                 </section>
             </main>
         </section>
@@ -84,9 +88,8 @@ export default function Login({ setView }) {
  * @param {function} setErrorMessage 
  * @param {string} email 
  * @param {function} setToken 
- * @param {function} setView 
  */
-async function RegisterUser(password, setErrorMessage, email, setToken, setView, setUser) {
+async function RegisterUser(password, setErrorMessage, email, setToken, setUser) {
     if (email.trim() === "") {
         setErrorMessage("Email is required");
     }
@@ -102,6 +105,8 @@ async function RegisterUser(password, setErrorMessage, email, setToken, setView,
     else {
         setErrorMessage("");
         const allGood = await LogInApi(email, password, setErrorMessage, setToken, setUser);
-        if (allGood) setView("profile");
+        if (allGood) useNavigate("/profile");
+        
+        // if (allGood) setView("profile");
     }
 }
