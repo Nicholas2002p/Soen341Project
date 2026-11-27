@@ -4,7 +4,7 @@ import JobList from '../../components/job_search_views/JobList';
 import { SortJobs } from '../../utils/sorting';
 import './JobPosting.scss';
 
-export default function JobPosting({ setView, jobs = [], setSelectedJob }) {
+export default function JobPosting({ jobs = [], setSelectedJob }) {
   const [filters, setFilters] = useState({
     employmentTypes: [],
     minSalary: 0,
@@ -26,7 +26,7 @@ export default function JobPosting({ setView, jobs = [], setSelectedJob }) {
   return (
     <div className="job-posting">
       <Filters filters={filters} setFilters={setFilters} />
-      <JobList setView={setView} jobs={sortedJobs} setSelectedJob={setSelectedJob} />
+      <JobList jobs={sortedJobs} setSelectedJob={setSelectedJob} />
     </div>
   );
 }

@@ -1,16 +1,20 @@
-import "./JobSearch.scss";
-const ITEMS_PER_PAGE = 10;
+import { useNavigate } from 'react-router';
 import { useState } from 'react';
 import { Stack, Pagination } from '@mui/material';
 import { useAuth } from './../../utils/Auth';
 import {  GetJobApi } from '../../utils/Api';
+
+import "./JobSearch.scss";
+
+const ITEMS_PER_PAGE = 10;
 
 /**
  * Job Search
  * 
  * @returns the job search component
  */
-export default function JobList({ jobs, setView, setSelectedJob }) {
+export default function JobList({ jobs, setSelectedJob }) {
+  const navigate = useNavigate();
   const { token, user } = useAuth();
   const [page, setPage] = useState(1);
 
@@ -28,23 +32,23 @@ export default function JobList({ jobs, setView, setSelectedJob }) {
     if (token && user?.role !== "recruiter"){
     const jobData = await GetJobApi(job.jobId);
     setSelectedJob(jobData);
-    setView("job-application");
+    navigate("/job-application");
     }
   };
 
   return (
     <section className="job-search">
-      <JobBoard jobs={currentJobs} onSelectJob={handleSelectJob}/> 
-      <Stack className="stack">
-        <Pagination 
-          count={totalPages} 
-          page={safePage} 
-          onChange={(_, value) => {setPage(value)}} 
-          color="primary" 
-          variant="outlined" 
-          shape="rounded"
-        />
-      </Stack> 
+    <JobBoard jobs={currentJobs} onSelectJob={handleSelectJob}/> 
+    <Stack className="stack">
+      <Pagination 
+        count={totalPages} 
+        page={safePage} 
+        onChange={(_, value) => {setPage(value)}} 
+        color="primary" 
+        variant="outlined" 
+        shape="rounded"
+      />
+    </Stack> 
     </section>
   );
 }
