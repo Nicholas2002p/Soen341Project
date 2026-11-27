@@ -4,11 +4,11 @@ import {useState, useEffect} from 'react';
 import { useAuth } from '../../utils/Auth';
 import { useSavedJobs } from './ToggleSaveJob';
 
-export default function Application({ handleApply, selectedResumeId, setSelectedResumeId, alreadyApplied, jobId }) {
+export default function Application({ handleApply, selectedResumeId, setSelectedResumeId, alreadyApplied, id }) {
   const [resumes, setResumes] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const { token } = useAuth();
-  const { isSaved, toggleSave } = useSavedJobs(jobId);
+  const { isSaved, toggleSave } = useSavedJobs(id);
 
     useEffect(() => {
       const getResumes = async () => {
@@ -40,10 +40,10 @@ return (
         {alreadyApplied && <p className='applied-resume'> You've applied to this job! </p>}
         <button disabled={alreadyApplied || !selectedResumeId} onClick={() => { handleApply(); }}>Apply</button>
       
-        <p onClick={toggleSave} className='save-job'>
-          <div class={`left ${isSaved ? "saved": ""}`}></div>
-          <div class={`right ${isSaved ? "saved": ""}`}></div>
-        </p>
+        <div onClick={toggleSave} className='save-job'>
+          <div className={`left ${isSaved ? "saved": ""}`}></div>
+          <div className={`right ${isSaved ? "saved": ""}`}></div>
+        </div>
       </div>
     </div>
   );

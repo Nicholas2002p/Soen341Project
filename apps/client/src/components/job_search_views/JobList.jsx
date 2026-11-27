@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router';
+import { useNavigate, Route } from 'react-router';
 import { useState } from 'react';
 import { Stack, Pagination } from '@mui/material';
 import { useAuth } from './../../utils/Auth';
@@ -32,7 +32,7 @@ export default function JobList({ jobs, setSelectedJob }) {
     if (token && user?.role !== "recruiter"){
     const jobData = await GetJobApi(job.jobId);
     setSelectedJob(jobData);
-    navigate("/job-application");
+    navigate(`/job-application/${job.jobId}`);
     }
   };
 
@@ -106,20 +106,21 @@ function Requirements({ requirements }) {
 function makeJob(job, onSelectJob) {
     const deadlineDate = new Date(job.deadline).toLocaleDateString();
     return (
-        <a href={`/jobs/${job.jobId}`} key={job.jobId} className="job"
-        onClick={(e) => { e.preventDefault(); onSelectJob(job); }}>
-          <div className="pin"></div>
-          <p className="job-title">{job.title}</p>
-          <p className="job-company">{job.company?.name}</p>
-          <div>
-            <div className="job-location">{job.location}</div>
-            <span className="job-salary">${job.salary} </span>
-            <span className="job-type">{job.employmentType}</span>
-            <div className="job-type">Category: {job.category}</div>
-            <div className="job-deadline">Deadline: {deadlineDate}</div>
-          </div>
-          <p className="job-description">{job.description}</p>
-          <Requirements requirements={job.skills} />
-        </a>
-    );
+    <a key={job.jobId} className="job"
+      onClick={(e) => { e.preventDefault(); onSelectJob(job); }}>
+      
+      <div className="pin"></div>
+      <p className="job-title">{job.title}</p>
+      <p className="job-company">{job.company?.name}</p>
+      <div>
+        <div className="job-location">{job.location}</div>
+        <span className="job-salary">${job.salary} </span>
+        <span className="job-type">{job.employmentType}</span>
+        <div className="job-type">Category: {job.category}</div>
+        <div className="job-deadline">Deadline: {deadlineDate}</div>
+      </div>
+      <p className="job-description">{job.description}</p>
+      <Requirements requirements={job.skills} />
+    </a>
+  );
 }

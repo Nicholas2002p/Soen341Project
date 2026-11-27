@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { ApplyForJob, GetSpecificJobHistory } from '../../utils/Api';
 import { useAuth } from '../../utils/Auth';
 
@@ -9,13 +9,16 @@ import Application from '../../components/JobApplication/Application';
 import './JobApplication.scss';
 
 export default function JobApplication({ job }) {
+  const { jobId } = useParams();
   const [selectedResumeId, setSelectedResumeId] = useState(null);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
   const { token } = useAuth();
 
   useEffect(() => {
+    if (job.jobId == jobId) console.log("same")
+
     const SeeIfAlreadyApplied = async () => {
-      const data = await GetSpecificJobHistory(job.jobId, token);
+      const data = await GetSpecificJobHistory(jobId, token);
       if (!data) return;
       setAlreadyApplied(true);
     };
@@ -26,7 +29,7 @@ export default function JobApplication({ job }) {
    * on submition calls api to apply for job and sets boolean to true so they can not apply again if successful
    */
   const handleApply = async () => {
-      const success = await ApplyForJob(job.jobId, selectedResumeId, token);
+      const success = await ApplyForJob(jobId, selectedResumeId, token);
 
       if (success) {
         setAlreadyApplied(true);
@@ -36,12 +39,11 @@ export default function JobApplication({ job }) {
   return (
     <section className='job-application'>
       <main className='main-job-application'>
-        {/* set the view to the search bar */}
         <Link className="exit-main-job-application" to="/job-search"> X </Link>
 
         <section className='resume-application'>
           <h2> Resume </h2>
-          <Application handleApply={handleApply} selectedResumeId={selectedResumeId} setSelectedResumeId={setSelectedResumeId} alreadyApplied={alreadyApplied} jobId={job.jobId}/>
+          <Application handleApply={handleApply} selectedResumeId={selectedResumeId} setSelectedResumeId={setSelectedResumeId} alreadyApplied={alreadyApplied} id={jobId}/>
         </section>
 
         <section className='job-display'>
