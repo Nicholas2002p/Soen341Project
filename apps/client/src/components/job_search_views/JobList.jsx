@@ -1,4 +1,4 @@
-import { useNavigate, Route } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useState } from 'react';
 import { Stack, Pagination } from '@mui/material';
 import { useAuth } from './../../utils/Auth';

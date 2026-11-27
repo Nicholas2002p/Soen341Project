@@ -13,13 +13,14 @@ import { useAuth } from './../../utils/Auth';
  * @returns Job Component
  */
 export default function Job({ page, job, setIsAdding, setCurrentJob, onDelete, folderView, setIsManaging, navigate }) {
+  const { token } = useAuth();
+  
   if (page === "application" && job == null) {
     navigate('/job-search');
     return;
   }
 
   const deadlineDate = new Date(job.deadline).toLocaleDateString();
-  const { token } = useAuth();
 
   return (
     <section onClick={() => { jobClick(page, setIsAdding, setCurrentJob, job, folderView, setIsManaging); }} className={page === "application" ? "job-display-paper" : "job-paper"}>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router';
-import { ApplyForJob, GetSpecificJobHistory, GetJobApi } from '../../utils/Api';
+import { ApplyForJob, GetSpecificJobHistory } from '../../utils/Api';
 import { useAuth } from '../../utils/Auth';
 
 import Job from '../../components/Job/Job';
@@ -22,7 +22,7 @@ export default function JobApplication({ job }) {
       setAlreadyApplied(true);
     };
     SeeIfAlreadyApplied();
-  }, [token, job]);
+  }, [token, job, jobId]);
 
   /**
    * on submition calls api to apply for job and sets boolean to true so they can not apply again if successful
