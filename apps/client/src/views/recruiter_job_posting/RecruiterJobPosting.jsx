@@ -12,10 +12,9 @@ import './RecruiterJobPosting.scss';
  * Recruiter Job Posting
  * main page to see the recruiter job posting
  * 
- * @param {Function} setView 
  * @returns Recruiter Job Posting Component
  */
-export default function RecruiterJobPosting({ setView }) {
+export default function RecruiterJobPosting() {
   const [isAdding, setIsAdding] = useState(false);
   const [isManaging, setIsManaging] = useState(false);
   const [jobs, setJobs] = useState([]);
@@ -45,7 +44,7 @@ export default function RecruiterJobPosting({ setView }) {
   };
   return (
     <section>
-      <Nav setView={setView} /> 
+      <Nav /> 
 
       <main className="recruiter-job-posting">
         <h2> Job Posting </h2>
