@@ -38,7 +38,6 @@ export default function JobApplication({ job }) {
       <main className='main-job-application'>
         {/* set the view to the search bar */}
         <Link className="exit-main-job-application" to="/job-search"> X </Link>
-        {/* <p className="exit-main-job-application" onClick={() => {setView('job-search');}}> X </p> */}
 
         <section className='resume-application'>
           <h2> Resume </h2>

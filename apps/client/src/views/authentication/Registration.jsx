@@ -57,7 +57,6 @@ export default function Registration({  }) {
                     <section>
                         Already have an account?
                         <Link className='cursor' to="/sign-in"> Sign in </Link>
-                        {/* <a className='cursor' onClick={() => { setView("sign-in") }}> Sign In </a> */}
                     </section>
                     <span className="error-text">
                         {errorMessage}
@@ -103,7 +102,6 @@ async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname
         const allGood = await RegisterApi(fname, lname, email, password, setErrorMessage, setToken, role, setUser);
         if(allGood) {
             navigate("/profile");
-            // setView("profile");
         };
     }
 }

@@ -37,8 +37,6 @@ function SignIn({ }) {
   return (
     <>
       <Link to="/registration"> Sign in </Link>
-
-      {/* <a onClick={() => { setView("registration") }}> Sign in </a> */}
     </>
   );
 }
@@ -63,7 +61,6 @@ function SignedIn({ navigate, setToken, token }) {
         googleLogout();
         setToken(null);
         navigate("/");
-        // setView("home");
       }}> Logout </a>
 
     </>

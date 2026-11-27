@@ -11,8 +11,6 @@ export default function GoogleSignIn({ setToken, setUser }) {
     setError(null);
     const allGood = await GoogleLogInApi(googleData.credential, setError, setToken, setUser);
     if (allGood) navigate("/profile");
-
-    // if (allGood) setView("profile");
   };
 
   const handleError = (error) => {

@@ -29,14 +29,6 @@ function readStoredToken() {
 }
 
 function Main() {
-  // const [view, setView] = useState(
-  //   window.location.pathname === '/reset-password'
-  //     ? 'reset-password'
-  //     : window.location.pathname === '/login'
-  //       ? 'sign-in'
-  //       : 'home'
-  // );
-
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(readStoredToken);
   const [selectedJob, setSelectedJob] = useState(null);
@@ -94,16 +86,6 @@ function Main() {
           <Route path="/job-application" element={<JobApplication job={selectedJob}/>} />
           <Route path="/reset-password" element={<PasswordReset />} />
         </Routes>
-
-        {/* {view === "home" && <Home setView={setView} setSelectedJob={setSelectedJob} />}
-        {view === "profile" && <Profile setView={setView} />}
-        {view === "registration" && <Registration setView={setView} />} 
-        {view === "sign-in" && <Login setView={setView} />} 
-        {view === "history" && <JobApplicationHistory setView={setView}/>}
-        {view === "job-search" && <JobSearch setView={setView} setSelectedJob={setSelectedJob} />} 
-        {view === "recruiter-job-posting" && <RecruiterJobPosting setView={setView} /> }
-        {view === "job-application" && <JobApplication setView={setView} job={selectedJob}/> }
-        {view === "reset-password" && <PasswordReset setView={setView} />} */}
       </div>
     </AuthContext.Provider>
   );

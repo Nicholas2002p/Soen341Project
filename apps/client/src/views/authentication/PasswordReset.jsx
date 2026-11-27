@@ -68,7 +68,6 @@ export default function PasswordReset({  }) {
                     </button>
 
                     <Link to="/sign-in"> Back to Login </Link>
-                    {/* <button type="button" onClick={() => setView('sign-in')}>Back to login</button> */}
                 </section>
             </main>
         </section>

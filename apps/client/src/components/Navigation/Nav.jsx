@@ -39,14 +39,6 @@ function NavItems({ }) {
       {token && <Link to="/profile"> Profile </Link>}
 
       {token && user?.role === "recruiter" && <Link to="/recruiter-job-posting"> Post a Job </Link>} 
-
-      {/* <a onClick={() => { setView("home")}}> Home </a>
-      { token && user?.role != "recruiter" && <a onClick={() => { setView("history") }}> History </a>}
-      <a onClick={() => { setView("job-search") }}> Jobs </a>
-      {token && <a onClick={() => setView("profile")}> Profile </a>}
-      {token && user?.role === "recruiter" && (
-      <a onClick={() => setView("recruiter-job-posting")}> Post a Job </a>
-      )} */}
     </ul>
   );
 }

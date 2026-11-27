@@ -62,7 +62,6 @@ export default function Login({  }) {
                         Don't have an account?
                         
                         <Link className="cursor" to='/registration'> Register </Link>
-                        {/* <a className='cursor' onClick={() => { setView("registration") }}> Register </a> */}
                     </section>
                     <button type="button" className="cursor" onClick={requestForgotPassword} disabled={sendingForgotPassword}>
                         {sendingForgotPassword ? 'Sending...' : 'Forgot password?'}
@@ -107,7 +106,5 @@ async function RegisterUser(password, setErrorMessage, email, setToken, setUser,
         setErrorMessage("");
         const allGood = await LogInApi(email, password, setErrorMessage, setToken, setUser);
         if (allGood) navigate("/profile");
-        
-        // if (allGood) setView("profile");
     }
 }

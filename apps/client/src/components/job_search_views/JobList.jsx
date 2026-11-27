@@ -33,8 +33,6 @@ export default function JobList({ jobs, setSelectedJob }) {
     const jobData = await GetJobApi(job.jobId);
     setSelectedJob(jobData);
     navigate("/job-application");
-
-    // setView("job-application");
     }
   };
 
