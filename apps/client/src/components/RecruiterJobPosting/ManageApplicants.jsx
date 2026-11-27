@@ -1,7 +1,8 @@
 import './ManageApplicants.scss';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../utils/Auth';
-import { GetJobApplicationsApi, UpdateApplicationStatusApi } from '../../utils/Api';
+import {STATUS_OPTIONS} from '../../utils/filterTypes';
+import { GetJobApplicationsApi, UpdateApplicationStatusApi, GetResumeAsRecruiterApi } from '../../utils/Api';
 
 export default function ManageApplicants({ jobId, setIsManaging }) {
   const { token } = useAuth();
@@ -70,21 +71,24 @@ export default function ManageApplicants({ jobId, setIsManaging }) {
           setStartDate={(v) => { setStartDate(v); setIndex(0); }}
           statusFilter={statusFilter}
           setStatusFilter={(v) => { setStatusFilter(v); setIndex(0); }}
+          matchCount={filtered.length}
+          onClear={() => { setStartDate(''); setStatusFilter('All'); setIndex(0); }}
         />
 
-        {current && (
+        
           <ApplicationMenu
-            status={current.status}
+            status={current?.status}
+            disabled={!current}
             onChange={(status) => changeStatus(current.id, status)}
           />
-        )}
+        
       </div>
     </section>
   );
 }
 
 function ApplicationMenu({ status, onChange }) {
-  const isFinal = status === 'Offered' || status === 'Rejected';
+  const isFinal = !status || status === 'Offered' || status === 'Rejected';
 
   return (
     <section className='recruiter-application-menu'>
@@ -92,7 +96,7 @@ function ApplicationMenu({ status, onChange }) {
         <h2> Application menu </h2>
         <div className='application-menu-options'>
           <button disabled={isFinal || status === 'Offered'} onClick={() => onChange("Offered")}> <div className='status offered'></div> Accept </button>
-          <button disabled={isFinal || status === 'Under_Review'} onClick={() => onChange("Under_Review")}> <div className='status Under Review'></div> Under Review </button>
+          <button disabled={isFinal || status === 'Under_Review'} onClick={() => onChange("Under_Review")}> <div className='status under_review'></div> Under Review </button>
           <button disabled={isFinal || status === 'Interview'} onClick={() => onChange("Interview")}> <div className='status interview'></div> Interview </button>
           <button disabled={isFinal || status === 'Rejected'} onClick={() => onChange("Rejected")}> <div className='status rejected'></div> Reject </button>
         </div>
@@ -102,38 +106,96 @@ function ApplicationMenu({ status, onChange }) {
 }
 
 function ApplicationResumes({ application }) {
+  const { token } = useAuth();
+  const [resume, setResume] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    let objectUrl = null;
+
+    const load = async () => {
+      setResume(null);
+      setLoading(true);
+
+      const resume = await GetResumeAsRecruiterApi(token, application.id);
+
+      if (cancelled) {
+        if (resume) URL.revokeObjectURL(resume.url);
+        return;
+      }
+      if (resume) objectUrl = resume.url;
+      setResume(resume);
+      setLoading(false);
+    };
+
+    load();
+
+    return () => {
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [token, application.id]);
+
   return (
-    <section className='recruiter-application-resumes'>
-      <div className='applicant-email'> {application.applicant?.email} </div>
-      <div className='applicant-resume'> {application.resume?.fileName} </div>
-      <div className='applicant-status'> Status: {application.status} </div>
-      <div className='applicant-applied'> Applied: {new Date(application.appliedAt).toLocaleString()} </div>
+    <section className="recruiter-application-resumes">
+      <div className="applicant-info">
+        <div className="applicant-email"> Applicant's email: {application.applicant?.email} </div>
+        <div className="applicant-status"> Status: {application.status} </div>
+        <div className="applicant-applied">
+          Date of application: {new Date(application.appliedAt).toLocaleString('en-US', {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+          })}
+        </div>
+      </div>
+        <div className="applicant-resume-preview">
+          {loading && <p> Loading resume</p>}
+
+          {!loading && !resume && <p> Resume unavailable. </p>}
+
+          {!loading && resume && 
+              <iframe src={resume.url} title="Resume" />
+          }
+        </div>
+
     </section>
-  )
+  );
 }
 
-function FilterMenu({ startDate, setStartDate, statusFilter, setStatusFilter }) {
+
+function FilterMenu({ startDate, setStartDate, statusFilter, setStatusFilter, matchCount, onClear }) {
   return (
-    <section className='recruiter-application-menu'>
-      <div className='application-menu'>
-        <h2> Filters </h2>
-        <div className='application-menu-options'>
-          <label>
-            From:
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-          </label>
-          <label>
-            Status:
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-              <option value="All">All</option>
-              <option value="Applied">Applied</option>
-              <option value="Under_Review">Under Review</option>
-              <option value="Interview">Interview</option>
-              <option value="Offered">Offered</option>
-              <option value="Rejected">Rejected</option>
-            </select>
-          </label>
+    <section className="recruiter-application-menu">
+      <div className="filter-card">
+        <div className="filter-header">
+          <h2> Filters </h2>
+          <button className="filter-clear" onClick={onClear}> Clear all </button>
         </div>
+
+        <label className="filter-label" htmlFor="filter-date"> Applied from </label>
+        <input
+          id="filter-date"
+          className="filter-date"
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+
+        <span className="filter-label"> Status </span>
+        <div className="filter-chips">
+          {STATUS_OPTIONS.map((s) => (
+            <button
+              key={s.value}
+              className={`filter-chip ${statusFilter === s.value ? 'active' : ''}`}
+              onClick={() => setStatusFilter(s.value)}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+
+        <p className="filter-count"> {matchCount} {matchCount === 1 ? 'applicant matches' : 'applicants match'} </p>
       </div>
     </section>
   );

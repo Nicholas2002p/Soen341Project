@@ -62,9 +62,10 @@ function Filter({ id, choices, selected, onToggle }) {
   return (
     <fieldset className="filter">
       <legend> Employment type </legend>
+      <p className="hint">Select all that apply.</p>
 
       {choices.map((choice) => (
-        <label key={choice.value}>
+        <label key={choice.value} className="option">
           <input
             type="checkbox"
             id={`${id}-${choice.value}`}

@@ -31,12 +31,70 @@
     font-size: 30px;
     font-weight: 800;
   }
-
-  label {
+    .hint {
+    @include style.no-margin-padding;
+    font-size: 16px;
+    color: #555;
+  }
+    label {
     margin-top: 10px;
+  }
+
+  .option {
+    @include style.flex-align-justify(center, flex-start);
+    margin-top: 10px;
+    padding: 10px 12px;
+    border: style.$black-border;
+    border-radius: 8px;
+    background: style.$off-white;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: style.$main-blue;
+    }
+
+    &:has(input:checked) {
+      background: style.$main-blue;
+    }
 
     input {
-      flex: 0.1;
+      @include style.width-height(20px, 20px);
+      @include style.flex-align-justify(center, center);
+      order: 1;
+      flex: none;
+      margin: 0 0 0 auto;
+      appearance: none;
+      -webkit-appearance: none;
+      border: style.$black-border;
+      border-radius: 6px;
+      background: style.$off-white;
+      cursor: pointer;
+
+      &::after {
+        content: "";
+        width: 5px;
+        height: 10px;
+        border: solid black;
+        border-width: 0 2px 2px 0;
+        transform: translateY(-1px) rotate(45deg) scale(0);
+        transition: transform 0.15s;
+      }
+
+      &:checked {
+        background: style.$button-color;
+
+        &::after {
+          transform: translateY(-1px) rotate(45deg) scale(1);
+        }
+      }
+
+      &:focus-visible {
+        outline: 3px solid style.$folder-color;
+        outline-offset: 2px;
+      }
     }
   }
+
+
 }

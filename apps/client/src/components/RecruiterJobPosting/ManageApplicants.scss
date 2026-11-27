@@ -1,26 +1,33 @@
 @use "../../utils/style" as style;
 
 .recruiter-manage-applicants {
+  @include style.flex-dir(row);
+  @include style.width-height(1300px, 900px);
   position: absolute;
   background-color: style.$off-white;
-  height: 900px;
-  width: 1300px;
   border: 1px dashed black;
   border-radius: 10px;
-  padding: 10px;
-  display: flex;
+  padding: 50px 10px 10px;
   align-self: center;
+  gap: 10px;
 }
 
 .leave {
+  top: 5px;
+  right: 15px;
   font-size: 30px;
   background: none;
   border: none;
+  cursor: pointer;
 }
 
 .manage-applicants {
-  border: 1px solid black;
+  @include style.flex-dir(column);
+  min-width: 0;
+  min-height: 0;
+  border: style.$black-border;
   flex: 3;
+  overflow: hidden;
 }
 
 .manage-applicants button {
@@ -30,38 +37,68 @@
   cursor: pointer;
 }
 
-.manage-applicants div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 10px;
-  padding-right: 10px;
-  height: 100%;
+.manage-applicants > div {
+  @include style.flex-align-justify(center, space-between);
+  flex: 1;
+  min-height: 0;
+  gap: 1rem;
+  padding: 0 10px;
+}
+
+.no-applications {
+  text-align: center;
 }
 
 .recruiter-application-resumes {
-  width: 90%;
-  height: 90%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include style.flex-dir-align-justify(column, center, center);
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 10px 0;
+}
+
+.applicant-info {
+  @include style.flex-dir-align(column, center);
+  gap: 0.25rem;
+  font-size: 18px;
+}
+
+.applicant-email {
+  font-weight: 600;
+}
+
+
+.applicant-resume-preview {
+  flex: 1;
+  width: 100%;
+  min-height: 400px;
+
+  iframe {
+    @include style.width-height(100%, 100%);
+    border: none;
+  }
+}
+
+.application-side {
+  @include style.flex-dir(column);
+  flex: 1;
+  min-height: 0;
+  gap: 10px;
 }
 
 .recruiter-application-menu {
+  @include style.flex-align-justify(center, center);
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 0;
 }
 
 .application-menu {
-  height: 400px;
-  width: 90%;
-  border: 1px solid black;
+  @include style.flex-dir(column);
+  @include style.width-height(90%, 100%);
+  border: style.$black-border;
   border-radius: 5px;
-  
-  display: flex;
-  flex-direction: column;
   background-color: style.$main-blue;
 }
 
@@ -72,19 +109,109 @@
 }
 
 .application-menu-options {
+  @include style.flex-dir-align(column, center);
   flex: 6;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  overflow-y: auto;
 }
 
 .application-menu button {
+  @include style.flex-align-justify(center, flex-start);
+  @include style.width-height(90%, 50px);
   margin: 10px;
-  height: 50px;
-  width: 90%;
   font-size: 20px;
-  display: flex;
-  align-items: center;
   gap: 80px;
   cursor: pointer;
+}
+
+.filter-card {
+  @include style.flex-dir(column);
+  height: 100%;
+  width: 90%;
+  box-sizing: border-box;
+  padding: 18px 16px;
+  border: style.$black-border;
+  border-radius: 10px;
+  background-color: style.$main-blue;
+}
+
+.filter-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-bottom: 0;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
+  h2 {
+    @include style.no-margin-padding;
+    font-size: 22px;
+    line-height: 1;
+  }
+}
+
+.filter-clear {
+  @include style.no-margin-padding;
+  background: none;
+  border: none;
+  font-size: 16px;
+  line-height: 1;
+  color: #0b3d6b;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+    color: #1f2937;
+  }
+}
+
+.filter-label {
+  display: block;
+  margin: 0 0 6px;
+  padding: 0;
+  text-align: left;
+}
+
+.filter-date {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+  padding: 6px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  border-radius: 6px;
+  background-color: white;
+  font-size: 14px;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filter-chip {
+  padding: 5px 12px;
+  border: style.$black-border;
+  border-radius: 999px;
+  background-color: white;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f0f0f0af;
+  }
+
+  &.active {
+    background-color: #0594cc;
+  border-color: #191919;
+  color: white;
+  }
+}
+
+.filter-count {
+  margin: auto 0 0;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.65);
 }
