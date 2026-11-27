@@ -12,10 +12,9 @@ import './JobApplicationHistory.scss';
  * Job Application History
  * main page that displays the job application history
  * 
- * @param {Function} setView - changes the view inside of the nav 
  * @returns Job Application History Component
  */
-export default function JobApplicationHistory({ setView }) {
+export default function JobApplicationHistory() {
   const [history, setHistory] = useState([]);
   const [filterHistory, setFilterHistory] = useState([]);
   const { token } = useAuth();
@@ -32,7 +31,7 @@ export default function JobApplicationHistory({ setView }) {
   
   return (
     <section className='history-job-application'>
-      <Nav setView={setView} />
+      <Nav />
 
       <Analytics />
       

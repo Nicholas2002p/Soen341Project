@@ -1,3 +1,4 @@
+import { Link, useNavigate } from 'react-router';
 import { useAuth } from "../../utils/Auth";
 import { googleLogout } from "@react-oauth/google";
 import { LogOutApi } from "../../utils/Api";
@@ -8,16 +9,16 @@ import NotificationCenter from "../Notifications/NotificationCenter";
  * Account
  * component shows the profile picture + name of the signed in user
  * 
- * @param {Function} setView
  * @returns the account component 
  */
-export default function Account({ setView }) {
+export default function Account() {
+  const navigate = useNavigate();
   const { token, setToken } = useAuth();
 
   return (
     <section className="account">
-      {!token && <SignIn setView={setView} />}
-      {token && <SignedIn setView={setView} setToken={setToken} token={token} />}
+      {!token && <SignIn />}
+      {token && <SignedIn navigate={navigate} setToken={setToken} token={token} />}
 
     </section>
   );
@@ -27,13 +28,12 @@ export default function Account({ setView }) {
  * Sign In
  * displays the sign in button for the user to sign in
  * 
- * @param {Function} setView 
  * @returns the sign in component
  */
-function SignIn({ setView }) {
+function SignIn() {
   return (
     <>
-      <a onClick={() => { setView("registration") }}> Sign in </a>
+      <Link to="/registration"> Sign in </Link>
     </>
   );
 }
@@ -43,11 +43,10 @@ function SignIn({ setView }) {
  * will show that the user is signed in
  * Name display will be shown in sprint 2
  * 
- * @param {Function} setView
  * @param {Function} setToken 
  * @returns the signed in component
  */
-function SignedIn({ setView, setToken, token }) {
+function SignedIn({ navigate, setToken, token }) {
   return (
     <>
       <NotificationCenter token={token} />
@@ -55,9 +54,10 @@ function SignedIn({ setView, setToken, token }) {
         await UnregisterStoredPushInstallation(token);
         await LogOutApi(token);
         googleLogout();
-        setView("home");
         setToken(null);
+        navigate("/");
       }}> Logout </a>
+
     </>
   )
 }

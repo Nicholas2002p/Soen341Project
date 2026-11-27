@@ -20,7 +20,7 @@ import './Profile.scss';
  * 
  * @returns Profile component
  */
-export default function Profile({ setView }) {
+export default function Profile() {
   const { token, user } = useAuth();
   const [data, setData] = useState({});
   const [savedJobs, setSaveJobs] = useState([]); 
@@ -91,7 +91,7 @@ export default function Profile({ setView }) {
 
   return (
     <main className="profilepage">
-      <Nav setView={setView} profileURL={profileURL} />
+      <Nav profileURL={profileURL} />
 
       <section className='profile'>
         <ProfileCard profileURL={profileURL} fname={fname} lname={lname} role={role} desc={desc} />

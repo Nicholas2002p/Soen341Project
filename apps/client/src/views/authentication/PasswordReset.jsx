@@ -1,8 +1,9 @@
+import { Link } from 'react-router';
 import { useState } from 'react';
 import { ResetPasswordApi } from '../../utils/Api';
 import "./Registration.scss";
 
-export default function PasswordReset({ setView }) {
+export default function PasswordReset() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -65,7 +66,8 @@ export default function PasswordReset({ setView }) {
                     <button className="register-btn" type="button" onClick={submit} disabled={submitting || !token}>
                         {submitting ? 'Resetting...' : 'Reset password'}
                     </button>
-                    <button type="button" onClick={() => setView('sign-in')}>Back to login</button>
+
+                    <Link to="/sign-in"> Back to Login </Link>
                 </section>
             </main>
         </section>
