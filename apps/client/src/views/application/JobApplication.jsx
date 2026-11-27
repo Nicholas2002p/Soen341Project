@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router';
-import { ApplyForJob, GetSpecificJobHistory } from '../../utils/Api';
+import { Link, useParams, useNavigate } from 'react-router';
+import { ApplyForJob, GetSpecificJobHistory, GetJobApi } from '../../utils/Api';
 import { useAuth } from '../../utils/Auth';
 
 import Job from '../../components/Job/Job';
@@ -9,21 +9,20 @@ import Application from '../../components/JobApplication/Application';
 import './JobApplication.scss';
 
 export default function JobApplication({ job }) {
+  const navigate = useNavigate();
   const { jobId } = useParams();
+  const { token } = useAuth();
   const [selectedResumeId, setSelectedResumeId] = useState(null);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
-  const { token } = useAuth();
 
   useEffect(() => {
-    if (job.jobId == jobId) console.log("same")
-
     const SeeIfAlreadyApplied = async () => {
       const data = await GetSpecificJobHistory(jobId, token);
       if (!data) return;
       setAlreadyApplied(true);
     };
     SeeIfAlreadyApplied();
-  }, [token, job])
+  }, [token, job]);
 
   /**
    * on submition calls api to apply for job and sets boolean to true so they can not apply again if successful
@@ -47,7 +46,7 @@ export default function JobApplication({ job }) {
         </section>
 
         <section className='job-display'>
-          <Job page={"application"} job={job} />
+          <Job page={"application"} job={job} navigate={navigate} />
         </section>
       </main>
     </section>

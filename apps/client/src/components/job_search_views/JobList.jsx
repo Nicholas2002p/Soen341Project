@@ -29,10 +29,10 @@ export default function JobList({ jobs, setSelectedJob }) {
    * @returns 
    */
   const handleSelectJob = async (job) => {
-    if (token && user?.role !== "recruiter"){
-    const jobData = await GetJobApi(job.jobId);
-    setSelectedJob(jobData);
-    navigate(`/job-application/${job.jobId}`);
+    if (token && user?.role !== "recruiter") {
+      const jobData = await GetJobApi(job.jobId);
+      setSelectedJob(jobData);
+      navigate(`/job-application/${job.jobId}`);
     }
   };
 
