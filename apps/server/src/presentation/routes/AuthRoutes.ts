@@ -20,6 +20,12 @@ authRoutes.put('/register/:userId', authMiddleware, authController.updateUser.bi
 // Login route
 authRoutes.post('/login', authController.login.bind(authController));
 
+authRoutes.post('/forgot-password', authController.requestPasswordReset.bind(authController));
+
+authRoutes.post('/reset-password', authController.resetPassword.bind(authController));
+
+authRoutes.post('/test-email', authMiddleware, authController.sendTestEmail.bind(authController));
+
 // Google login route
 authRoutes.post('/google', authController.googleLogin.bind(authController));
 

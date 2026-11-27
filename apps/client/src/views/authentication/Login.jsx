@@ -1,22 +1,49 @@
+import { Link, useNavigate } from 'react-router';
 import { useState } from 'react';
-import "./Registration.scss";
-import Password from '../../components/Registration/Password';
 import { useAuth } from '../../utils/Auth'
-import { LogInApi } from '../../utils/Api';
+import { LogInApi, RequestPasswordResetApi } from '../../utils/Api';
+
+import Password from '../../components/Registration/Password';
 import GoogleSignIn from '../../components/Registration/google';
+
+import "./Registration.scss";
 
 /**
  * Displays the sign in for users
- * @param {function} setView
  * @returns returns the sign in page
  */
-export default function Login({ setView }) {
+export default function Login() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [passwordType, setPasswordType] = useState(true);
     const [passwordType2, setPasswordType2] = useState(true);
+    const [forgotPasswordMessage, setForgotPasswordMessage] = useState('');
+    const [sendingForgotPassword, setSendingForgotPassword] = useState(false);
     const { setToken, setUser } = useAuth();
+
+    const requestForgotPassword = async () => {
+        const resetEmail = window.prompt('Enter your email address for a password reset:', email);
+        if (resetEmail === null) return;
+
+        const normalizedEmail = resetEmail.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+            setForgotPasswordMessage('Please enter a valid email address.');
+            return;
+        }
+
+        setSendingForgotPassword(true);
+        setForgotPasswordMessage('');
+        try {
+            await RequestPasswordResetApi(normalizedEmail);
+            setForgotPasswordMessage('If an account exists for that email, a password reset email has been sent.');
+        } catch (error) {
+            setForgotPasswordMessage(error instanceof Error ? error.message : 'Password reset email could not be sent.');
+        } finally {
+            setSendingForgotPassword(false);
+        }
+    };
 
     return (
         <section className="registration">
@@ -33,15 +60,20 @@ export default function Login({ setView }) {
 
                     <section>
                         Don't have an account?
-                        <a className='cursor' onClick={() => { setView("registration") }}> Register </a>
+                        
+                        <Link className="cursor" to='/registration'> Register </Link>
                     </section>
+                    <button type="button" className="cursor" onClick={requestForgotPassword} disabled={sendingForgotPassword}>
+                        {sendingForgotPassword ? 'Sending...' : 'Forgot password?'}
+                    </button>
+                    {forgotPasswordMessage && <span className="error-text" role="status">{forgotPasswordMessage}</span>}
 
                     <span className="error-text">
                         {errorMessage}
                     </span>
 
-                    <button className="register-btn" onClick={() => { RegisterUser(password, setErrorMessage, email, setToken, setView, setUser) }}> Log in </button>
-                    <GoogleSignIn setToken={setToken} setUser={setUser} setView={setView} />
+                    <button className="register-btn" onClick={() => { RegisterUser(password, setErrorMessage, email, setToken, setUser, navigate) }}> Log in </button>
+                    <GoogleSignIn setToken={setToken} setUser={setUser}  />
                 </section>
             </main>
         </section>
@@ -56,9 +88,8 @@ export default function Login({ setView }) {
  * @param {function} setErrorMessage 
  * @param {string} email 
  * @param {function} setToken 
- * @param {function} setView 
  */
-async function RegisterUser(password, setErrorMessage, email, setToken, setView, setUser) {
+async function RegisterUser(password, setErrorMessage, email, setToken, setUser, navigate) {
     if (email.trim() === "") {
         setErrorMessage("Email is required");
     }
@@ -74,6 +105,6 @@ async function RegisterUser(password, setErrorMessage, email, setToken, setView,
     else {
         setErrorMessage("");
         const allGood = await LogInApi(email, password, setErrorMessage, setToken, setUser);
-        if (allGood) setView("profile");
+        if (allGood) navigate("/");
     }
 }

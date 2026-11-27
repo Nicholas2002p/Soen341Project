@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../utils/Auth';
-import { GetProfileApi, GetSavedJobsApi, SendTestNotificationApi }from '../../utils/Api';
+import {
+  GetProfileApi,
+  GetSavedJobsApi,
+  SendTestEmailApi,
+  SendTestNotificationApi,
+} from '../../utils/Api';
 import ProfileCard from '../../components/Profile/ProfileCard';
 import ProfileEdit from '../../components/Profile/ProfileEdit';
 import ResumeUpload from '../../components/Profile/ResumeUpload';
@@ -15,7 +20,7 @@ import './Profile.scss';
  * 
  * @returns Profile component
  */
-export default function Profile({ setView }) {
+export default function Profile() {
   const { token, user } = useAuth();
   const [data, setData] = useState({});
   const [savedJobs, setSaveJobs] = useState([]); 
@@ -27,6 +32,8 @@ export default function Profile({ setView }) {
   const [desc, setDesc] = useState(null);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [sendingNotification, setSendingNotification] = useState(false);
+  const [emailMessage, setEmailMessage] = useState('');
+  const [sendingTestEmail, setSendingTestEmail] = useState(false);
   
   useEffect(() => {
     if (!token) return;
@@ -68,9 +75,23 @@ export default function Profile({ setView }) {
     }
   };
 
+  const sendTestEmail = async () => {
+    setSendingTestEmail(true);
+    setEmailMessage('');
+    try {
+      await SendTestEmailApi(token);
+      setEmailMessage('A test email has been sent.');
+    } catch (error) {
+      console.error('Test email failed:', error);
+      setEmailMessage(error instanceof Error ? error.message : 'Test email could not be sent.');
+    } finally {
+      setSendingTestEmail(false);
+    }
+  };
+
   return (
     <main className="profilepage">
-      <Nav setView={setView} profileURL={profileURL} />
+      <Nav profileURL={profileURL} />
 
       <section className='profile'>
         <ProfileCard profileURL={profileURL} fname={fname} lname={lname} role={role} desc={desc} />
@@ -96,6 +117,13 @@ export default function Profile({ setView }) {
               {sendingNotification ? 'Sending...' : 'Send test notification'}
             </button>
             {notificationMessage && <p role="status">{notificationMessage}</p>}
+          </section>
+          <section className="email-actions">
+            <h2>Email</h2>
+            <button type="button" onClick={sendTestEmail} disabled={sendingTestEmail}>
+              {sendingTestEmail ? 'Sending...' : 'Send generic test email'}
+            </button>
+            {emailMessage && <p role="status">{emailMessage}</p>}
           </section>
         </section>
       </section>

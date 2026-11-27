@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { useAuth } from "../../utils/Auth";
 import { AutoApplyApi, GetResumesApi } from "../../utils/Api";
 import "./AutoApply.scss";
 
 /**
  * Lets a job seeker pick one of their PDF resumes and let the AI apply to the open jobs that match it
- * @param {function} setView - used to open the application history after auto apply
  */
-export default function AutoApply({ setView }) {
+export default function AutoApply() {
   const { token, user } = useAuth();
+  const navigate = useNavigate();
   const [resumes, setResumes] = useState([]);
   const [resumeId, setResumeId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -94,7 +95,7 @@ export default function AutoApply({ setView }) {
               ))}
             </ul>
           )}
-          <button onClick={() => setView("history")}>See my applications</button>
+          <button onClick={() => navigate("/history")}>See my applications</button>
         </div>
       )}
     </section>

@@ -191,6 +191,65 @@ export class AuthController {
     }
   }
 
+  async requestPasswordReset(req: Request, res: Response): Promise<void> {
+    const { email } = req.body ?? {};
+    if (typeof email !== 'string' || !isValidEmail(email.trim())) {
+      res.status(400).json({ message: 'A valid email address is required.' });
+      return;
+    }
+
+    try {
+      await authService.requestPasswordReset(email);
+      res.status(200).json({
+        message: 'If an account exists for that email, a password reset link has been sent.',
+      });
+    } catch (error: unknown) {
+      if (error instanceof InvalidEmailError) {
+        res.status(400).json({ message: 'A valid email address is required.' });
+        return;
+      }
+      throw error;
+    }
+  }
+
+  async resetPassword(req: Request, res: Response): Promise<void> {
+    const { token, password } = req.body ?? {};
+    if (typeof token !== 'string' || token.length === 0) {
+      res.status(400).json({ message: 'A password reset token is required.' });
+      return;
+    }
+    if (typeof password !== 'string' || password.length < 8) {
+      res.status(400).json({ message: 'The new password must be at least 8 characters long.' });
+      return;
+    }
+
+    try {
+      await authService.resetPassword(token, password);
+      res.status(200).json({ message: 'Your password has been reset successfully.' });
+    } catch (error: unknown) {
+      if (error instanceof InvalidAuthCredentialsError) {
+        res.status(400).json({ message: 'The password reset token is invalid or expired.' });
+        return;
+      }
+      throw error;
+    }
+  }
+
+  async sendTestEmail(req: Request, res: Response): Promise<void> {
+    const authenticatedUser = res.locals.user as PublicUser;
+
+    try {
+      await authService.sendTestEmail(authenticatedUser.email);
+      res.status(200).json({ message: 'A test email has been sent.' });
+    } catch (error: unknown) {
+      if (error instanceof InvalidEmailError) {
+        res.status(400).json({ message: 'A valid email address is required.' });
+        return;
+      }
+      throw error;
+    }
+  }
+
   async logout(req: Request, res: Response): Promise<void> {
     try {
       // Validate request headers for the session token

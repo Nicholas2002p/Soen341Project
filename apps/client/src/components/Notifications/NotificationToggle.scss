@@ -1,0 +1,32 @@
+.notification-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: #555;
+  cursor: pointer;
+}
+
+.notification-toggle:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.08);
+  color: #111;
+}
+
+.notification-toggle-enabled {
+  color: #1769aa;
+}
+
+.notification-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.notification-toggle svg {
+  width: 22px;
+  height: 22px;
+}
