@@ -10,7 +10,7 @@ export default function GoogleSignIn({ setToken, setUser }) {
   const handleLogin = async (googleData) => {
     setError(null);
     const allGood = await GoogleLogInApi(googleData.credential, setError, setToken, setUser);
-    if (allGood) navigate("/profile");
+    if (allGood) navigate("/");
   };
 
   const handleError = (error) => {

@@ -101,7 +101,7 @@ async function RegisterUser(password, confirmPass, setErrorMessage, fname, lname
         setErrorMessage("");
         const allGood = await RegisterApi(fname, lname, email, password, setErrorMessage, setToken, role, setUser);
         if(allGood) {
-            navigate("/profile");
+            navigate("/");
         };
     }
 }

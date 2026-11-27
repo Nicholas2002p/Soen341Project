@@ -105,6 +105,6 @@ async function RegisterUser(password, setErrorMessage, email, setToken, setUser,
     else {
         setErrorMessage("");
         const allGood = await LogInApi(email, password, setErrorMessage, setToken, setUser);
-        if (allGood) navigate("/profile");
+        if (allGood) navigate("/");
     }
 }
