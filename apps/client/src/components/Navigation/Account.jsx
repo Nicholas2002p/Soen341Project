@@ -14,7 +14,7 @@ import NotificationCenter from "../Notifications/NotificationCenter";
  * 
  * @returns the account component 
  */
-export default function Account({ }) {
+export default function Account() {
   const navigate = useNavigate();
   const { token, setToken } = useAuth();
 
@@ -33,7 +33,7 @@ export default function Account({ }) {
  * 
  * @returns the sign in component
  */
-function SignIn({ }) {
+function SignIn() {
   return (
     <>
       <Link to="/registration"> Sign in </Link>

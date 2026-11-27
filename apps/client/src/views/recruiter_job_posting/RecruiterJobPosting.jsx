@@ -14,7 +14,7 @@ import './RecruiterJobPosting.scss';
  * 
  * @returns Recruiter Job Posting Component
  */
-export default function RecruiterJobPosting({ }) {
+export default function RecruiterJobPosting() {
   const [isAdding, setIsAdding] = useState(false);
   const [isManaging, setIsManaging] = useState(false);
   const [jobs, setJobs] = useState([]);

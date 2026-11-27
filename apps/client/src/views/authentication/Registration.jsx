@@ -10,7 +10,7 @@ import "./Registration.scss";
  * Displays the registration for users
  * @returns the registration page
  */
-export default function Registration({  }) {
+export default function Registration() {
     const navigate = useNavigate();
     const [fname, setFName] = useState('');
     const [lname, setLName] = useState('');

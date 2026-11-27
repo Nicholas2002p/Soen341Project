@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ResetPasswordApi } from '../../utils/Api';
 import "./Registration.scss";
 
-export default function PasswordReset({  }) {
+export default function PasswordReset() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');

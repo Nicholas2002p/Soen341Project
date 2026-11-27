@@ -26,7 +26,7 @@ export default function Nav({ profileURL }) {
  * 
  * @returns the nav item component
  */
-function NavItems({ }) {
+function NavItems() {
   const { token, user } = useAuth();
 
   return (

@@ -14,7 +14,7 @@ import './JobApplicationHistory.scss';
  * 
  * @returns Job Application History Component
  */
-export default function JobApplicationHistory({ }) {
+export default function JobApplicationHistory() {
   const [history, setHistory] = useState([]);
   const [filterHistory, setFilterHistory] = useState([]);
   const { token } = useAuth();

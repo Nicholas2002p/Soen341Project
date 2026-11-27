@@ -12,7 +12,7 @@ import "./Registration.scss";
  * Displays the sign in for users
  * @returns returns the sign in page
  */
-export default function Login({  }) {
+export default function Login() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

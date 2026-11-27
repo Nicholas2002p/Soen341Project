@@ -20,7 +20,7 @@ import './Profile.scss';
  * 
  * @returns Profile component
  */
-export default function Profile({ }) {
+export default function Profile() {
   const { token, user } = useAuth();
   const [data, setData] = useState({});
   const [savedJobs, setSaveJobs] = useState([]); 
