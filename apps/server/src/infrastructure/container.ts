@@ -24,7 +24,12 @@ import { PrismaJobRepository } from './repositories/PrismaJobRepository.js';
 import { JobService } from '../application/services/JobService.js';
 import { PrismaSavedJobRepository } from './repositories/PrismaSavedJobRepository.js';
 import { SavedJobService } from '../application/services/SavedJobService.js';
+import { PdfTextExtractionService } from '../application/services/PdfTextExtractionService.js';
+import { GeminiAiService } from './ai/GeminiAiService.js';
 import { notificationService } from '../application/services/NotificationService.js';
+import { ResumeAnalysisService } from '../application/services/ResumeAnalysisService.js';
+import { JobMatchingService } from '../application/services/JobMatchingService.js';
+import { AutoApplyService } from '../application/services/AutoApplyService.js';
 import { PrismaPasswordResetTokenRepository } from './repositories/PrismaPasswordResetTokenRepository.js';
 import { FileEmailTemplateLoader } from './email/FileEmailTemplateLoader.js';
 import { SendGridEmailService } from './email/SendGridEmailService.js';
@@ -81,7 +86,19 @@ const profileService = new ProfileService(profileRepository, userRepository);
 const resumeService = new ResumeService(resumeRepository, resumeStorage);
 const applicationService = new ApplicationService(applicationRepository, resumeRepository, notificationService, resumeService);
 const savedJobRepository = new PrismaSavedJobRepository(prisma);
+const pdfTextExtractionService = new PdfTextExtractionService();
+const aiService = new GeminiAiService();
 const savedJobService = new SavedJobService(savedJobRepository, jobRepository, notificationService);
+const resumeAnalysisService = new ResumeAnalysisService(aiService);
+const jobMatchingService = new JobMatchingService(aiService);
+const autoApplyService = new AutoApplyService(
+  resumeService,
+  pdfTextExtractionService,
+  resumeAnalysisService,
+  jobService,
+  jobMatchingService,
+  applicationService,
+);
 
 // Export the initialized services for use in other parts of the application
 export {
@@ -94,6 +111,9 @@ export {
   profileImageStorage,
   jobService,
   savedJobService,
+  pdfTextExtractionService,
+  aiService,
   notificationService,
+  autoApplyService,
   userPreferenceService,
 };

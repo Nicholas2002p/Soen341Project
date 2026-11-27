@@ -4,7 +4,7 @@ import { GetJobsApi } from "../../utils/Api";
 import JobPosting from "./JobPosting";
 import Nav from '../../components/Navigation/Nav';
 import SearchBar from "../../components/job_search_views/Search";
-
+import AutoApply from "../../components/job_search_views/AutoApply";
 import './JobSearch.scss';
 
 export default function JobSearch({ setSelectedJob }) {
@@ -24,6 +24,7 @@ export default function JobSearch({ setSelectedJob }) {
       <Nav />      
  
       <main className="search-job">
+        <AutoApply />
         <SearchBar setJobs={setJobs} />
         <JobPosting jobs={jobs} setSelectedJob={setSelectedJob} />
       </main>

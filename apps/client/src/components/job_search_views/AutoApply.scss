@@ -1,0 +1,21 @@
+.auto-apply {
+  margin: 1rem;
+  padding: 1rem;
+  border: 1px solid #000;
+  background-color: #c5e1f7;
+
+  .auto-apply-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .auto-apply-result ul {
+    padding-left: 1.2rem;
+  }
+
+  .error-text {
+    color: red;
+  }
+}
