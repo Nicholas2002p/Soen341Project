@@ -83,7 +83,7 @@ function Main() {
           <Route path="/history" element={<JobApplicationHistory />} />
           <Route path="/job-search" element={<JobSearch setSelectedJob={setSelectedJob} />} />
           <Route path="/recruiter-job-posting" element={<RecruiterJobPosting />} />
-          <Route path="/job-application" element={<JobApplication job={selectedJob}/>} />
+          <Route path="/job-application/:jobId" element={<JobApplication job={selectedJob}/>} />
           <Route path="/reset-password" element={<PasswordReset />} />
         </Routes>
       </div>

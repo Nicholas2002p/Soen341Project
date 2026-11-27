@@ -12,10 +12,16 @@ import { useAuth } from './../../utils/Auth';
  * @param {Object} job - for next PR
  * @returns Job Component
  */
-export default function Job({ page, job, setIsAdding, setCurrentJob, onDelete, folderView, setIsManaging }) {
-  const deadlineDate = new Date(job.deadline).toLocaleDateString();
+export default function Job({ page, job, setIsAdding, setCurrentJob, onDelete, folderView, setIsManaging, navigate }) {
   const { token } = useAuth();
   
+  if (page === "application" && job == null) {
+    navigate('/job-search');
+    return;
+  }
+
+  const deadlineDate = new Date(job.deadline).toLocaleDateString();
+
   return (
     <section onClick={() => { jobClick(page, setIsAdding, setCurrentJob, job, folderView, setIsManaging); }} className={page === "application" ? "job-display-paper" : "job-paper"}>
       {page !== "application" && <DeleteJob job={job} token={token} onDelete={onDelete}/>}
