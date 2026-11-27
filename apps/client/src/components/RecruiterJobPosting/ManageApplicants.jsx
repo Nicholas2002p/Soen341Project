@@ -118,14 +118,14 @@ function ApplicationResumes({ application }) {
       setResume(null);
       setLoading(true);
 
-      const r = await GetResumeAsRecruiterApi(token, application.id);
+      const resume = await GetResumeAsRecruiterApi(token, application.id);
 
       if (cancelled) {
-        if (r) URL.revokeObjectURL(r.url);
+        if (resume) URL.revokeObjectURL(resume.url);
         return;
       }
-      if (r) objectUrl = r.url;
-      setResume(r);
+      if (resume) objectUrl = resume.url;
+      setResume(resume);
       setLoading(false);
     };
 
