@@ -12,6 +12,13 @@ export interface CreateNotificationInput {
     data?: Record<string, string>;
 }
 
+function getDeliveryErrorCode(error: unknown, fallback: string): string {
+    if (typeof error === 'object' && error !== null && 'code' in error && typeof error.code === 'string') {
+        return error.code.slice(0, 1000);
+    }
+    return error instanceof Error ? error.message.slice(0, 1000) : fallback;
+}
+
 export class NotificationService {
     private firebaseApp: App | null | undefined;
     private preferenceService: Pick<UserPreferenceService, 'pushNotificationsEnabled'> | null = null;
@@ -123,11 +130,32 @@ export class NotificationService {
             select: { installationId: true },
         });
 
-        const messaging = this.getMessaging();
+        let messaging: Messaging | null = null;
+        let messagingInitializationFailed = false;
+        let messagingInitializationError: unknown;
+        try {
+            messaging = this.getMessaging();
+        } catch (error) {
+            messagingInitializationFailed = true;
+            messagingInitializationError = error;
+            console.error('Firebase messaging initialization failed:', error);
+        }
+
         for (const { installationId } of installations) {
             const delivery = await prisma.notificationDelivery.create({
                 data: { notificationId: notification.id, installationId },
             });
+
+            if (messagingInitializationFailed) {
+                await prisma.notificationDelivery.update({
+                    where: { id: delivery.id },
+                    data: {
+                        status: 'failed',
+                        errorCode: getDeliveryErrorCode(messagingInitializationError, 'firebase_initialization_failed'),
+                    },
+                });
+                continue;
+            }
 
             if (!messaging) {
                 await prisma.notificationDelivery.update({
@@ -148,7 +176,7 @@ export class NotificationService {
                     data: { status: 'sent', providerMessageId, attemptedAt: new Date() },
                 });
             } catch (error) {
-                const errorCode = error instanceof Error ? error.message.slice(0, 1000) : 'firebase_send_failed';
+                const errorCode = getDeliveryErrorCode(error, 'firebase_send_failed');
                 console.error(`Firebase notification delivery failed for installation ${installationId}:`, error);
                 await prisma.notificationDelivery.update({
                     where: { id: delivery.id },

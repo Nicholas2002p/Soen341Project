@@ -144,19 +144,6 @@ export default function NotificationToggle({ token }) {
   }, [token]);
 
   useEffect(() => {
-    if (!token || !installationId) return undefined;
-
-    const unregisterOnPageClose = () => {
-      void UnregisterPushInstallationApi(token, installationId, { keepalive: true }).catch((reason) => {
-        console.error("Push installation cleanup failed:", reason);
-      });
-      clearStoredInstallation(token);
-    };
-    window.addEventListener("pagehide", unregisterOnPageClose);
-    return () => window.removeEventListener("pagehide", unregisterOnPageClose);
-  }, [installationId, token]);
-
-  useEffect(() => {
     if (!enabled || !hasFirebaseConfig()) return undefined;
 
     try {
