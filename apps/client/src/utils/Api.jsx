@@ -1052,3 +1052,32 @@ export async function GetAnalyticsApi(token) {
         return [];
     }
 }
+
+/**
+ * asks the server to compare a PDF resume with the open jobs and apply to the best matches with AI
+ * @param {*} resumeId - id of one of the user's PDF resumes
+ * @param {*} token
+ * @returns { result, error } where result has reviewedJobCount, appliedCount and the applied jobs
+ */
+export async function AutoApplyApi(resumeId, token) {
+    try {
+        const response = await fetch(getApiUrl("/api/applications/auto-apply"), {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ resumeId: Number(resumeId) }),
+        });
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            return { result: null, error: data.message ?? "Auto apply failed. Please try again." };
+        }
+
+        return { result: data, error: null };
+    } catch (error) {
+        console.error(error);
+        return { result: null, error: "Auto apply failed. Make sure the server is running." };
+    }
+}

@@ -3,6 +3,7 @@ import Nav from '../../components/Navigation/Nav';
 import SearchBar from "../../components/job_search_views/Search";
 import { useState, useEffect } from "react";
 import { GetJobsApi } from "../../utils/Api";
+import AutoApply from "../../components/job_search_views/AutoApply";
 import './JobSearch.scss';
 export default function JobSearch({ setView, setSelectedJob }) {
   const [jobs, setJobs] = useState([]);
@@ -21,6 +22,7 @@ export default function JobSearch({ setView, setSelectedJob }) {
       <Nav setView={setView} />      
  
       <main className="search-job">
+        <AutoApply setView={setView} />
         <SearchBar setJobs={setJobs} />
         <JobPosting jobs={jobs} setSelectedJob ={setSelectedJob } setView={setView}/>
       </main>
