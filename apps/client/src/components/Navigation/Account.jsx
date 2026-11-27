@@ -2,10 +2,7 @@ import { Link, useNavigate } from 'react-router';
 import { useAuth } from "../../utils/Auth";
 import { googleLogout } from "@react-oauth/google";
 import { LogOutApi } from "../../utils/Api";
-
-import NotificationToggle, {
-  UnregisterStoredPushInstallation,
-} from "../Notifications/NotificationToggle";
+import { UnregisterStoredPushInstallation } from "../Notifications/NotificationToggle";
 import NotificationCenter from "../Notifications/NotificationCenter";
 
 /**
@@ -53,8 +50,6 @@ function SignedIn({ navigate, setToken, token }) {
   return (
     <>
       <NotificationCenter token={token} />
-      <NotificationToggle token={token} />
-
       <a onClick={async () => {
         await UnregisterStoredPushInstallation(token);
         await LogOutApi(token);

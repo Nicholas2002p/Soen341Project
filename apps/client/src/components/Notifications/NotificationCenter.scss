@@ -70,6 +70,41 @@
   }
 }
 
+.notification-sidebar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.notification-push-setting {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+.notification-read-all {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 4px;
+  background: #1769aa;
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+.notification-read-all:hover:not(:disabled) {
+  background: #12558a;
+}
+
+.notification-read-all:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .notification-list {
   display: flex;
   flex-direction: column;
